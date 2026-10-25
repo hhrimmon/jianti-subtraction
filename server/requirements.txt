@@ -1,0 +1,4 @@
+playwright>=1.40
+psutil>=5.9
+# optional: only needed when running the browser in virtual-desktop mode (Windows)
+# pyvda>=0.3

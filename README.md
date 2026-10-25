@@ -9,11 +9,28 @@
 | 目录 | 内容 |
 | --- | --- |
 | `app/` | HarmonyOS NEXT 壳应用（ArkTS），拍题、分卡、锁答案、扣卡、家长确认 |
-| `gateway/gateway.py` | 本机网关 `:8000`，`POST /solve` 收图 → 调模型 → 分段 → 输出后校验 → 返回文本块 |
-| `gateway/qw_bridge.py` | 网页版模型桥接 `:8001`，Playwright + 本机 Chrome，单账号组，滑块即停 |
-| `gateway/autorun.pyw` | 开机自启 launcher，拉起网关与桥接 |
-| `gateway/watchdog.py` | 常驻看门狗：探活 8000/8001，挂了自起；子进程用 pythonw + DETACHED_PROCESS，脱离控制台 |
-| `gateway/run_gateway.ps1` | 计划任务用的网关重启脚本（幂等，不碰桥接） |
+| `server/gateway.py` | 本机网关 `:8000`，`POST /solve` 收图 → 调模型 → 分段 → 输出后校验 → 返回文本块 |
+| `server/qw_bridge.py` | 网页版模型桥接 `:8001`，Playwright + Chromium/Chrome，账号组轮换，滑块即停 |
+| `server/watchdog.py` | 常驻看门狗：探活 8000/8001，挂了自起；子进程用 pythonw + DETACHED_PROCESS，脱离控制台 |
+| `server/autorun.pyw` | 开机自启 launcher，拉起网关与桥接 |
+| `server/run_gateway.ps1` | 计划任务用的网关重启脚本（幂等，不碰桥接） |
+| `server/requirements.txt` | Python 依赖（playwright、psutil） |
+| `server/install.ps1` | 一键安装：建 venv → 装依赖 → 下载无头浏览器（Playwright Chromium） |
+| `server/run.ps1` | 一键启动：自动定位浏览器，后台拉起网关+桥接并健康检查 |
+
+## 安装（Windows，实测步骤）
+
+```powershell
+git clone https://github.com/hhrimmon/jianti-subtraction.git
+cd jianti-subtraction\server
+powershell -ExecutionPolicy Bypass -File install.ps1   # venv + 依赖 + 无头浏览器
+powershell -ExecutionPolicy Bypass -File run.ps1        # 起 :8000 / :8001 并健康检查
+```
+
+- 前置只有 Python 3.10+；**无头浏览器不随仓库带**（体积与许可原因），`install.ps1` 用 `playwright install chromium` 安装时下载（约 120MB）。
+- 想用系统 Chrome 而非随装 Chromium：`setx QW_CHROME "C:\Program Files\Google\Chrome\Application\chrome.exe"`，run.ps1 会优先读 `QW_CHROME`。
+- 冒烟测试（不需要模型账号）：`$env:JT_SOLVE_FAKE="1"` 后 `python gateway.py --port 8010`，`POST /solve` 回罐头卡。
+- 真实解题还差两步人工事（脚本无法代劳）：桥接首次跑会开浏览器让你**扫码登录网页模型**；之后 `QW_PROFILE` 目录里留着登录态。
 
 ## 数据流
 
@@ -27,17 +44,17 @@
                → 返回纯文本 → 壳 cardsFromText 切卡 → 上屏
 ```
 
-## 快速运行
+## 手动运行（不经脚本）
 
-前置：DevEco Studio / HarmonyOS SDK、Python 3.10+、本机 Chrome、网页模型账号已登录。
+前置：DevEco Studio / HarmonyOS SDK（仅壳需要）、Python 3.10+、install.ps1 已跑过、网页模型账号已登录。
 
 ```powershell
 # 1) 起网关（生产模式：真实模型，不用假数据）
 $env:JT_VLM_BACKEND = "qianwen"
-python -u gateway/gateway.py
+python -u server/gateway.py
 
 # 2) 起桥接（另开一个终端）
-python -u gateway/qw_bridge.py
+python -u server/qw_bridge.py
 
 # 3) 健康检查
 curl.exe http://127.0.0.1:8000/health

@@ -1,6 +1,8 @@
 # Python
 __pycache__/
 *.py[cod]
+server/.venv/
+server/zone_state.json
 
 # 运行产物
 *.log
