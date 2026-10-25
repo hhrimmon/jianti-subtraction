@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 运行产物
+*.log
+*.jsonl
+uploads/
+*.jpeg
+*.jpg
+*.png
+!app/**/resources/**/*.png
+
+# 鸿蒙构建产物
+node_modules/
+oh_modules/
+.hvigor/
+build/
+.preview/
+hvigorw.js
+hvigorw
+hvigorw.bat
+
+# IDE
+.idea/
+.vscode/
+local.properties
+
+# 系统
+.DS_Store
+Thumbs.db

@@ -1,0 +1,11 @@
+{
+  "modelVersion": "6.0.0",
+  "name": "jianti_shell",
+  "version": "1.0.0",
+  "description": "JianTi HarmonyOS NEXT test shell",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {},
+  "devDependencies": {}
+}
