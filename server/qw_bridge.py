@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import random  # 滑块拖拽轨迹抖动
-"""千问网页版桥接服务（Playwright + 本机 Chrome + F:\\MQH Zone02 profile）
+"""千问网页版桥接服务（Playwright + 本机 Chrome + 本机独立浏览器 profile）
 
-    GET  /health  -> {"ok":true,"bridge":"qw-web-6-twoseg","profile":"Zone02","desktop":"headless|hidden|visible"}
+    GET  /health  -> {"ok":true,"bridge":"qw-web-6-twoseg","profile":"zone1","desktop":"headless|hidden|visible"}
     POST /solve   -> body 原始 JPEG，返回 {"ok":true,"text":...,"upload_ms":N,"answer_ms":N,"shots":[...]}
 
 行为约定：
@@ -28,7 +28,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import psutil
 from playwright.sync_api import sync_playwright
 
-PROFILE = os.environ.get("QW_PROFILE", r"F:\MQH\browser_profiles\profiles\Zone02")
+PROFILE = os.environ.get("QW_PROFILE", os.path.join(os.path.dirname(os.path.abspath(__file__)), "chrome_profile", "zone1"))
 CHROME = os.environ.get("QW_CHROME", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
 HOME = os.environ.get("QW_HOME", "https://www.qianwen.com/")
 # 提示词随机微扰 2.0（风控缓解）：句子级措辞池 + 中段约束句顺序随机打乱。
@@ -112,7 +112,7 @@ CDP_PORT = int(os.environ.get("QW_CDP_PORT", "9222"))
 CDP_URL = "http://127.0.0.1:%d" % CDP_PORT
 
 # 账号组（风控切组）：滑块出现即停当前组、切下一组，冷却 30 分钟，勿连刷
-ZONES = [z.strip() for z in os.environ.get("QW_ZONES", "Zone02,Zone03,Zone04").split(",") if z.strip()]
+ZONES = [z.strip() for z in os.environ.get("QW_ZONES", "zone1,zone2,zone3").split(",") if z.strip()]
 PROFILE_ROOT = os.path.dirname(PROFILE.rstrip("\\/")) or PROFILE
 ZONE_COOLDOWN_S = int(os.environ.get("QW_ZONE_COOLDOWN", "1800"))
 # 未登录 / 启动失败：只短暂跳过，不按风控 30 分钟锁死
@@ -208,7 +208,7 @@ class DesktopCtl:
                 try:
                     if p.info["name"] and p.info["name"].lower() == "chrome.exe":
                         cmd = " ".join(p.info["cmdline"] or [])
-                        if "Zone02" in cmd or "--remote-debugging-port=%d" % CDP_PORT in cmd:
+                        if PROFILE_ROOT.lower() in cmd.lower() or "--remote-debugging-port=%d" % CDP_PORT in cmd:
                             pids.add(p.info["pid"])
                 except Exception:
                     continue

@@ -1,4 +1,5 @@
 @echo off
-cd /d C:\Users\Administrator\AppData\Local\Temp\jt_gateway
+rem start_gw_wbapi.bat: start gateway.py in wbapi (local API) mode, logs to gateway_8000_wbapi.log
+cd /d "%~dp0"
 set JT_VLM_BACKEND=wbapi
-F:\Python\pythonw.exe -u gateway.py >> gateway_8000_wbapi.log 2>&1
+pythonw.exe -u gateway.py >> gateway_8000_wbapi.log 2>&1

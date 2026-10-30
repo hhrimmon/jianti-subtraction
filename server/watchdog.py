@@ -24,7 +24,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 LOG = os.path.join(BASE, "watchdog.log")
 LOCK = os.path.join(BASE, "watchdog.lock")
 
-PYW = os.environ.get("JT_PYTHONW", r"F:\Python\pythonw.exe")
+PYW = os.environ.get("JT_PYTHONW") or os.path.join(os.path.dirname(sys.executable), "pythonw.exe")
 DETACHED_PROCESS = 0x00000008
 CREATE_NO_WINDOW = 0x08000000
 
