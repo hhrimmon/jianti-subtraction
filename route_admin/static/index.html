@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>路由管理</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#161a22; --panel2:#1b202a; --line:#262c38;
+    --txt:#e6e9ef; --muted:#8b93a7; --accent:#4c8dff; --accent2:#2f6fd0;
+    --ok:#35c07a; --warn:#e8b23a; --bad:#ef5b5b; --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 "Segoe UI","Microsoft YaHei",system-ui,sans-serif}
+  button,input,select{font:inherit;color:inherit}
+  .wrap{max-width:1220px;margin:0 auto;padding:20px 22px 96px}
+
+  header{display:flex;align-items:center;gap:14px;padding:14px 0 18px;border-bottom:1px solid var(--line)}
+  header h1{font-size:17px;margin:0;font-weight:600;letter-spacing:.2px}
+  .bind{color:var(--muted);font-size:12px;font-family:ui-monospace,Consolas,monospace}
+  .spacer{flex:1}
+  .pill{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .pill.on{color:var(--ok);border-color:#245c40;background:#12241b}
+
+  .svc{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px}
+  .svc .meta{font-size:12.5px;font-family:ui-monospace,Consolas,monospace;color:var(--muted)}
+  .svc .acts{display:flex;align-items:center;gap:10px;margin-left:auto}
+  .svc .autotxt{font-size:12.5px;color:var(--muted);white-space:nowrap}
+
+  .gwbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:8px 14px;font-size:12.5px}
+  .gwbar .pool{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:ui-monospace,Consolas,monospace}
+  .gwbar .model{background:#0d1117;border:1px solid #232a36;border-radius:7px;padding:2px 8px;white-space:nowrap}
+  .gwbar .model b{color:var(--accent);font-weight:600;margin-right:4px}
+  .gwbar .arrow{color:#5b6373}
+  .gwbar .meta{margin-left:auto;color:var(--muted);font-size:11.5px;max-width:56%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gwflag{font-size:11px;margin-top:3px;line-height:1.4}
+  .gwflag.bad{color:#ff9a9a}
+  .gwflag.warn{color:var(--warn)}
+
+  #svcOverlay{position:fixed;inset:0;background:#0b0d11f2;display:none;align-items:center;justify-content:center;z-index:120}
+  #svcOverlay .card{width:420px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px;text-align:center}
+  #svcOverlay h2{margin:0 0 8px;font-size:16px}
+  #svcOverlay p{margin:0 0 16px;color:var(--muted);font-size:12.5px;line-height:1.7;word-break:break-all}
+  #svcOverlay code{background:#0d1117;border:1px solid #232a36;border-radius:6px;padding:2px 6px;font-size:12px;display:inline-block;margin-top:2px}
+
+  #logModal{position:fixed;inset:0;background:#0b0d11e8;display:none;align-items:center;justify-content:center;z-index:110;padding:24px}
+  #logModal .box{width:min(940px,100%);height:min(560px,82vh);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  #logModal .hd{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line)}
+  #logModal .hd h2{margin:0;font-size:14px;font-weight:600;white-space:nowrap}
+  #logModal .segs{display:flex;gap:6px}
+  #logModal .segs button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer;color:var(--muted)}
+  #logModal .segs button.on{background:#12241b;border-color:#245c40;color:var(--ok)}
+  #logModal .path{margin-left:auto;font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--muted);max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl;text-align:left}
+  #logModal pre{flex:1;margin:0;padding:12px 16px;overflow:auto;background:#0b0f16;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.65;white-space:pre-wrap;word-break:break-all;color:#c9d3e3}
+  #logModal .ft{display:flex;align-items:center;gap:10px;padding:9px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+  #logModal .ft .spacer{flex:1}
+
+  #chgModal{position:fixed;inset:0;background:#0b0d11e8;display:none;align-items:center;justify-content:center;z-index:110;padding:24px}
+  #chgModal .box{width:min(940px,100%);height:min(560px,82vh);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  #chgModal .hd{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line)}
+  #chgModal .hd h2{margin:0;font-size:14px;font-weight:600;white-space:nowrap}
+  #chgModal .path{margin-left:auto;font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--muted);max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl;text-align:left}
+  #chgModal .list{flex:1;overflow:auto}
+  #chgModal .row{display:flex;gap:12px;padding:8px 16px;border-bottom:1px solid #1c222c;font-size:12.5px;align-items:flex-start}
+  #chgModal .row:last-child{border-bottom:0}
+  #chgModal .when{flex:0 0 132px;color:var(--muted);font-family:ui-monospace,Consolas,monospace;white-space:nowrap}
+  #chgModal .kind{flex:0 0 66px;font-weight:600;white-space:nowrap}
+  #chgModal .kind.save{color:var(--accent)}
+  #chgModal .kind.gateway{color:var(--ok)}
+  #chgModal .what{flex:1;line-height:1.6;word-break:break-all}
+  #chgModal .mono{font-family:ui-monospace,Consolas,monospace;color:#c9d3e3}
+  #chgModal .ft{display:flex;align-items:center;gap:10px;padding:9px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+  #chgModal .ft .spacer{flex:1}
+  #chgModal .row.click{cursor:pointer}
+  #chgModal .row.click:hover{background:#1a2029}
+
+  .btn{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn:hover{border-color:#3a4354;background:#212736}
+  .btn:disabled{opacity:.38;cursor:not-allowed}
+  .btn.primary{background:var(--accent2);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent)}
+  .btn.sm{padding:4px 9px;font-size:12.5px}
+  .btn.ghost{background:transparent}
+  .btn.danger:hover{border-color:#5a2a2a;color:#ff8f8f}
+
+  .toolbar{display:flex;gap:10px;align-items:center;margin:16px 0 12px}
+  .toolbar .hint{color:var(--muted);font-size:12.5px}
+
+  table{width:100%;border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  thead th{text-align:left;font-size:12px;font-weight:600;color:var(--muted);padding:10px 12px;background:#131720;border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody td{padding:10px 12px;border-bottom:1px solid #1e232d;vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.row:hover{background:#181d26}
+  @keyframes flashRow{0%{background:#22406b}70%{background:#1b2b40}100%{background:transparent}}
+  tbody tr.flash td{animation:flashRow 1.6s ease-out}
+  .name{display:flex;align-items:center;gap:7px;font-weight:600}
+  .name .caret{color:var(--muted);font-size:11px;width:10px;transition:.15s}
+  tr.open .name .caret{transform:rotate(90deg)}
+  .tag{font-size:11px;padding:2px 7px;border-radius:6px;background:#222a38;color:#9db0d0;border:1px solid #2c3648;font-weight:500}
+  .tag.webui{color:#8fc6ff;border-color:#28405f;background:#141e2e}
+  .tag.api{color:#c3a8ff;border-color:#3a2f57;background:#1b1730}
+  .tag.local{color:#8fe0b6;border-color:#22483a;background:#13241d}
+
+  .sw{position:relative;display:inline-block;width:40px;height:22px;cursor:pointer}
+  .sw input{opacity:0;width:0;height:0;position:absolute}
+  .sw i{position:absolute;inset:0;background:#2a3140;border-radius:999px;transition:.18s}
+  .sw i:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#8b93a7;border-radius:50%;transition:.18s}
+  .sw input:checked + i{background:#1f4f8f}
+  .sw input:checked + i:before{transform:translateX(18px);background:#7fb2ff}
+  .sw.disabled{opacity:.35;cursor:not-allowed}
+
+  select.lvl{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:4px 6px}
+
+  .dot{display:inline-flex;align-items:center;gap:6px;font-size:12.5px}
+  .dot:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
+  .dot.ready:before{background:var(--ok);box-shadow:0 0 0 3px #35c07a22}
+  .dot.cooldown:before{background:var(--warn);box-shadow:0 0 0 3px #e8b23a22}
+  .dot.failed:before{background:var(--bad);box-shadow:0 0 0 3px #ef5b5b22}
+  .dot.stopped:before{background:#4a5364}
+  .muted{color:var(--muted);font-size:12.5px}
+
+  .detail td{background:#12161e;padding:0;border-bottom:1px solid #1e232d}
+  .detail-inner{padding:14px 16px 16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 16px;border-left:2px solid #2b3a52}
+  .fld{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .fld label{font-size:11.5px;color:var(--muted);letter-spacing:.2px}
+  .fld input[type=text],.fld input[type=password],.fld select{background:#0d1117;border:1px solid #232a36;border-radius:7px;padding:7px 9px;width:100%;min-width:0}
+  .fld input:focus,.fld select:focus{outline:none;border-color:#3b6fbd;box-shadow:0 0 0 2px #4c8dff22}
+  .fld.wide{grid-column:span 2}
+  .chk{display:flex;align-items:center;gap:7px;font-size:13px;padding-top:16px}
+  .fld .tip{font-size:11px;color:#6f7789}
+
+  .savebar{position:fixed;left:0;right:0;bottom:0;background:#12161ef2;backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:12px;z-index:20}
+  .savebar .inner{max-width:1220px;margin:0 auto;width:100%;display:flex;align-items:center;gap:12px}
+  .banner{font-size:12.5px;padding:5px 10px;border-radius:7px;display:none}
+  .banner.show{display:inline-block}
+  .banner.ok{background:#12301f;color:#7ee2ab;border:1px solid #1e5238}
+  .banner.bad{background:#331717;color:#ff9a9a;border:1px solid #5a2626}
+
+  #login{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:100}
+  #login .card{width:360px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px}
+  #login h2{margin:0 0 4px;font-size:16px}
+  #login p{margin:0 0 18px;color:var(--muted);font-size:12.5px}
+  #login input{width:100%;background:#0d1117;border:1px solid #232a36;border-radius:8px;padding:9px 11px;margin-bottom:10px}
+  #login input:focus{outline:none;border-color:#3b6fbd}
+  #login .err{color:#ff9a9a;font-size:12.5px;min-height:18px;margin-bottom:4px}
+  .sep{display:flex;align-items:center;gap:10px;color:#5b6373;font-size:11.5px;margin:14px 0 10px}
+  .sep:before,.sep:after{content:"";height:1px;background:var(--line);flex:1}
+
+  .toast{position:fixed;right:18px;bottom:74px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .toast div{background:#1c2330;border:1px solid #2b3444;border-left:3px solid var(--accent);padding:9px 13px;border-radius:8px;font-size:13px;max-width:420px;box-shadow:0 8px 24px #0008}
+  .toast div.bad{border-left-color:var(--bad)}
+  .toast div.ok{border-left-color:var(--ok)}
+  details.settings{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
+  details.settings summary{cursor:pointer;padding:11px 14px;font-size:13px;color:#b9c2d4;list-style:none}
+  details.settings summary::-webkit-details-marker{display:none}
+  details.settings summary:before{content:"▸ ";color:var(--muted)}
+  details.settings[open] summary:before{content:"▾ "}
+  .settings-body{padding:4px 14px 16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 16px;border-top:1px solid var(--line)}
+  .empty{padding:26px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="card">
+    <h2>路由管理</h2>
+    <p>仅限本机 127.0.0.1，需管理员口令</p>
+    <input id="pw" type="password" placeholder="管理员密码" autocomplete="current-password">
+    <div class="err" id="loginErr"></div>
+    <button class="btn primary" style="width:100%" onclick="doLogin()">登录</button>
+    <div class="sep">或</div>
+    <input id="tk" type="password" placeholder="Bearer Token（脚本用，可留空）">
+    <button class="btn ghost" style="width:100%" onclick="doLogin(true)">用 Token 登录</button>
+  </div>
+</div>
+
+<div id="svcOverlay">
+  <div class="card">
+    <h2 id="svcOvTitle">管理服务</h2>
+    <p id="svcOvDesc"></p>
+    <button class="btn" id="svcOvRetry" style="display:none" onclick="waitServiceUp()">重试连接</button>
+  </div>
+</div>
+
+<div id="logModal" onclick="if(event.target===this)closeLogs()">
+  <div class="box">
+    <div class="hd">
+      <h2>服务日志</h2>
+      <div class="segs">
+        <button id="logTabErr" class="on" onclick="loadLog('err')">错误日志</button>
+        <button id="logTabOut" onclick="loadLog('out')">标准输出</button>
+      </div>
+      <span class="path" id="logPath">data\admin.err.log</span>
+    </div>
+    <pre id="logBody">读取中…</pre>
+    <div class="ft">
+      <span id="logMeta">—</span>
+      <span class="spacer"></span>
+      <button class="btn sm ghost" onclick="loadLog()">刷新</button>
+      <button class="btn sm" onclick="closeLogs()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div id="chgModal" onclick="if(event.target===this)closeChanges()">
+  <div class="box">
+    <div class="hd">
+      <h2>变更记录</h2>
+      <span class="path" id="chgPath">data\change_log.jsonl</span>
+    </div>
+    <div class="list" id="chgList"></div>
+    <div class="ft">
+      <span id="chgMeta">—</span>
+      <span class="spacer"></span>
+      <button class="btn sm ghost" onclick="loadChanges()">刷新</button>
+      <button class="btn sm" onclick="closeChanges()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <h1>路由管理</h1>
+    <span class="bind" id="bindInfo">127.0.0.1</span>
+    <span class="spacer"></span>
+    <span class="pill" id="srvState">已连接</span>
+    <button class="btn sm ghost" onclick="logout()">退出登录</button>
+  </header>
+
+  <div class="svc">
+    <span class="dot ready" id="svcDot">服务运行中</span>
+    <span class="meta" id="svcMeta">读取中…</span>
+    <div class="acts">
+      <label class="sw" id="autoSwWrap" title="开机自启动">
+        <input type="checkbox" id="autoSw" onchange="setAutostart(this.checked)">
+        <i></i>
+      </label>
+      <span class="autotxt" id="autoTxt">开机自启：读取中…</span>
+      <button class="btn sm ghost" onclick="openChanges()">变更记录</button>
+      <button class="btn sm ghost" onclick="openLogs()">查看日志</button>
+      <button class="btn sm" onclick="svcRestart()">重启服务</button>
+      <button class="btn sm ghost danger" onclick="svcExit()">退出服务</button>
+    </div>
+  </div>
+  <div class="gwbar">
+    <span class="dot" id="gwDot">网关 8000</span>
+    <span class="pool" id="gwPool">读取中…</span>
+    <span class="meta" id="gwMeta"></span>
+    <button class="btn sm ghost" onclick="loadGateway()">刷新</button>
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="addRoute()">+ 新增路由</button>
+    <button class="btn ghost" onclick="exportRoutes()">导出</button>
+    <button class="btn ghost" onclick="document.getElementById('importFile').click()">导入</button>
+    <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importRoutes(event)">
+    <span class="hint">等级 5 最高优先 · 1 最低优先 · 0 不启动。改动先在本地，点底部保存才生效。</span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:26%">路由名</th>
+        <th style="width:9%">类型</th>
+        <th style="width:8%">开关</th>
+        <th style="width:11%">等级</th>
+        <th style="width:13%">状态</th>
+        <th style="width:14%">上次测试</th>
+        <th style="width:19%">操作</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div id="emptyTip" class="empty" style="display:none">还没有路由，点「新增路由」开始。</div>
+
+  <details class="settings">
+    <summary>设置（Chrome 路径、网关表落盘位置、冷却策略）</summary>
+    <div class="settings-body">
+      <div class="fld wide">
+        <label>浏览器路径（留空 = 自动探测）</label>
+        <input type="text" id="setChrome" placeholder="自动找 Chrome / Edge">
+        <div class="tip" id="chromeTip">—</div>
+      </div>
+      <div class="fld wide">
+        <label>网关路由表落盘路径</label>
+        <input type="text" id="setOut" placeholder="admin/data/gateway_routes.json">
+        <div class="tip">保存后原子写此文件，网关自读；不重启、不改网关。</div>
+      </div>
+      <div class="fld"><label>连续失败几次进冷却</label><input type="text" id="setTh" value="3"></div>
+      <div class="fld"><label>冷却基准秒数</label><input type="text" id="setBase" value="300"></div>
+      <div class="fld"><label>冷却上限秒数</label><input type="text" id="setMax" value="3600"></div>
+      <div class="fld" style="justify-content:flex-end">
+        <button class="btn" onclick="saveSettings()">保存设置</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<div class="savebar">
+  <div class="inner">
+    <span class="muted" id="dirtyTip">无未保存改动</span>
+    <span class="banner" id="banner"></span>
+    <span class="spacer"></span>
+    <button class="btn ghost" onclick="reloadServer()">只重载网关表</button>
+    <button class="btn primary" id="saveBtn" onclick="save()" disabled>保存并重载</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const S = { routes: [], csrf: "", dirty: false, profiles: [], ollama: {}, settings: {}, open: new Set(), busy: new Set(), service: null, svcBusy: false, gw: null };
+
+/* ---------------- 基础 ---------------- */
+function esc(v){ return String(v==null?"":v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function api(path, opts = {}) {
+  const headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
+  if (S.csrf) headers["X-CSRF-Token"] = S.csrf;
+  const r = await fetch(path, Object.assign({ credentials: "same-origin" }, opts, { headers }));
+  let data = {};
+  try { data = await r.json(); } catch(e) {}
+  if (r.status === 401) { showLogin(); throw new Error("未登录"); }
+  return { status: r.status, data };
+}
+
+function toast(msg, kind) {
+  const d = document.createElement("div");
+  d.className = kind || "";
+  d.textContent = msg;
+  document.getElementById("toast").appendChild(d);
+  setTimeout(() => d.remove(), 4200);
+}
+
+function relTime(iso) {
+  if (!iso) return "从未测试";
+  const t = new Date(iso).getTime();
+  if (!t) return iso;
+  const s = Math.max(0, (Date.now() - t) / 1000);
+  if (s < 60) return "刚刚";
+  if (s < 3600) return Math.floor(s/60) + " 分钟前";
+  if (s < 86400) return Math.floor(s/3600) + " 小时前";
+  return Math.floor(s/86400) + " 天前";
+}
+
+function statusOf(r) {
+  if (!r.enabled || Number(r.level) === 0) return "stopped";
+  const cu = Number((r.health || {}).cooldown_until || 0);
+  if (cu * 1000 > Date.now()) return "cooldown";
+  const lt = r.last_test || {};
+  return lt.ok ? "ready" : "failed";
+}
+
+const ST_TEXT = { ready: "可用", cooldown: "冷却", failed: "失败", stopped: "未启动" };
+
+/* ---------------- 登录 ---------------- */
+function showLogin(){
+  document.getElementById("login").style.display = "flex";
+  document.getElementById("srvState").textContent = "未登录";
+  document.getElementById("srvState").classList.remove("on");
+}
+function hideLogin(){
+  document.getElementById("login").style.display = "none";
+  const el = document.getElementById("srvState");
+  el.textContent = "已连接"; el.classList.add("on");
+}
+async function doLogin(useToken){
+  const pw = document.getElementById("pw").value;
+  const tk = document.getElementById("tk").value;
+  document.getElementById("loginErr").textContent = "";
+  const body = useToken ? { token: tk } : { password: pw };
+  try {
+    const { status, data } = await api("/api/auth/login", { method: "POST", body: JSON.stringify(body) });
+    if (!data.ok) { document.getElementById("loginErr").textContent = data.error || "登录失败"; return; }
+    S.csrf = data.csrf || "";
+    hideLogin();
+    await loadAll();
+  } catch(e) {
+    document.getElementById("loginErr").textContent = e.message;
+  }
+}
+async function logout(){
+  try { await api("/api/auth/logout", { method: "POST" }); } catch(e) {}
+  S.csrf = ""; showLogin();
+}
+
+/* ---------------- 加载 ---------------- */
+async function boot(){
+  const { data } = await api("/api/auth/status");
+  if (data.authenticated) { S.csrf = data.csrf || ""; hideLogin(); await loadAll(); }
+  else showLogin();
+}
+
+async function loadAll(){
+  await Promise.all([loadRoutes(), loadProfiles(), loadSettings(), loadChrome(), loadService(), loadGateway()]);
+  render();
+}
+
+async function loadRoutes(){
+  const { data } = await api("/api/routes");
+  if (!data.ok) return;
+  S.routes = data.routes || [];
+  S.dirty = false;
+  render(); updateDirty();
+}
+
+async function loadProfiles(){
+  const { data } = await api("/api/profiles");
+  if (data.ok) S.profiles = data.profiles || [];
+}
+
+async function loadChrome(){
+  const { data } = await api("/api/chrome");
+  if (data.ok) {
+    const d = data.detect || {};
+    document.getElementById("chromeTip").textContent = d.path
+      ? `已找到：${d.path}（${d.source}${d.kind ? " · " + d.kind : ""}）`
+      : (d.hint || "未找到 Chrome/Edge，请手动填一次路径");
+  }
+}
+
+async function loadSettings(){
+  const { data } = await api("/api/settings");
+  if (!data.ok) return;
+  S.settings = data.settings;
+  document.getElementById("bindInfo").textContent = data.settings.bind;
+  document.getElementById("setChrome").value = data.settings.chrome_path || "";
+  document.getElementById("setOut").value = data.settings.gateway_output || "";
+  const cd = data.settings.cooldown || {};
+  document.getElementById("setTh").value = cd.fail_threshold ?? 3;
+  document.getElementById("setBase").value = cd.base_seconds ?? 300;
+  document.getElementById("setMax").value = cd.max_seconds ?? 3600;
+}
+
+/* ---------------- 服务管理 ---------------- */
+function fmtUptime(sec){
+  sec = Math.max(0, Math.floor(Number(sec) || 0));
+  const d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60);
+  if (d) return `${d} 天 ${h} 小时`;
+  if (h) return `${h} 小时 ${m} 分`;
+  if (m) return `${m} 分`;
+  return `${sec} 秒`;
+}
+
+function renderService(){
+  const s = S.service;
+  const sw = document.getElementById("autoSw");
+  const txt = document.getElementById("autoTxt");
+  sw.disabled = S.svcBusy;
+  if (!s) {
+    document.getElementById("svcMeta").textContent = "读取失败（服务可能刚重启）";
+    txt.textContent = "开机自启：未知";
+    return;
+  }
+  document.getElementById("svcMeta").textContent =
+    `pid ${s.pid} · ${s.bind} · 已运行 ${fmtUptime(s.uptime_seconds)} · v${s.version}`;
+  const on = !!(s.autostart && s.autostart.installed);
+  sw.checked = on;
+  txt.textContent = on ? "开机自启：已开启" : "开机自启：已关闭";
+}
+
+async function loadService(){
+  try {
+    const { data } = await api("/api/service");
+    if (!data.ok) return;
+    S.service = data;
+    renderService();
+  } catch (e) {}
+}
+
+/* ---------------- 网关已生效池（只读核对 8000 的 /health） ---------------- */
+async function loadGateway(){
+  try {
+    const { data } = await api("/api/gateway/health");
+    S.gw = data;
+  } catch (e) {
+    S.gw = { ok: false, error: e.message };
+  }
+  renderGateway();
+  if (!S.dirty) render();   // 有未保存改动时不重绘表格，免得把正在填的输入框冲掉
+}
+
+function renderGateway(){
+  const g = S.gw || {};
+  const dot = document.getElementById("gwDot");
+  const pool = document.getElementById("gwPool");
+  const meta = document.getElementById("gwMeta");
+  if (!g.ok) {
+    dot.className = "dot failed";
+    dot.textContent = "网关 8000 未响应";
+    pool.innerHTML = '<span class="muted">—</span>';
+    meta.textContent = (g.error || "连接失败") + (g.elapsed_ms != null ? ` · ${g.elapsed_ms} ms` : "");
+    return;
+  }
+  const ar = g.admin_routes || {};
+  const list = Array.isArray(ar.pool) ? ar.pool : [];
+  const lv = ar.levels || {};
+  const external = ar.source === "external";
+  dot.className = "dot " + (external ? "ready" : "cooldown");
+  dot.textContent = external ? "网关 8000 已生效（管理页）" : "网关 8000 用内置池";
+  pool.innerHTML = list.length
+    ? list.map((m, i) =>
+        (i ? '<span class="arrow">→</span>' : "")
+        + `<span class="model"><b>${i + 1}</b>${esc(m)}${lv[m] ? `<span class="muted"> · L${lv[m]}</span>` : ""}</span>`
+      ).join("")
+    : '<span class="muted">（空池，全部回落）</span>';
+  const age = ar.loaded_at ? Math.max(0, Math.round(Date.now() / 1000 - Number(ar.loaded_at))) : null;
+  meta.textContent = [
+    age != null ? `读取于 ${age} 秒前` : "",
+    ar.ttl ? `缓存 ${Math.round(Number(ar.ttl))}s` : "",
+    ar.error ? `文件问题：${ar.error}` : "",
+    g.elapsed_ms != null ? `探测 ${g.elapsed_ms} ms` : "",
+    ar.path ? ar.path : ""
+  ].filter(Boolean).join(" · ");
+  meta.title = ar.path || "";
+}
+
+/* 行内提示：已保存、但网关实际池里没有（或等级没跟上）时标出来 */
+function gwState(r){
+  const g = S.gw;
+  if (!g || !g.ok || !g.admin_routes) return null;
+  const ar = g.admin_routes;
+  if (r.type !== "api") return null;
+  const lv = Number(r.level) || 0;
+  if (!r.enabled || lv === 0 || !r.model) return null;
+  const pool = Array.isArray(ar.pool) ? ar.pool : [];
+  if (pool.indexOf(r.model) < 0) {
+    const why = [];
+    if (ar.source !== "external") why.push("网关仍在用内置池，说明没读到导出的路由文件");
+    else why.push("网关已读到导出文件，但池里没有这个模型");
+    if (!(r.last_test && r.last_test.ok)) why.push("最近一次测试未通过");
+    if (ar.error) why.push(ar.error);
+    return { bad: true, text: "已保存但未生效", detail: why.join("；") };
+  }
+  const got = Number((ar.levels || {})[r.model] || 0);
+  if (got && got !== lv) {
+    return { warn: true, text: `等级未同步（网关读到 L${got}）`, detail: "文件里的等级与网关当前读到的不同，等缓存过期（约 30 秒）或改一次再保存。" };
+  }
+  return null;
+}
+
+async function setAutostart(on){
+  if (S.svcBusy) return;
+  S.svcBusy = true; renderService();
+  try {
+    const { status, data } = await api("/api/service/autostart", {
+      method: "POST", body: JSON.stringify({ enabled: on })
+    });
+    if (!data.ok) {
+      toast("设置开机自启失败：" + (data.error || ("HTTP " + status)), "bad");
+      banner("设置开机自启失败：" + (data.error || ""), "bad");
+      await loadService();
+      return;
+    }
+    if (S.service && data.autostart) S.service.autostart = data.autostart;
+    toast(on ? "已开启开机自启（登录后约 20 秒自动拉起）" : "已关闭开机自启", "ok");
+    banner(on ? "开机自启：已开启" : "开机自启：已关闭", "ok");
+  } catch (e) {
+    toast("设置开机自启失败：" + e.message, "bad");
+  } finally {
+    S.svcBusy = false; renderService();
+  }
+}
+
+function showSvcOverlay(title, desc, retry){
+  document.getElementById("svcOvTitle").textContent = title;
+  document.getElementById("svcOvDesc").textContent = desc;
+  document.getElementById("svcOvRetry").style.display = retry ? "" : "none";
+  document.getElementById("svcOverlay").style.display = "flex";
+}
+
+async function waitServiceUp(){
+  showSvcOverlay("服务正在重启…", "最多等 60 秒。恢复后需要重新登录。", false);
+  const deadline = Date.now() + 60000;
+  while (Date.now() < deadline) {
+    await new Promise(r => setTimeout(r, 1500));
+    try {
+      const r = await fetch("/api/auth/status", { credentials: "same-origin", cache: "no-store" });
+      if (!r.ok) continue;
+      const d = await r.json();
+      document.getElementById("svcOverlay").style.display = "none";
+      if (d.authenticated) {
+        S.csrf = d.csrf || "";
+        hideLogin(); await loadAll();
+        toast("服务已重启", "ok");
+      } else {
+        S.csrf = ""; showLogin();
+        toast("服务已重启，请重新登录", "ok");
+      }
+      return;
+    } catch (e) {}
+  }
+  showSvcOverlay("服务重启超时",
+    "60 秒内没等到服务回来。请查看 admin\\data\\admin.err.log，或在 admin 目录执行 service.ps1 -Action start。", true);
+}
+
+async function svcRestart(){
+  if (!confirm("重启管理服务？当前登录会话会失效，恢复后需要重新登录。")) return;
+  try {
+    await api("/api/service/restart", { method: "POST" });
+  } catch (e) {}
+  S.csrf = "";
+  waitServiceUp();
+}
+
+async function svcExit(){
+  if (!confirm("退出管理服务？退出后本页面将无法访问。\n重新启动：在 admin 目录执行\npowershell -NoProfile -ExecutionPolicy Bypass -File service.ps1 -Action start")) return;
+  try {
+    await api("/api/service/exit", { method: "POST" });
+  } catch (e) {}
+  S.csrf = "";
+  showSvcOverlay("管理服务已退出",
+    "服务进程已结束，页面无法再访问。重新启动：在 admin 目录执行 service.ps1 -Action start；若已开启开机自启，下次登录系统会自动拉起。", false);
+}
+
+/* ---------------- 日志 ---------------- */
+const LOGS = { name: "err" };
+
+function fmtBytes(n){
+  n = Number(n) || 0;
+  if (n < 1024) return n + " B";
+  if (n < 1048576) return (n / 1024).toFixed(1) + " KB";
+  return (n / 1048576).toFixed(1) + " MB";
+}
+
+function openLogs(){
+  document.getElementById("logModal").style.display = "flex";
+  loadLog(LOGS.name);
+}
+
+function closeLogs(){
+  document.getElementById("logModal").style.display = "none";
+}
+
+async function loadLog(name){
+  if (name) LOGS.name = name;
+  document.getElementById("logTabErr").classList.toggle("on", LOGS.name === "err");
+  document.getElementById("logTabOut").classList.toggle("on", LOGS.name === "out");
+  const body = document.getElementById("logBody");
+  const meta = document.getElementById("logMeta");
+  meta.textContent = "读取中…";
+  try {
+    const { status, data } = await api(`/api/service/logs?name=${LOGS.name}&tail=300`);
+    if (!data.ok) {
+      meta.textContent = "读取失败";
+      body.textContent = "读取失败：" + (data.error || ("HTTP " + status));
+      return;
+    }
+    document.getElementById("logPath").textContent = data.path;
+    if (data.missing) {
+      body.textContent = "（日志文件尚未生成，服务还没有输出）";
+      meta.textContent = "文件未生成";
+      return;
+    }
+    body.textContent = data.lines.length ? data.lines.join("\n") : "（空）";
+    meta.textContent = `${data.lines.length} 行${data.truncated ? "（仅显示最后 300 行）" : ""} · ${fmtBytes(data.size)} · ${new Date(data.mtime * 1000).toLocaleString()}`;
+    body.scrollTop = body.scrollHeight;
+  } catch (e) {
+    meta.textContent = "读取失败";
+    body.textContent = "读取失败：" + e.message;
+  }
+}
+
+/* ---------------- 变更记录 ---------------- */
+let CHG = [];
+
+function openChanges(){
+  document.getElementById("chgModal").style.display = "flex";
+  loadChanges();
+}
+
+function closeChanges(){
+  document.getElementById("chgModal").style.display = "none";
+}
+
+async function loadChanges(){
+  const list = document.getElementById("chgList");
+  const meta = document.getElementById("chgMeta");
+  list.innerHTML = '<div class="row"><span class="what muted">读取中…</span></div>';
+  try {
+    const { data } = await api("/api/changelog?limit=100");
+    if (!data.ok) throw new Error(data.error || "读取失败");
+    document.getElementById("chgPath").textContent = data.path || "";
+    const entries = data.entries || [];
+    CHG = entries;
+    if (!entries.length) {
+      list.innerHTML = '<div class="row"><span class="what muted">还没有记录：保存一次路由，或网关读数发生变化后会出现。</span></div>';
+      meta.textContent = "0 条";
+      return;
+    }
+    list.innerHTML = entries.map(chgRow).join("");
+    meta.textContent = `${entries.length} 条 · 最新 ${entries[0].ts || ""}`;
+  } catch (e) {
+    CHG = [];
+    list.innerHTML = `<div class="row"><span class="what">读取失败：${esc(e.message)}</span></div>`;
+    meta.textContent = "读取失败";
+  }
+}
+
+function chgRow(e, i){
+  const save = e.kind === "save";
+  const pool = Array.isArray(e.pool) ? e.pool : [];
+  const lv = e.levels || {};
+  const poolTxt = pool.length
+    ? pool.map(m => `${esc(m)}${lv[m] ? "·L" + esc(lv[m]) : ""}`).join(" → ")
+    : "（空池）";
+  let what;
+  if (save) {
+    what = `保存 ${Number(e.routes) || 0} 条路由，${Number(e.active) || 0} 条进池`
+         + `${e.reload_ok === false ? " · 写盘失败" : ""}：<span class="mono">${poolTxt}</span>`;
+  } else {
+    what = `${e.source === "external" ? "读到导出文件" : "用内置池"}：<span class="mono">${poolTxt}</span>`
+         + `${e.error ? ` · 文件问题：${esc(e.error)}` : ""}`;
+  }
+  const click = pool.length ? ` click" onclick="jumpToChange(${i})` : "";
+  const title = pool.length ? ` title="点击定位到对应路由行"` : "";
+  return `<div class="row${click}"${title}><span class="when">${esc(e.ts || "")}</span>`
+       + `<span class="kind ${save ? "save" : "gateway"}">${save ? "保存" : "网关读取"}</span>`
+       + `<span class="what">${what}</span></div>`;
+}
+
+function jumpToChange(i){
+  const e = CHG[i];
+  if (!e) return;
+  const pool = Array.isArray(e.pool) ? e.pool : [];
+  let hit = null;
+  for (const m of pool) {
+    const want = String(m || "").toLowerCase();
+    hit = S.routes.find(r => r.type === "api" && String(r.model || "").toLowerCase() === want);
+    if (hit) break;
+  }
+  const meta = document.getElementById("chgMeta");
+  if (!hit) {
+    meta.textContent = "这条记录里的模型不在当前路由表，无法定位";
+    return;
+  }
+  closeChanges();
+  if (!S.open.has(hit.id)) S.open.add(hit.id);
+  render();
+  const tr = Array.from(document.querySelectorAll("#tbody tr.row")).find(x => x.dataset.id === hit.id);
+  if (!tr) return;
+  tr.classList.add("flash");
+  tr.scrollIntoView({ block: "center", behavior: "smooth" });
+  setTimeout(() => tr.classList.remove("flash"), 1700);
+}
+
+/* ---------------- 渲染 ---------------- */
+function typeTag(t){
+  const m = { webui: "web UI", api: "API", local: "本地" };
+  return `<span class="tag ${t}">${m[t] || esc(t)}</span>`;
+}
+
+function levelOptions(cur){
+  const names = { 0:"0 · 不启动", 1:"1 · 最低", 2:"2 · 低", 3:"3 · 中", 4:"4 · 高", 5:"5 · 最高" };
+  return [5,4,3,2,1,0].map(v => `<option value="${v}" ${Number(cur)===v?"selected":""}>${names[v]}</option>`).join("");
+}
+
+function keyHint(r){
+  return r.key_set ? "已设置（留空不改）" : "未设置，填入后保存";
+}
+
+function rowHtml(r, i){
+  const st = statusOf(r);
+  const busy = S.busy.has(r.id);
+  const canToggle = Number(r.level) > 0 && (r.type === "webui" ? !!r.profile_dir : !!(r.last_test && r.last_test.ok));
+  const toggleTitle = Number(r.level) === 0 ? "等级 0 表示不启动"
+    : (r.type !== "webui" && !(r.last_test && r.last_test.ok) ? "先测通才能开" : "");
+  const open = S.open.has(r.id);
+  const testing = r.last_test ? `${relTime(r.last_test.at)}${r.last_test.ok ? "" : " · 失败"}` : "从未测试";
+  const cd = Number((r.health||{}).cooldown_until || 0);
+  const cdTxt = st === "cooldown" ? ` · ${Math.ceil((cd*1000 - Date.now())/60000)} 分钟后可再试` : "";
+  const gw = gwState(r);
+
+  let rows = `
+  <tr class="row ${open?"open":""}" data-id="${r.id}">
+    <td>
+      <div class="name" onclick="toggleOpen('${r.id}')" style="cursor:pointer">
+        <span class="caret">▶</span>
+        <span>${esc(r.name) || "未命名"}</span>
+      </div>
+    </td>
+    <td>${typeTag(r.type)}</td>
+    <td>
+      <label class="sw ${canToggle?"":"disabled"}" title="${esc(toggleTitle)}">
+        <input type="checkbox" ${r.enabled?"checked":""} ${canToggle?"":"disabled"}
+               onchange="setField('${r.id}','enabled',this.checked)">
+        <i></i>
+      </label>
+    </td>
+    <td>
+      <select class="lvl" onchange="setLevel('${r.id}', this.value)">${levelOptions(r.level)}</select>
+    </td>
+    <td><span class="dot ${st}">${ST_TEXT[st]}<span class="muted">${esc(cdTxt)}</span></span>
+      ${gw ? `<div class="gwflag ${gw.bad?"bad":"warn"}" title="${esc(gw.detail)}">${esc(gw.text)}</div>` : ""}
+    </td>
+    <td><span class="muted">${esc(testing)}</span>
+      ${r.last_test && r.last_test.detail ? `<div class="muted" style="font-size:11px;opacity:.75;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r.last_test.detail)}">${esc(r.last_test.detail)}</div>` : ""}
+    </td>
+    <td>
+      <button class="btn sm" ${busy?"disabled":""} onclick="act('${r.id}','start')">启动</button>
+      ${r.type === "webui" ? `<button class="btn sm" ${busy||r.login_state==="logged_in"?"disabled":""} title="${r.login_state==="logged_in"?"已登录":"未登录/过期时才需要"}" onclick="act('${r.id}','login')">登录</button>` : ""}
+      <button class="btn sm" ${busy?"disabled":""} onclick="act('${r.id}','test')">测一次</button>
+      <button class="btn sm ghost danger" onclick="delRoute('${r.id}')">删</button>
+    </td>
+  </tr>`;
+
+  if (open) rows += `<tr class="detail"><td colspan="7"><div class="detail-inner">${detailHtml(r)}</div></td></tr>`;
+  return rows;
+}
+
+function detailHtml(r){
+  if (r.type === "webui") {
+    const opts = ['<option value="">— 选择已登录 profile 目录 —</option>']
+      .concat(S.profiles.map(p =>
+        `<option value="${esc(p.path)}" ${p.path===r.profile_dir?"selected":""}>${esc(p.label)}${p.has_cookies?" · 有登录数据":""}</option>`));
+    if (r.profile_dir && !S.profiles.some(p => p.path === r.profile_dir))
+      opts.push(`<option value="${esc(r.profile_dir)}" selected>${esc(r.profile_dir)}</option>`);
+    return `
+      <div class="fld wide">
+        <label>profile 目录（直接复用，不重登）</label>
+        <select onchange="setField('${r.id}','profile_dir',this.value)">${opts.join("")}</select>
+        <div class="tip">选已登录过的目录；没登录过再点「登录」。状态存在该 profile 文件夹的 _login_state.json。<b>登录前先点「停止」关掉该路由已启动的无头浏览器</b>，否则同一 profile 被占用，有头窗口不会弹出。</div>
+      </div>
+      <div class="fld wide">
+        <label>登录校验 URL（可选）</label>
+        <input type="text" value="${esc(r.check_url||"")}" placeholder="https://example.com/home"
+               onchange="setField('${r.id}','check_url',this.value)">
+        <div class="tip">填了就能在「完成登录」后用该 profile 抓一次页面判断是否真登录；不填只记录、不编造结论。</div>
+      </div>
+      <div class="fld">
+        <label>调试端口（网关用 CDP 接）</label>
+        <input type="text" value="${esc(r.debug_port||"")}" onchange="setField('${r.id}','debug_port',parseInt(this.value,10)||0)">
+      </div>
+      <div class="fld">
+        <label>登录状态</label>
+        <input type="text" value="${esc(r.login_state||"unknown")}" readonly>
+        <div class="tip">登录只会在未登录/过期时可点。</div>
+      </div>
+      <div class="chk">
+        <input type="checkbox" id="hl_${r.id}" ${r.headless?"checked":""} onchange="setField('${r.id}','headless',this.checked)">
+        <label for="hl_${r.id}">无头启动（给网关用建议勾上）</label>
+      </div>
+      <div class="fld wide">
+        <label>启动后浏览器</label>
+        <div class="tip" style="padding-top:4px">启动 = 用该 profile 拉无头浏览器并开调试端口，网关通过 CDP 复用；不会打开可见窗口。</div>
+      </div>`;
+  }
+  if (r.type === "api") {
+    return `
+      <div class="fld wide"><label>地址</label>
+        <input type="text" value="${esc(r.base_url||"")}" placeholder="http://127.0.0.1:7863 或 http://<云主机>:7864 或自定义"
+               onchange="setField('${r.id}','base_url',this.value)">
+        <div class="tip">本地 7863 / 云 7864 / 其它都行，填到 /v1 或不填都兼容。</div>
+      </div>
+      <div class="fld"><label>模型名</label>
+        <input type="text" value="${esc(r.model||"")}" placeholder="gpt-4o-mini / qwen2.5-72b" onchange="setField('${r.id}','model',this.value)">
+      </div>
+      <div class="fld"><label>API Key</label>
+        <input type="password" value="" autocomplete="new-password" placeholder="${esc(keyHint(r))}"
+               oninput="onKey('${r.id}', this.value)">
+        <div class="tip">只写不回显，不进步报/日志；加密存本机。</div>
+      </div>
+      <div class="fld wide"><label>准入</label>
+        <div class="tip" style="padding-top:4px">保存后单条测试，通了才能把开关打开进池；未通保存会被拒绝。</div>
+      </div>`;
+  }
+  const models = S.ollama[r.id] || [];
+  const mOpts = ['<option value="">— 选择 ollama 模型 —</option>']
+    .concat(models.map(m => `<option value="${esc(m)}" ${m===r.model?"selected":""}>${esc(m)}</option>`));
+  if (r.model && !models.includes(r.model)) mOpts.push(`<option value="${esc(r.model)}" selected>${esc(r.model)}</option>`);
+  return `
+    <div class="fld"><label>来源</label>
+      <select onchange="setField('${r.id}','provider',this.value)">
+        <option value="ollama" ${r.provider!=="file"?"selected":""}>ollama 模型名</option>
+        <option value="file" ${r.provider==="file"?"selected":""}>本地模型文件</option>
+      </select>
+    </div>
+    ${r.provider === "file" ? `
+      <div class="fld wide"><label>模型文件位置</label>
+        <input type="text" value="${esc(r.file_path||"")}" placeholder="D:\\models\\xxx.gguf" onchange="setField('${r.id}','file_path',this.value)">
+      </div>` : `
+      <div class="fld wide"><label>ollama 服务地址</label>
+        <input type="text" value="${esc(r.endpoint||"http://127.0.0.1:11434")}" onchange="setField('${r.id}','endpoint',this.value)">
+      </div>
+      <div class="fld wide"><label>模型名</label>
+        <select onchange="setField('${r.id}','model',this.value)">${mOpts.join("")}</select>
+        <div class="tip"><a href="javascript:;" onclick="fetchOllama('${r.id}')">刷新模型列表</a></div>
+      </div>`}
+    <div class="fld wide"><label>测试口径</label>
+      <div class="tip" style="padding-top:4px">只回答「认得出/认不出」，稳定性不臆造，原样记录。</div>
+    </div>`;
+}
+
+function render(){
+  const tb = document.getElementById("tbody");
+  tb.innerHTML = S.routes.map(rowHtml).join("");
+  document.getElementById("emptyTip").style.display = S.routes.length ? "none" : "block";
+}
+
+function updateDirty(){
+  const t = document.getElementById("dirtyTip");
+  const b = document.getElementById("saveBtn");
+  if (S.dirty) { t.textContent = "有未保存改动"; t.style.color = "var(--warn)"; b.disabled = false; }
+  else { t.textContent = "无未保存改动"; t.style.color = "var(--muted)"; b.disabled = true; }
+}
+
+/* ---------------- 编辑 ---------------- */
+function markDirty(){ S.dirty = true; updateDirty(); }
+
+function find(id){ return S.routes.find(r => r.id === id); }
+
+function toggleOpen(id){
+  if (S.open.has(id)) S.open.delete(id); else S.open.add(id);
+  render();
+}
+
+function setField(id, key, val){
+  const r = find(id); if (!r) return;
+  r[key] = val;
+  markDirty();
+  if (key === "profile_dir" || key === "provider" || key === "headless") render();
+  else if (key === "level" || key === "enabled") render();
+}
+
+function setLevel(id, v){
+  const r = find(id); if (!r) return;
+  r.level = Number(v);
+  if (r.level === 0) r.enabled = false;
+  markDirty(); render();
+}
+
+function onKey(id, val){
+  const r = find(id); if (!r) return;
+  r._key = val;
+  const keyObj = r.type === "api" ? true : false;
+  if (keyObj) markDirty();
+}
+
+function addRoute(){
+  const id = "r_" + Math.random().toString(36).slice(2, 12);
+  S.routes.push({
+    id, name: "新路由", type: "api", enabled: false, level: 3,
+    base_url: "", model: "", last_test: null, health: { consecutive_fail: 0, cooldown_until: 0 },
+    status: "stopped", debug_port: 0, login_state: "unknown"
+  });
+  S.open.add(id);
+  markDirty(); render();
+}
+
+function delRoute(id){
+  if (!confirm("删除这条路由？（保存后生效）")) return;
+  S.routes = S.routes.filter(r => r.id !== id);
+  S.open.delete(id);
+  markDirty(); render();
+}
+
+/* ---------------- 导入 / 导出（只带可编辑字段，不含 Key 与测试结果） ---------------- */
+function exportRoutes(){
+  const data = {
+    exported_at: new Date().toISOString(),
+    note: "只含可编辑字段；不含 API Key、登录状态、测试结果、健康计数",
+    routes: S.routes.map(r => ({
+      name: r.name, type: r.type, level: Number(r.level) || 0,
+      profile_dir: r.profile_dir || "", check_url: r.check_url || "",
+      debug_port: Number(r.debug_port) || 0, headless: !!r.headless,
+      base_url: r.base_url || "", model: r.model || "",
+      provider: r.provider === "file" ? "file" : "ollama",
+      endpoint: r.endpoint || "", file_path: r.file_path || ""
+    }))
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "gw_routes_" + new Date().toISOString().slice(0, 10) + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("已导出 " + S.routes.length + " 条（不含 Key）", "ok");
+}
+
+function importRoutes(ev){
+  const f = ev.target.files && ev.target.files[0];
+  ev.target.value = "";
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    let data;
+    try { data = JSON.parse(String(rd.result)); } catch (e) { toast("JSON 解析失败，文件没动", "bad"); return; }
+    const list = Array.isArray(data) ? data : (data && data.routes);
+    if (!Array.isArray(list)) { toast("文件里没有 routes 数组", "bad"); return; }
+    let added = 0, merged = 0, skip = 0;
+    const ids = [];
+    list.forEach((src, i) => {
+      if (!src || typeof src !== "object") { skip++; return; }
+      const t = String(src.type || "");
+      if (t !== "webui" && t !== "api" && t !== "local") { skip++; return; }
+      const vals = {
+        type: t,
+        level: Math.min(5, Math.max(0, parseInt(src.level, 10) || 0)),
+        enabled: false,                       // 导入一律先关闭，测通过后再开
+        profile_dir: String(src.profile_dir || ""),
+        check_url: String(src.check_url || ""),
+        debug_port: parseInt(src.debug_port, 10) || 0,
+        headless: src.headless !== false,
+        base_url: String(src.base_url || ""),
+        model: String(src.model || ""),
+        provider: src.provider === "file" ? "file" : "ollama",
+        endpoint: String(src.endpoint || ""),
+        file_path: String(src.file_path || "")
+      };
+      const name = String(src.name || "").trim() || ("导入路由 " + (i + 1));
+      const hit = S.routes.find(r => r.name === name);
+      if (hit) { Object.assign(hit, vals); merged++; ids.push(hit.id); }
+      else {
+        S.routes.push(Object.assign({
+          id: "r_" + Math.random().toString(36).slice(2, 12), name,
+          last_test: null, health: { consecutive_fail: 0, cooldown_until: 0 },
+          status: "stopped", login_state: "unknown"
+        }, vals));
+        added++;
+        ids.push(S.routes[S.routes.length - 1].id);
+      }
+    });
+    if (added || merged) { markDirty(); render(); }
+    const msg = `导入：新增 ${added} · 覆盖 ${merged}` + (skip ? ` · 跳过 ${skip} 条（类型不识别）` : "")
+      + (added || merged ? "；导入的路由默认关闭，测通过后再开，最后点底部保存" : "");
+    toast(msg, added || merged ? "ok" : "bad");
+    banner(msg, added || merged ? "ok" : "bad");
+
+    // 导入即测：api / local 逐条真测一次，通了的才能打开（webui 需人工登录，不自动测）
+    const autoTest = ids.filter(id => {
+      const r = find(id);
+      return r && (r.type === "api" || r.type === "local");
+    });
+    if (autoTest.length) testImported(autoTest);
+  };
+  rd.readAsText(f, "utf-8");
+}
+
+/* ---------------- 动作 ---------------- */
+function mergeReturned(route){
+  const r = find(route.id); if (!r) return;
+  r.last_test = route.last_test;
+  r.health = route.health;
+  r.login_state = route.login_state;
+  if (route.debug_port) r.debug_port = route.debug_port;
+  if (route.key_set) { r.key_set = true; }
+}
+
+async function act(id, action){
+  const r = find(id); if (!r) return;
+  if (action === "login") return loginFlow(id);
+  if (S.dirty) toast("有未保存改动，测试/启动用的是已保存配置", "");
+
+  S.busy.add(id); render();
+  try {
+    const { status, data } = await api(`/api/routes/${id}/${action}`, { method: "POST" });
+
+    // 还没保存过的新路由：直接走草稿测试（服务端盖章，供保存时认回）
+    if (status === 404 && action !== "login") {
+      const res = await draftTest(r);
+      applyDraftResult(r, res);
+      const label = action === "start" ? "启动" : "测试";
+      toast(`${label}${res.ok ? "通过" : "失败"}：${res.detail || (res.ok ? "可用" : "未知原因")}`, res.ok ? "ok" : "bad");
+      if (!res.ok) banner(`未保存的新路由：${label}未通过，先保存再试也行。${res.detail || ""}`, "bad");
+      markDirty();
+      return;
+    }
+
+    if (data.route) mergeReturned(data.route);
+    let ok = !!data.ok, detail = data.detail || data.error || "";
+    if (action === "test" && data.route) {
+      const lt = data.route.last_test || {};
+      ok = !!lt.ok; detail = lt.detail || detail;
+    }
+    const label = action === "start" ? "启动" : "测试";
+    toast(`${label}${ok ? "" : "失败"}：${detail || (ok ? "通过" : "未知原因")}`, ok ? "ok" : "bad");
+  } catch(e) {
+    toast("请求失败：" + e.message, "bad");
+  } finally {
+    S.busy.delete(id); render();
+  }
+}
+
+/* 草稿测试：服务端真跑一次并盖章，不落盘 */
+async function draftTest(r){
+  const route = Object.assign({}, r);
+  delete route._key;
+  const body = { route, api_key: r._key || "" };
+  try {
+    const { status, data } = await api("/api/routes/test-draft", {
+      method: "POST", body: JSON.stringify(body)
+    });
+    if (status !== 200 || !data.ok) return { ok: false, detail: data.error || ("HTTP " + status) };
+    const lt = (data.route && data.route.last_test) || data.test || {};
+    return { ok: !!lt.ok, detail: lt.detail || "", last_test: lt, key_set: !!(data.route && data.route.key_set) };
+  } catch(e) {
+    return { ok: false, detail: "草稿测试请求失败：" + e.message };
+  }
+}
+
+function applyDraftResult(r, res){
+  if (res.last_test) r.last_test = res.last_test;
+  if (res.key_set) r.key_set = true;
+  r.status = r.enabled && Number(r.level) > 0 ? (res.ok ? "ready" : "failed") : "stopped";
+}
+
+/* 导入即测：逐条串行，通了的才允许打开；全程在草稿里，落盘仍要点保存 */
+async function testImported(ids){
+  let pass = 0, fail = 0;
+  for (let i = 0; i < ids.length; i++) {
+    const r = find(ids[i]);
+    if (!r) continue;
+    banner(`导入即测 ${i + 1}/${ids.length}：${r.name} …`, "");
+    const res = await draftTest(r);
+    applyDraftResult(r, res);
+    res.ok ? pass++ : fail++;
+    render();
+  }
+  const msg = `导入即测：通过 ${pass} · 未通过 ${fail}`
+    + (fail ? "（未通过的保持关闭，改好再点「测一次」）" : "")
+    + "；记得点底部「保存并重载」";
+  banner(msg, fail ? "bad" : "ok");
+  toast(msg, fail ? "bad" : "ok");
+  markDirty();
+}
+
+async function loginFlow(id){
+  const r = find(id);
+  if (!r.profile_dir) { toast("先选 profile 目录", "bad"); return; }
+  S.busy.add(id); render();
+  try {
+    const { data } = await api(`/api/routes/${id}/login/start`, { method: "POST" });
+    if (!data.ok) { toast("打开登录窗口失败：" + (data.detail || data.error), "bad"); return; }
+    toast("已弹出浏览器窗口，请手动登录；完成后回来点「完成登录」", "");
+    if (!confirm("登录完成后点「确定」，系统会校验并关闭登录窗口。\n（点「取消」则只保留窗口，稍后可再点登录）")) {
+      toast("登录窗口保持打开，未校验", "");
+      return;
+    }
+    const fin = await api(`/api/routes/${id}/login/finish`, { method: "POST" });
+    if (fin.data.login) {
+      r.login_state = fin.data.login.state;
+      toast("登录：" + fin.data.login.detail, fin.data.login.state === "logged_in" ? "ok" : "bad");
+    }
+  } catch(e) {
+    toast("登录流程失败：" + e.message, "bad");
+  } finally {
+    S.busy.delete(id); render();
+  }
+}
+
+async function fetchOllama(id){
+  const r = find(id);
+  const ep = r.endpoint || "http://127.0.0.1:11434";
+  try {
+    const res = await fetch("/api/ollama", { headers: { "X-Ollama-Endpoint": ep }, credentials: "same-origin" });
+    const data = await res.json();
+    if (!data.ok) { toast("拉取 ollama 模型失败：" + (data.error || ""), "bad"); return; }
+    S.ollama[id] = data.models || [];
+    toast(`找到 ${S.ollama[id].length} 个模型`, "ok");
+    render();
+  } catch(e) { toast("拉取失败：" + e.message, "bad"); }
+}
+
+/* ---------------- 保存 ---------------- */
+function banner(msg, kind){
+  const el = document.getElementById("banner");
+  if (!msg) { el.className = "banner"; el.textContent = ""; return; }
+  el.className = "banner show " + (kind || "");
+  el.textContent = msg;
+}
+
+async function save(){
+  const keys = {};
+  S.routes.forEach(r => { if (r._key) keys[r.id] = r._key; });
+  const payload = { routes: S.routes.map(r => {
+    const c = Object.assign({}, r);
+    delete c._key;
+    return c;
+  }), keys };
+
+  document.getElementById("saveBtn").disabled = true;
+  try {
+    const { status, data } = await api("/api/routes", { method: "POST", body: JSON.stringify(payload) });
+    if (!data.ok) {
+      const msg = (data.errors || [data.error || "保存失败"]).join("；");
+      banner(msg, "bad"); toast("保存被拒绝：" + msg, "bad");
+      return;
+    }
+    S.routes = data.routes;
+    S.routes.forEach(r => { delete r._key; });
+    S.dirty = false; updateDirty(); render();
+    const rl = data.reload || {};
+    if (rl.ok) banner(`已保存 · ${rl.detail}（${rl.count} 条）`, "ok");
+    else banner(`已保存，但重载失败：${rl.detail}`, "bad");
+    toast(rl.ok ? `已保存并落盘 ${rl.count} 条` : "已保存，但落盘失败", rl.ok ? "ok" : "bad");
+  } catch(e) {
+    if (e.message !== "未登录") banner("保存失败：" + e.message, "bad");
+  } finally {
+    updateDirty();
+  }
+}
+
+async function reloadServer(){
+  try {
+    const { data } = await api("/api/reload", { method: "POST" });
+    const rl = data.reload || {};
+    banner(rl.ok ? `已重载：${rl.count} 条 → ${rl.path}` : `重载失败：${rl.detail}`, rl.ok ? "ok" : "bad");
+    toast(rl.ok ? "已重载网关表" : "重载失败", rl.ok ? "ok" : "bad");
+  } catch(e) { toast("重载失败：" + e.message, "bad"); }
+}
+
+async function saveSettings(){
+  const body = {
+    chrome_path: document.getElementById("setChrome").value.trim(),
+    gateway_output: document.getElementById("setOut").value.trim(),
+    cooldown: {
+      fail_threshold: parseInt(document.getElementById("setTh").value, 10),
+      base_seconds: parseInt(document.getElementById("setBase").value, 10),
+      max_seconds: parseInt(document.getElementById("setMax").value, 10),
+    }
+  };
+  try {
+    const { data } = await api("/api/settings", { method: "PUT", body: JSON.stringify(body) });
+    if (!data.ok) { toast(data.error || "设置保存失败", "bad"); return; }
+    toast("设置已保存", "ok");
+    await loadChrome();
+  } catch(e) { toast("设置保存失败：" + e.message, "bad"); }
+}
+
+/* ---------------- 轮询 ---------------- */
+setInterval(async () => {
+  if (S.dirty || document.getElementById("login").style.display !== "none") return;
+  if (document.getElementById("svcOverlay").style.display === "flex") return;
+  if (document.getElementById("logModal").style.display === "flex") return;
+  if (document.getElementById("chgModal").style.display === "flex") return;
+  try {
+    const { data } = await api("/api/routes");
+    if (data.ok) { S.routes = data.routes; render(); }
+  } catch(e) {}
+  loadGateway();
+}, 6000);
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.getElementById("login").style.display === "flex") doLogin();
+  if (e.key === "Escape" && document.getElementById("logModal").style.display === "flex") closeLogs();
+  if (e.key === "Escape" && document.getElementById("chgModal").style.display === "flex") closeChanges();
+});
+
+boot().catch(() => showLogin());
+</script>
+</body>
+</html>

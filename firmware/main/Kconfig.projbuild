@@ -1,0 +1,43 @@
+menu "JianTi Camera Config"
+
+    config JT_JPEG_QUALITY
+        int "JPEG quality (1-100)"
+        range 1 100
+        default 80
+        help
+            Default quality for captured stills. Can be changed at runtime
+            with the console command "q", e.g. "q 90".
+
+    config JT_AUTOCAP_ENABLE
+        bool "Auto capture once after boot"
+        default y
+        help
+            Queue one capture a few seconds after boot, so the whole
+            capture -> JPEG -> UART dump chain can be verified hands-free.
+
+    config JT_AUTOCAP_DELAY_MS
+        int "Auto capture delay (ms)"
+        default 6000
+        depends on JT_AUTOCAP_ENABLE
+
+    config JT_WIFI_SSID
+        string "WiFi SSID for v0.2 upload test (fill in sdkconfig locally)"
+        default ""
+        help
+            Test AP name. Filled locally at build time; never commit a real
+            password into the shared sources.
+
+    config JT_WIFI_PASS
+        string "WiFi password for v0.2 upload test (fill in sdkconfig locally)"
+        default ""
+        help
+            Test AP password. Filled locally at build time only.
+
+    config JT_GATEWAY_URL
+        string "Gateway solve URL for v0.2 upload"
+        default "http://192.168.1.100:8000/solve"
+        help
+            Full URL of the PC gateway /solve endpoint. Replace the IP with
+            the LAN IP printed by gateway.py at startup.
+
+endmenu
