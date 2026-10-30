@@ -1,0 +1,7 @@
+# 简题 App 本地联调默认值（不含任何 WiFi 凭据）
+# 网关地址是局域网内的本机服务，非机密；凭据一律走运行时 NVS / Settings 配置。
+# 公开归档时已把开发机实际内网地址替换为示例值，编译前请改成你自己的服务器地址。
+CONFIG_JIANTI_GATEWAY_URL="http://192.168.1.100:8000/solve"
+CONFIG_JIANTI_JPEG_QUALITY=80
+# 批量交付构建：自动截屏 + 自动进 App + 自动拍题一律关闭（量产必须关闭）
+# CONFIG_JIANTI_DEBUG_AUTOTEST is not set

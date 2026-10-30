@@ -1,0 +1,36 @@
+menu "JianTi App"
+
+    config JIANTI_GATEWAY_URL
+        string "本地网关 /solve 地址"
+        default ""
+        help
+            简题 App 拍完题后把 JPEG POST 到这个地址，网关返回
+            {"ok":true,"text":"..."}，App 取 text 显示在顶部正中。
+            留空则 App 提示未配置网关，不上传。
+
+    config JIANTI_WIFI_SSID
+        string "WiFi SSID（可选兜底，留空不用）"
+        default ""
+        help
+            凭据解析顺序：先复用在 Settings → WlanPage 里连上的 WiFi 配置，
+            再读简题固件留下的 NVS（namespace "jt"，键 ssid/pass），
+            最后才用这里的兜底值。都取不到时 App 提示去 Settings 连网。
+
+    config JIANTI_WIFI_PASS
+        string "WiFi 密码（可选兜底，留空不用）"
+        default ""
+
+    config JIANTI_JPEG_QUALITY
+        int "JPEG 质量 (1-100)"
+        range 1 100
+        default 80
+
+    config JIANTI_DEBUG_AUTOTEST
+        bool "远程联调钩子（自动截屏 + 自动进 App + 自动拍题）"
+        default n
+        help
+            仅调试构建开启。启动 20s 后截主屏，再进简题 App 截页，
+            再触发一次拍题截结果，全部以 base64 JPEG 打到串口
+            （===JT_SHOT_BEGIN/END=== 包裹）。量产固件必须关闭。
+
+endmenu
