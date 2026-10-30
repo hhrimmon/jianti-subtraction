@@ -30,6 +30,15 @@ CREATE_NO_WINDOW = 0x08000000
 
 GATEWAY = "http://127.0.0.1:8000/health"
 BRIDGE = "http://127.0.0.1:8001/health"
+
+# 拉起网关时注入的环境：后端默认走千问网页桥接（实模式）。
+# 要换后端时在启动看门狗的环境里设 JT_VLM_BACKEND / JT_BRIDGE_QIANWEN / JT_QW_SOFT_DEADLINE，
+# 不要把机器相关的值写死进代码。桥接的 QW_* 由看门狗自身环境继承下去。
+GATEWAY_ENV = {
+    "JT_VLM_BACKEND": os.environ.get("JT_VLM_BACKEND", "qianwen"),
+    "JT_BRIDGE_QIANWEN": os.environ.get("JT_BRIDGE_QIANWEN", "http://127.0.0.1:8001/solve"),
+    "JT_QW_SOFT_DEADLINE": os.environ.get("JT_QW_SOFT_DEADLINE", "280"),
+}
 CHECK_EVERY_S = 60
 DOWN_ROUNDS_TO_RESTART = 2
 
@@ -130,7 +139,7 @@ def main():
                     # 这时候再拉一个会造成多实例抢同一个端口、请求随机落旧进程，所以不拉。
                     log("8000 仍在监听，判定为忙而非宕机，不重复拉起")
                 else:
-                    spawn("gateway.py", "gateway_watchdog.log", {"JT_VLM_BACKEND": "wbapi"})
+                    spawn("gateway.py", "gateway_watchdog.log", GATEWAY_ENV)
                 down["gateway"] = 0
                 time.sleep(12)
                 continue

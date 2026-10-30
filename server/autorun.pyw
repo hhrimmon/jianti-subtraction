@@ -54,10 +54,16 @@ def spawn(script, log_name, env_extra=None, wait_ready=None, timeout_s=30):
 
 
 def main():
+    # 后端默认千问网页桥接（实模式）；换后端在启动环境里设，不写死在代码里。
+    gw_env = {
+        "JT_VLM_BACKEND": os.environ.get("JT_VLM_BACKEND", "qianwen"),
+        "JT_BRIDGE_QIANWEN": os.environ.get("JT_BRIDGE_QIANWEN", "http://127.0.0.1:8001/solve"),
+        "JT_QW_SOFT_DEADLINE": os.environ.get("JT_QW_SOFT_DEADLINE", "280"),
+    }
     spawn(
         "gateway.py",
         "gateway_autorun.log",
-        env_extra={"JT_VLM_BACKEND": "wbapi"},
+        env_extra=gw_env,
         wait_ready="http://127.0.0.1:8000/health",
         timeout_s=15,
     )

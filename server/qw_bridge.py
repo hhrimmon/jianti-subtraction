@@ -31,6 +31,173 @@ from playwright.sync_api import sync_playwright
 PROFILE = os.environ.get("QW_PROFILE", os.path.join(os.path.dirname(os.path.abspath(__file__)), "chrome_profile", "zone1"))
 CHROME = os.environ.get("QW_CHROME", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
 HOME = os.environ.get("QW_HOME", "https://www.qianwen.com/")
+# ---- 中英双语界面适配（2026-10-30 实测 chat.qwen.ai 已改英文界面）----
+SEL_NEW_CHAT = ['[aria-label="New Chat"]', 'text=新对话']
+SEL_SEND = ['button[aria-label="Send"]', 'button.send-button', 'button[aria-label="发送消息"]']
+SEL_INPUT = ["textarea.message-input-textarea", "textarea", "[contenteditable='true']"]
+SEL_FILE_INPUT = 'input[type="file"]'
+
+
+def _zone_dir(zone):
+    """账号组写法 <user-data-dir 目录名>[#Chrome 子 profile]，取 # 之前的目录名。"""
+    return zone.split("#", 1)[0].strip()
+
+
+def _zone_profile_dir(zone):
+    """账号组写法里的 Chrome 子 profile 目录（--profile-directory）；没写返回全局设置。"""
+    if "#" in zone:
+        return zone.split("#", 1)[1].strip()
+    return os.environ.get("QW_PROFILE_DIRECTORY", "").strip()
+
+
+def _first_visible(page, selectors, timeout_ms=6000):
+    """按候选选择器顺序找第一个可见元素；全都没有返回 None（不抛异常）。"""
+    deadline = time.time() + timeout_ms / 1000.0
+    while time.time() < deadline:
+        for sel in selectors:
+            try:
+                loc = page.locator(sel).first
+                if loc.count() and loc.is_visible():
+                    return loc
+            except Exception:
+                continue
+        try:
+            page.wait_for_timeout(250)
+        except Exception:
+            break
+    return None
+
+
+def _click_new_chat(page):
+    """新建对话：中文「新对话」/ 英文「New Chat」都能点；实在找不到就直接回首页。"""
+    loc = _first_visible(page, SEL_NEW_CHAT, timeout_ms=6000)
+    if loc is not None:
+        loc.click(timeout=5000)
+        page.wait_for_timeout(2500)
+        return True
+    page.goto(HOME, wait_until="domcontentloaded", timeout=45000)
+    page.wait_for_timeout(2500)
+    return False
+
+
+def _attach_image(page, jpeg_path):
+    """上传图片。
+
+    新版英文界面没有可见的附件按钮，真实入口是 composer 左侧的 + 号
+    （div.mode-select-open[role=button][aria-label="Select Mode"]），点开后菜单第一项
+    「Upload attachment」才会拉起系统文件选择器；直接对隐藏的 #filesUpload 调
+    set_input_files 不会触发 React 的上传逻辑（实测无任何网络请求，模型收不到图）。
+    失败再退回旧版中文菜单。
+    """
+    try:
+        plus = page.locator('.mode-select-open[role="button"]').first
+        if plus.count() and plus.is_visible():
+            with page.expect_file_chooser(timeout=25000) as fc:
+                plus.click(timeout=8000)
+                page.wait_for_timeout(900)
+                page.get_by_text("Upload attachment", exact=True).first.click(timeout=8000)
+            fc.value.set_files(jpeg_path)
+            page.wait_for_timeout(1200)
+            return "menu-en"
+    except Exception as exc:  # noqa: BLE001
+        print("[%s] 英文菜单上传失败: %s" % (time.strftime("%H:%M:%S"), exc), flush=True)
+        try:
+            page.keyboard.press("Escape")
+        except Exception:
+            pass
+    page.click('button[aria-label="添加附件"]', timeout=15000)
+    page.wait_for_timeout(700)
+    with page.expect_file_chooser(timeout=20000) as fc:
+        page.get_by_text("上传图片", exact=True).click(timeout=8000)
+    fc.value.set_files(jpeg_path)
+    page.wait_for_timeout(3000)
+    return "menu"
+
+
+def _send_button(page):
+    """发送按钮：英文 aria-label=Send / 中文 aria-label=发送消息 均可。"""
+    for sel in SEL_SEND:
+        try:
+            loc = page.locator(sel).first
+            if loc.count() and loc.is_visible():
+                return loc
+        except Exception:
+            continue
+    return None
+
+
+def _wait_send_enabled(page, timeout_s=60):
+    t_end = time.time() + timeout_s
+    while time.time() < t_end:
+        loc = _send_button(page)
+        try:
+            if loc is not None and loc.is_enabled():
+                return True
+        except Exception:
+            pass
+        page.wait_for_timeout(500)
+    return False
+
+
+def _input_box(page):
+    """输入框：新版是 textarea.message-input-textarea，旧版是 contenteditable。"""
+    for sel in SEL_INPUT:
+        try:
+            loc = page.locator(sel).first
+            if loc.count():
+                return loc
+        except Exception:
+            continue
+    return None
+
+
+def _answer_text(page):
+    """取最后一条助手消息的正文。
+
+    新版 DOM 里 markdown 类层层嵌套（qwen-markdown → -paragraph → -text → -text-node），
+    直接找最后一个 [class*='markdown'] 只能拿到最内层碎片（实测只剩「 的和为 5。」）。
+    正确做法：定位最后一条 .chat-response-message，取其 .custom-qwen-markdown 正文。
+    """
+    try:
+        msgs = page.query_selector_all(".chat-response-message")
+        if msgs:
+            parts = []
+            for blk in msgs[-1].query_selector_all(".custom-qwen-markdown"):
+                try:
+                    t = blk.inner_text().strip()
+                except Exception:
+                    continue
+                if t:
+                    parts.append(t)
+            if parts:
+                return "\n".join(parts)
+    except Exception:
+        pass
+    for blk in reversed(page.query_selector_all(".custom-qwen-markdown")):
+        try:
+            t = blk.inner_text().strip()
+        except Exception:
+            continue
+        if t:
+            return t
+    return ""
+
+
+def _input_text(page):
+    """输入框当前内容：textarea 用 input_value，contenteditable 用 inner_text。"""
+    loc = _input_box(page)
+    if loc is None:
+        return ""
+    try:
+        tag = loc.evaluate("e => e.tagName")
+    except Exception:
+        tag = ""
+    try:
+        if tag in ("TEXTAREA", "INPUT"):
+            return loc.input_value() or ""
+        return loc.inner_text() or ""
+    except Exception:
+        return ""
 # 提示词随机微扰 2.0（风控缓解）：句子级措辞池 + 中段约束句顺序随机打乱。
 # 每次请求现场组装：首句池选 1 + 7 组约束各选 1 条并打乱次序 + 尾句池选 1，
 # 降低「每次都是同一段提示词」的行为特征。
@@ -306,12 +473,18 @@ def is_logged_in(page):
         return False
     if "扫码登录" in txt or "二维码" in txt:
         return False
-    if re.search(r"Qwen\d{3,}", txt):
+    # 英文界面（2026-10-30 实测 chat.qwen.ai）：模型名是 Qwen3.7-Plus 这类一位主版本号，
+    # 输入框是 textarea 不是 contenteditable，原来两条判据都会误判成未登录。
+    if re.search(r"Qwen\d+(?:\.\d+)?", txt):
+        return True
+    if "New Chat" in txt or "stone nash" in txt:
         return True
     try:
         if page.query_selector('button:has-text("登录")') or page.query_selector('a:has-text("登录")'):
             return False
-        return page.query_selector("[contenteditable='true']") is not None
+        if page.query_selector("[contenteditable='true']") is not None:
+            return True
+        return page.query_selector("textarea") is not None
     except Exception:
         return False
 
@@ -384,10 +557,10 @@ class BrowserWorker(threading.Thread):
 
     # ---- 账号组（风控切组） ----
     def _profile(self):
-        return os.path.join(PROFILE_ROOT, ZONES[self.zone_idx])
+        return os.path.join(PROFILE_ROOT, _zone_dir(ZONES[self.zone_idx]))
 
     def _chrome_args(self):
-        return [
+        args = [
             "--user-data-dir=" + self._profile(),
             "--remote-debugging-port=%d" % CDP_PORT,
             "--headless=new",
@@ -397,6 +570,10 @@ class BrowserWorker(threading.Thread):
             "--disable-blink-features=AutomationControlled",
             "about:blank",
         ]
+        pdir = _zone_profile_dir(ZONES[self.zone_idx])
+        if pdir:
+            args.insert(1, "--profile-directory=" + pdir)
+        return args
 
     def _kill_chrome(self):
         """杀当前账号组的 Chrome 整树（按 --user-data-dir 精确匹配，不误伤其他浏览器）。"""
@@ -670,31 +847,27 @@ class BrowserWorker(threading.Thread):
         except Exception:
             pass
         try:
-            page.get_by_text("新对话", exact=True).first.click(timeout=4000)
-            page.wait_for_timeout(2500)  # 等页面完全初始化
+            _click_new_chat(page)
             print("[%s] 新对话后 url=%s" % (time.strftime("%H:%M:%S"), page.url), flush=True)
         except Exception as e:
             print("[%s] 新对话点击失败: %s" % (time.strftime("%H:%M:%S"), e), flush=True)
 
-        page.click('button[aria-label="添加附件"]', timeout=15000)
-        page.wait_for_timeout(700)
-        with page.expect_file_chooser(timeout=20000) as fc:
-            page.get_by_text("上传图片", exact=True).click(timeout=8000)
-        fc.value.set_files(jpeg_path)
-        page.wait_for_timeout(3000)  # 等图片上传完成
-        t_up = time.time()
-        while time.time() - t_up < 60:
-            page.wait_for_timeout(500)
-            btn = page.query_selector('button[aria-label="发送消息"]')
-            if btn and btn.is_enabled():
-                break
+        print("[%s] 上传方式=%s" % (time.strftime("%H:%M:%S"), _attach_image(page, jpeg_path)),
+              flush=True)
+        try:
+            n_chip = page.evaluate("() => document.querySelectorAll('[class*=file-item], [class*=attachment], [class*=upload-item], [class*=preview-img], img[src^=\"blob:\"]').length")
+            print("[%s] 附件预览元素=%d" % (time.strftime("%H:%M:%S"), n_chip), flush=True)
+        except Exception:
+            pass
 
-        ed = page.query_selector("[contenteditable='true']")
+        ed = _input_box(page)
         if ed is None:
             raise RuntimeError("找不到输入框")
         ed.click()
         page.keyboard.type(prompt, delay=8)
         page.wait_for_timeout(400)
+        # 发送键要等文本进来才可用，先输入再等，避免空文本框白等 60s
+        _wait_send_enabled(page, 30)
 
         # 发送并确认：跳 /chat/ 路由或输入框被清空才算真发出，否则重试
         sent = False
@@ -702,12 +875,14 @@ class BrowserWorker(threading.Thread):
         for attempt in range(3):
             t_b = time.time()
             while time.time() - t_b < 30:
-                btn = page.query_selector('button[aria-label="发送消息"]')
-                if btn and btn.is_enabled():
+                btn = _send_button(page)
+                if btn is not None and btn.is_enabled():
                     break
                 page.wait_for_timeout(500)
             try:
-                page.click('button[aria-label="发送消息"]', timeout=8000)
+                btn = _send_button(page)
+                if btn is not None:
+                    btn.click(timeout=8000)
             except Exception:
                 pass
             t_v = time.time()
@@ -717,8 +892,7 @@ class BrowserWorker(threading.Thread):
                     if "/chat/" in page.url:
                         sent = True
                         break
-                    ed2 = page.query_selector("[contenteditable='true']")
-                    if ed2 is not None and not ed2.inner_text().strip():
+                    if not _input_text(page).strip():
                         sent = True
                         break
                 except Exception:
@@ -741,14 +915,7 @@ class BrowserWorker(threading.Thread):
         t0 = time.time()
         while time.time() - t0 < WAIT_ANSWER_S:
             page.wait_for_timeout(1000)
-            cur = ""
-            for blk in reversed(page.query_selector_all("[class*='markdown']")):
-                try:
-                    cur = blk.inner_text().strip()
-                except Exception:
-                    continue
-                if cur:
-                    break
+            cur = _answer_text(page)
             if cur.startswith(prompt[:10]):
                 cur = ""  # 用户消息气泡，不是答案
             if cur != last:
