@@ -1,0 +1,22 @@
+{
+  "Index_upstream.ets": {
+    "bytes": 52397,
+    "sha256": "fb4ba80aedca5bb42ffed6deedaaae41e7974a29566b74285e5197999460b876"
+  },
+  "README_upstream2.md": {
+    "bytes": 4508,
+    "sha256": "8e77cb3fc92c4eec20a5e00f2d5daf16bdcfa6cb76fb959c0fe0b57fe762da35"
+  },
+  "architecture_upstream.md": {
+    "bytes": 2622,
+    "sha256": "4422e71f52c0a40eb27aa018cf32208538f2f8c6f885fb6723301a7e7a8ffa05"
+  },
+  "gateway_upstream.py": {
+    "bytes": 35953,
+    "sha256": "826530d258f1d11cb9674b0aa58a2311a9d32b0b76f1596147ddff331cedbaf8"
+  },
+  "qw_bridge_upstream.py": {
+    "bytes": 54869,
+    "sha256": "464b2d1f53e5b0629a1b20f1d6499955eca03a31f6b5019dbcc43a6d1ab0b57c"
+  }
+}

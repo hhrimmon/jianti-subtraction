@@ -1,0 +1,127 @@
+{
+  "capturedAtBeijing": "2026-11-09 23:12",
+  "channel": "public REST api.github.com (anonymous, read-only)",
+  "repo": {
+    "full_name": "hhrimmon/jianti-subtraction",
+    "default_branch": "main",
+    "size": 20123,
+    "created_at": "2026-10-25T04:17:17Z",
+    "updated_at": "2026-10-30T18:24:50Z",
+    "pushed_at": "2026-10-30T18:24:42Z",
+    "language": "C",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "spdx_id": "Apache-2.0",
+      "url": "https://api.github.com/licenses/apache-2.0",
+      "node_id": "MDc6TGljZW5zZTI="
+    },
+    "archived": false,
+    "private": false,
+    "forks_count": 0,
+    "stargazers_count": 0,
+    "open_issues_count": 0,
+    "description": "JianTi 简题: a minimalist homework AI terminal — one photo in, hints first, answers unlocked only by solve cards. HarmonyOS ArkTS shell + ESP32-P4 camera board + local Python gateway + web-model bridge."
+  },
+  "branches": [
+    {
+      "name": "main",
+      "sha": "5a56d74479ebf8378fec080b5e5f52f32d9b5625",
+      "protected": false
+    },
+    {
+      "name": "taskC-20261030",
+      "sha": "6f520926f845cb21844f29b7ca0c2d74ad30f271",
+      "protected": false
+    }
+  ],
+  "tags": [
+    {
+      "name": "v3.23-card-preborrow-floor-8000-taskC-20261030",
+      "sha": "5f8823d04a70ccae7ebb0a95022395cf249248ff"
+    }
+  ],
+  "releases": [
+    {
+      "tag": "v3.23-card-preborrow-floor-8000-taskC-20261030",
+      "name": "v3.23 · 卡预支下限（Task C 封版）",
+      "published_at": "2026-10-30T18:12:36Z",
+      "assets": 0
+    }
+  ],
+  "commits": [
+    {
+      "sha": "5a56d74479ebf8378fec080b5e5f52f32d9b5625",
+      "date": "2026-10-30T18:24:24Z",
+      "message": "feat(firmware): 归档 v1.0 交付固件（Brookesia + LVGL，v10b）"
+    },
+    {
+      "sha": "4bc738541d682c332a44b1de3692087dc3fe3329",
+      "date": "2026-10-25T10:34:38Z",
+      "message": "server 鍗曠洰褰曞寲锛歩nstall.ps1 涓€閿渚濊禆+鏃犲ご娴忚鍣紝run.ps1 涓€閿捣鏈嶅姟"
+    },
+    {
+      "sha": "2e65269d2e97a7c91909a40dea26470fed3b5cf0",
+      "date": "2026-10-25T09:18:13Z",
+      "message": "绠€棰樺噺娉曠増锛氬３搴旂敤 + 缃戝叧 + 缃戦〉妯″瀷妗ユ帴锛圓pache-2.0锛屽叕寮€鍓嶅凡娓呯悊绛惧悕涓庨儴缃蹭俊鎭級"
+    }
+  ],
+  "rootContents": [
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "size": 329,
+      "sha": "ff2f02a1b685d70520b2b53fe5fa917856fec4af"
+    },
+    {
+      "name": "LICENSE",
+      "type": "file",
+      "size": 10771,
+      "sha": "0cd72da486525453cf1d6e7ec0743550d1f74afe"
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "size": 4508,
+      "sha": "1d81955e6cd985039dd1d2021e63046acad16e14"
+    },
+    {
+      "name": "app",
+      "type": "dir",
+      "size": 0,
+      "sha": "e0e5834045b1ba2e9489c7112e6b4a3f622e64da"
+    },
+    {
+      "name": "docs",
+      "type": "dir",
+      "size": 0,
+      "sha": "1ab23825d00c336b84b6bdb7e7ddc461d0f4c5f9"
+    },
+    {
+      "name": "firmware-brookesia",
+      "type": "dir",
+      "size": 0,
+      "sha": "6d001e09b2917e90087305909f43afa62ff81e5d"
+    },
+    {
+      "name": "server",
+      "type": "dir",
+      "size": 0,
+      "sha": "223e34b7a6be4e100dfbbdf588bbc6f6c033aeaf"
+    }
+  ],
+  "readme": {
+    "name": "README.md",
+    "path": "README.md",
+    "size": 4508,
+    "sha": "1d81955e6cd985039dd1d2021e63046acad16e14"
+  },
+  "languages": {
+    "C": 62366617,
+    "C++": 1803770,
+    "Python": 98160,
+    "CMake": 24957,
+    "PowerShell": 3230,
+    "TypeScript": 214
+  }
+}

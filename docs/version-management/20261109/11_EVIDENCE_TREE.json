@@ -1,0 +1,154 @@
+{
+  "channel": "GET /git/trees/main?recursive=1",
+  "truncated": false,
+  "totalNodes": 924,
+  "topLevelCounts": {
+    ".gitignore": 1,
+    "LICENSE": 1,
+    "README.md": 1,
+    "app": 36,
+    "docs": 2,
+    "firmware-brookesia": 874,
+    "server": 9
+  },
+  "docs": [
+    {
+      "path": "docs/architecture.md",
+      "size": 2622
+    }
+  ],
+  "server": [
+    {
+      "path": "server/autorun.pyw",
+      "size": 2218,
+      "sha": "782027e209e2b280e9b6b8e8be5fe2154c218c51"
+    },
+    {
+      "path": "server/gateway.py",
+      "size": 35953,
+      "sha": "ffe834350e940b15eae5e5de8c62724ce605561b"
+    },
+    {
+      "path": "server/install.ps1",
+      "size": 1035,
+      "sha": "ba14537d7d5e6365a42dfdc22ddefd8bfaa6e9cf"
+    },
+    {
+      "path": "server/qw_bridge.py",
+      "size": 54869,
+      "sha": "c0633c3a6e8a981e0800e818ae495246161e146f"
+    },
+    {
+      "path": "server/requirements.txt",
+      "size": 125,
+      "sha": "fe583d6f61788e7c2d4fdfac3f90540520b3a2cd"
+    },
+    {
+      "path": "server/run.ps1",
+      "size": 1172,
+      "sha": "99d5b6eb4fac64389c7dde1f4e31db2f0bda5c54"
+    },
+    {
+      "path": "server/run_gateway.ps1",
+      "size": 1023,
+      "sha": "a7b8eaf1e205fd29d6cd2018daaa82b9ccec651e"
+    },
+    {
+      "path": "server/watchdog.py",
+      "size": 4811,
+      "sha": "6003bfaef78b9b45986171734f2a20917cf3d0eb"
+    }
+  ],
+  "app": [
+    {
+      "path": "app/AppScope/app.json5",
+      "size": 200,
+      "sha": "feed4379f1af94af680fea06a18df3ec6879857e"
+    },
+    {
+      "path": "app/AppScope/resources/base/element/string.json",
+      "size": 84,
+      "sha": "70e5cc08e5cc8e58d54aad3658802a620c7a3f8a"
+    },
+    {
+      "path": "app/AppScope/resources/base/media/app_icon.png",
+      "size": 2148,
+      "sha": "2e388bbc83307076eb78989fb5a7112799b2d32f"
+    },
+    {
+      "path": "app/build-profile.json5",
+      "size": 721,
+      "sha": "f3384b6ea8510cd4f140784a378460dc10a0f34f"
+    },
+    {
+      "path": "app/entry/build-profile.json5",
+      "size": 302,
+      "sha": "b313b8067e9cd45488d21dee3002e13dd7a91501"
+    },
+    {
+      "path": "app/entry/hvigorfile.ts",
+      "size": 107,
+      "sha": "27fa58ef7cc7510b124e0ae8808778954692a278"
+    },
+    {
+      "path": "app/entry/oh-package.json5",
+      "size": 157,
+      "sha": "58a5f8929af38edbf0236d4807878ba7ea03c4bd"
+    },
+    {
+      "path": "app/entry/src/main/ets/entryability/EntryAbility.ets",
+      "size": 983,
+      "sha": "8c3cc8f257f1a3862478e07c6ed832bdd357ac46"
+    },
+    {
+      "path": "app/entry/src/main/ets/pages/Index.ets",
+      "size": 52397,
+      "sha": "77efcce2a4f4f5e3db8af86f9e0bd66fb7778616"
+    },
+    {
+      "path": "app/entry/src/main/module.json5",
+      "size": 1024,
+      "sha": "cf142073b6085dd7ad203bb44d3e4c5b5ac66a64"
+    },
+    {
+      "path": "app/entry/src/main/resources/base/element/color.json",
+      "size": 99,
+      "sha": "162a7b6f4af5d7d48a35aeed67e3eadf3a019853"
+    },
+    {
+      "path": "app/entry/src/main/resources/base/element/string.json",
+      "size": 253,
+      "sha": "820f707e54141dfe4dfcfe971715576a423455bc"
+    },
+    {
+      "path": "app/entry/src/main/resources/base/media/startIcon.png",
+      "size": 2148,
+      "sha": "2e388bbc83307076eb78989fb5a7112799b2d32f"
+    },
+    {
+      "path": "app/entry/src/main/resources/base/profile/main_pages.json",
+      "size": 37,
+      "sha": "1898d94f58d6128ab712be2c68acc7c98e9ab9ce"
+    },
+    {
+      "path": "app/hvigor/hvigor-config.json5",
+      "size": 143,
+      "sha": "8ad3b123a3b76cb962eedd083cc5c522d2ae508f"
+    },
+    {
+      "path": "app/hvigor/hvigor-wrapper.js",
+      "size": 0,
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "app/hvigorfile.ts",
+      "size": 107,
+      "sha": "725547ef369142a2bfead5b49eee3bf2534966c1"
+    },
+    {
+      "path": "app/oh-package.json5",
+      "size": 225,
+      "sha": "04c373e9d67da884731c085c0f297703358201ad"
+    }
+  ]
+}
