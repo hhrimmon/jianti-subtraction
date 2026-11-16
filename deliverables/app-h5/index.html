@@ -546,6 +546,9 @@
   .bind-scan-page[hidden]{display:none;}
   .bind-scan-page .scan-view{align-items:center;justify-content:center;}
   .scan-qr{width:36cqw;height:36cqw;background:#fff;border-radius:2cqw;padding:3cqw;flex:none;}
+  /* 摄像头实读画面：盖满取景区；拿不到摄像头时保持隐藏，露出占位二维码 */
+  .scan-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:1;}
+  .scan-video[hidden]{display:none;}
   .scan-qr svg{width:100%;height:100%;display:block;}
   /* 输入设备号弹窗：点「输入设备号」只弹出这一个窗——一条长输入条，输 16 位设备号（四位一组、共四组），下边取消／绑定；与第 14 屏弹窗同一套遮罩与卡片（.fam-confirm），本屏下边不留任何提醒行 */
   .bind-num-card{width:84cqw;text-align:left;}
@@ -1163,7 +1166,7 @@
             <div class="box acct-box">
               <div class="acct-info">
                 <span class="acct-label">账号信息</span>
-                <span class="acct-id num" id="acctPhone">13800138000</span>
+                <span class="acct-id num" id="acctPhone">—</span>
                 <span class="acct-role">管理员</span>
               </div>
               <span class="acct-spacer" aria-hidden="true"></span>
@@ -1303,20 +1306,7 @@
                   <button class="mini-btn fam-invite-close" type="button" id="famInviteClose">关闭</button>
                 </div>
               </div>
-              <div class="fam-list" id="famList">
-                <div class="fam-row is-admin">
-                  <span class="fam-app-tag num">成员1</span><span class="fam-phone num">13800138000</span><span class="status-word done fam-admin-tag">管理员</span><span class="fam-term-tag">苹果</span>
-                  <span class="fam-actions"><button class="mini-btn fam-kick" type="button" disabled title="管理员不能删除自己">删除</button></span>
-                </div>
-                <div class="fam-row">
-                  <span class="fam-app-tag num">成员2</span><span class="fam-phone num">13900138001</span><span class="status-word fam-admin-tag spread"><span>成</span><span>员</span></span><span class="fam-term-tag">安卓</span>
-                  <span class="fam-actions"><button class="mini-btn fam-transfer" type="button">转让</button><button class="mini-btn fam-kick" type="button">删除</button></span>
-                </div>
-                <div class="fam-row">
-                  <span class="fam-app-tag num">成员3</span><span class="fam-phone num">13500138004</span><span class="status-word fam-admin-tag">待审批</span>
-                  <span class="fam-actions"><button class="mini-btn solid fam-approve" type="button">通过</button><button class="mini-btn fam-reject" type="button">拒绝</button></span>
-                </div>
-              </div>
+              <div class="fam-list" id="famList"></div>
             </div>
           </div>
         </div>
@@ -1402,14 +1392,7 @@
             </div>
             <div class="box form-box bound-box">
               <div class="bound-title">已绑定终端ID</div>
-              <div class="info-list" id="boundList">
-                <div class="info-row device-row"><span class="term-name">终端1</span><b class="num dev-code">3728 4150 9361 8204</b><span class="term-type">成员1</span><button class="mini-btn" type="button" id="unbindBtn">解绑</button></div>
-                <div class="info-row device-row"><span class="term-name">终端2</span><b class="num dev-code">2391 5782 4609 5713</b><span class="term-type">成员2</span><button class="mini-btn" type="button" id="unbindBtn2">解绑</button></div>
-                <div class="info-row device-row"><span class="term-name">终端3</span><b class="num dev-code">1762 9048 3157 8260</b><span class="term-type">嵌入式</span><button class="mini-btn" type="button" id="unbindBtn3">解绑</button></div>
-                <div class="info-row device-row"><span class="term-name">终端4</span><b class="num dev-code">1938 2756 8041 5692</b><span class="term-type">嵌入式</span><button class="mini-btn" type="button" id="unbindBtn4">解绑</button></div>
-                <!-- 联动行：成员3 在第 14 屏点「通过」进组时自动出现——终端5 就是成员3 那台手机终端，编号顺延、对应成员3，不用手动再绑 -->
-                <div class="info-row device-row" id="termRow5" style="display:none;"><span class="term-name">终端5</span><b class="num dev-code">0582 9016 4739 0528</b><span class="term-type">成员3</span><button class="mini-btn" type="button" id="unbindBtn5">解绑</button></div>
-              </div>
+              <div class="info-list" id="boundList"></div>
             </div>
           </div>
         </div>
@@ -1470,6 +1453,7 @@
       </div>
       <div class="bind-scan-page" id="bindScanPage" hidden role="dialog" aria-modal="true" aria-label="扫码绑定拍照">
         <div class="vf-view scan-view">
+          <video class="scan-video" id="scanVideo" playsinline muted hidden></video>
           <div class="scan-qr" aria-hidden="true">
             <svg viewBox="0 0 100 100" fill="#111" aria-hidden="true"><path d="M4 4h26v26H4zM10 10v14h14V10zM70 4h26v26H70zM76 10v14h14V10zM4 70h26v26H4zM10 76v14h14V76z"/><path d="M40 4h8v8h-8zM56 4h8v8h-8zM40 20h8v8h-8zM48 12h8v8h-8zM64 20h8v8h-8zM88 40h8v8h-8zM72 40h8v8h-8zM40 40h8v8h-8zM56 48h8v8h-8zM4 40h8v8H4zM20 40h8v8h-8zM12 56h8v8h-8zM40 64h8v8h-8zM56 72h8v8h-8zM72 64h8v8h-8zM88 72h8v8h-8zM80 88h8v8h-8zM64 88h8v8h-8zM40 88h8v8h-8zM88 56h8v8h-8zM24 88h8v8h-8z"/></svg>
           </div>
@@ -1715,36 +1699,6 @@
   api.setBaseURL = setBaseURL;
   api.setAuthToken = setAuthToken;
   api.setTerminalToken = setTerminalToken;
-  api.ENDPOINTS = {
-    approveApplication:'POST /applications/{id}/approve',
-    listApplications:'GET /applications',
-    rejectApplication:'POST /applications/{id}/reject',
-    bindTerminal:'POST /terminals/bind',
-    bindScan:'POST /terminals/bind-scan',
-    unbindTerminal:'DELETE /terminals/{device_id}',
-    listTerminals:'GET /terminals',
-    listModels:'GET /models',
-    selectModel:'POST /models/select',
-    saveServerConfig:'POST /config/server',
-    listRecords:'GET /records',
-    saveCardRules:'POST /cards/rules',
-    getCardRules:'GET /cards/rules',
-    sendCode:'POST /auth/send-code',
-    register:'POST /users/register',
-    login:'POST /auth/login',
-    verifyAdminPassword:'POST /auth/admin-password/verify',
-    resetAdminPassword:'POST /auth/admin-password/reset',
-    updatePasswords:'POST /auth/passwords',
-    getFamily:'GET /family',
-    inviteFamily:'POST /family/invite',
-    approveFamilyMember:'POST /family/members/{member_no}/approve',
-    rejectFamilyMember:'POST /family/members/{member_no}/reject',
-    transferFamily:'POST /family/transfer',
-    deleteFamilyMember:'DELETE /family/members/{member_no}',
-    mcpLogin:'POST /models/mcp/login',
-    cancelSolve:'POST /solve/{job_id}/cancel',
-    skipSolve:'POST /solve/{job_id}/skip'
-  };
   function setBaseURL(ip){
     var value = String(ip || '').trim().replace(/^https?:\/\//, '').split('/')[0];
     baseURL = value ? 'http://' + value.replace(/:\d+$/, '') + ':8000' : DEFAULT_BASE_URL;
@@ -1785,6 +1739,12 @@
       .then(function(resp){
         if (timer) clearTimeout(timer);
         if (resp.status === 401) {
+          /* 终端口与管理口分开处理：终端提示检查绑定、回设置页；管理口清 token 回登录页 */
+          if (opts.terminal) {
+            terminalToken = '';
+            goTo(6);
+            throw apiError('设备未绑定或登录已失效，请检查终端绑定。', 401, 401);
+          }
           authToken = '';
           goTo(8);
           throw apiError('登录已失效，请重新登录。', 401, 401);
@@ -1816,6 +1776,14 @@
   };
   api.solveStatus = function(jobId, terminalId){
     return request('GET', '/solve/' + encodeURIComponent(jobId), { terminal:true, terminalId:terminalId });
+  };
+  /* A12 取消：离开处理页时撤掉未决任务，服务端不再继续判 */
+  api.solveCancel = function(jobId, terminalId){
+    return request('POST', '/solve/' + encodeURIComponent(jobId) + '/cancel', { terminal:true, terminalId:terminalId });
+  };
+  /* A13 跳过：原型 v155 无「跳过」入口，本方法备着但不调用（见 README 已知限制） */
+  api.solveSkip = function(jobId, terminalId){
+    return request('POST', '/solve/' + encodeURIComponent(jobId) + '/skip', { terminal:true, terminalId:terminalId });
   };
   api.cardsCheck = function(questionId, terminalId){
     var body = {};
@@ -1912,12 +1880,12 @@
   var cardBalance = 5;
   var dailyTotal = 5;
   var advanceRatio = 0;
+  /* 服务端下发过预支上限就用它；没下发前按 每日张数×倍率 算 */
+  var advanceLimit = null;
   var records = [];
   function renderCardBalance(){
     Array.prototype.forEach.call(document.querySelectorAll('[data-card-balance]'), function(el){ el.textContent = cardBalance; });
     Array.prototype.forEach.call(document.querySelectorAll('[data-daily-total]'), function(el){ el.textContent = dailyTotal; });
-    var lv = document.getElementById('advanceLimitVal');
-    if (lv) lv.textContent = dailyTotal * advanceRatio;
     var fl = document.getElementById('formulaLine');
     if (fl) fl.textContent = (dailyTotal * (1 + advanceRatio)) + ' 张';
     /* 13屏两个输入框跟着状态走，避免静态初值与算出来的张数自相矛盾；正在输入时不覆盖 */
@@ -1933,7 +1901,7 @@
     arr.forEach(function(ts){ if (now - ts <= limit) n += 1; });
     return n;
   }
-  function renderUsage(){
+  function renderDailyUsage(){
     var map = {
       useShoot: countIn(evShoot),
       useIdeas: countIn(evIdeas),
@@ -2027,7 +1995,17 @@
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
     if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; }
     if (current !== 12) { var lp = document.getElementById('logPage'); if (lp) lp.hidden = true; }
-    if (current !== 3) clearWaiting();
+    /* 第14屏家庭组、第15屏终端管理：进屏按服务端现取，本地不写死名单／设备号 */
+    if (current === 13) loadFamily();
+    if (current === 14) loadTerminals();
+    if (current !== 3) {
+      clearWaiting();
+      /* A12：处理页没出结果就离开，撤掉这次任务，服务端不再继续判 */
+      if (activeJob && activeJob.jobId) {
+        api.solveCancel(activeJob.jobId, activeJob.terminalId).catch(function(){});
+        activeJob = null;
+      }
+    }
   }
   var prevBtn = document.getElementById('prevBtn'); if (prevBtn) prevBtn.addEventListener('click', function(){ goTo(current - 1); });
   var nextBtn = document.getElementById('nextBtn'); if (nextBtn) nextBtn.addEventListener('click', function(){ goTo(current + 1); });
@@ -2293,7 +2271,7 @@
     cardBtn.disabled = true;
     api.cardsCheck(q.question_id, activeJob && activeJob.terminalId || normalizeTerminalId(deviceId)).then(function(check){
       if (check && check.balance != null) {
-        cardBalance = Number(check.balance) || 0;
+        cardBalance = Math.max(0, Number(check.balance) || 0);
         dailyTotal = check.daily_total != null ? (Number(check.daily_total) || 0) : dailyTotal;
         renderCardBalance();
       }
@@ -2307,14 +2285,14 @@
         return;
       }
       return api.cardsDeduct(q.question_id, activeJob && activeJob.terminalId || normalizeTerminalId(deviceId), idemKey(), activeJob && activeJob.key, activeJob && activeJob.jobId).then(function(res){
-        if (res && res.balance != null) cardBalance = Number(res.balance) || 0;
+        if (res && res.balance != null) cardBalance = Math.max(0, Number(res.balance) || 0);
         if (res && res.question_id) q.question_id = res.question_id;
         if (res && res.answer != null) q.answer = res.answer;
         q.unlocked = true;
         qOpened[qi] = true;
         evCards.push(Date.now());
         if (dailyUsedCount < dailyTotal) { evCardsDaily.push(Date.now()); dailyUsedCount += 1; }
-        renderUsage();
+        renderDailyUsage();
         addRecord('用解题卡打开第 ' + (qi + 1) + ' 题结果', '−1 张', '终端1');
         renderCardBalance();
         renderQuestion(); renderResult();
@@ -2427,7 +2405,7 @@
     askMsg.textContent = askPending ? '孩子发来一条消息：申请 1 张解题卡。' : askNote;
     askMsg.hidden = !askMsg.textContent;
     askDetail.hidden = !askMsg.textContent;
-    renderUsage();
+    renderDailyUsage();
   }
   /* 申请消息事件：孩子一发申请，不管当前在哪一屏，顶部先弹出消息条（像推送）；
      点消息条跳到第 13 屏卡管理并展开申请，点条上的「批准」当场批完，不用先翻到本屏 */
@@ -2445,19 +2423,19 @@
   document.getElementById('askPushClose').addEventListener('click', function(){ hideAskPush(); });
   var claimNote = document.getElementById('claimNote');
   document.getElementById('claimAdvance').addEventListener('click', function(){
-    var limit = dailyTotal * advanceRatio;
+    var limit = advanceLimit != null ? advanceLimit : dailyTotal * advanceRatio;
     if (limit > 0 && advanceCount >= limit) { claimFeedback.textContent = '今日预支已到上限。'; return; }
     document.getElementById('claimAdvance').disabled = true;
     api.cardsAdvance(normalizeTerminalId(deviceId), idemKey()).then(function(data){
-      if (data && data.balance != null) cardBalance = Number(data.balance) || 0;
-      if (data && data.advanced != null) advanceCount = Number(data.advanced) || advanceCount + 1;
+      if (data && data.balance != null) cardBalance = Math.max(0, Number(data.balance) || 0);
+      if (data && data.advanced != null) advanceCount = Math.max(0, Number(data.advanced) || 0);
       else advanceCount += 1;
-      if (data && data.advance_limit != null) dailyTotal = Number(data.advance_limit) || dailyTotal;
-      else if (data && data.remaining_advance != null) advanceCount = Math.max(0, (Number(data.advance_limit) || dailyTotal) - (Number(data.remaining_advance) || 0));
+      if (data && data.advance_limit != null) advanceLimit = Math.max(0, Number(data.advance_limit) || 0);
+      else if (data && data.remaining_advance != null) advanceLimit = Math.max(0, advanceCount + (Number(data.remaining_advance) || 0));
       advanceCountEl.textContent = advanceCount;
       evAdvance.push(Date.now());
       addRecord('预支领取解题卡', '+1 张', '终端1');
-      renderCardBalance(); renderQuestion(); renderUsage();
+      renderCardBalance(); renderQuestion(); renderDailyUsage();
       claimFeedback.textContent = '解题卡已领取，请合理使用。';
       document.getElementById('claimAdvance').disabled = false;
     }).catch(function(err){
@@ -2536,7 +2514,7 @@
         var grant = askMode === 'ratio' ? dailyTotal * amt : amt;
         askNote = '已批准，解题卡 +' + grant + '。';
         addRecord('批准申请，发放解题卡', '+' + grant + ' 张', '成员1');
-        if (data && data.balance != null) cardBalance = Number(data.balance) || 0;
+        if (data && data.balance != null) cardBalance = Math.max(0, Number(data.balance) || 0);
         else cardBalance += grant;
         renderCardBalance(); renderQuestion();
       } else {
@@ -2660,7 +2638,7 @@
     b.addEventListener('click', function(){
       Array.prototype.forEach.call(document.querySelectorAll('#rangeSeg button'), function(x){ x.classList.toggle('active', x === b); });
       rangeDays = parseInt(b.getAttribute('data-days'), 10);
-      renderUsage();
+      renderDailyUsage();
       loadRecords();
     });
   });
@@ -2795,54 +2773,47 @@
     if (acctToastTimer) clearTimeout(acctToastTimer);
     acctToastTimer = setTimeout(function(){ acctToast.hidden = true; }, 2800);
   }
-  /* appNo＝该成员的 成员编号，跟人走：管理员 成员1、往下依次 成员2、成员3……；转让管理员不换号、删除成员不重排，
-     与第13屏日志里的 成员1／成员2／成员3 一一对应（日志写 成员1 就是这个成员的 App） */
-  var famMembers = [
-    { phone:'13800138000', admin:true, appNo:1, termType:'苹果' },
-    { phone:'13900138001', admin:false, appNo:2, termType:'安卓' },
-    { phone:'13500138004', admin:false, pending:true, appNo:3 }
-  ];
-  function nextFamAppNo(){
-    var mx = 0;
-    famMembers.forEach(function(x){ if (x.appNo && x.appNo > mx) mx = x.appNo; });
-    return mx + 1;
+  /* 第14屏 家庭组：名单一律取服务端 GET /family，本地不编成员手机号；接口不通就留空并提示。
+     member_no＝成员编号，跟人走（转让不换号）；role 管理员／成员／待审批；type 苹果／安卓 */
+  var famMembers = [];
+  var famIsAdmin = false;
+  function mapFamilyMember(m){
+    var role = (m && (m.role || m.status)) || '';
+    return {
+      phone: (m && m.phone) || '',
+      admin: role === '管理员' || role === 'admin',
+      pending: role === '待审批' || role === 'pending',
+      appNo: m && m.member_no != null ? Number(m.member_no) : null,
+      memberNo: m && m.member_no,
+      termType: (m && (m.type || m.term_type)) || ''
+    };
   }
-  /* 当前登录查看本屏的账号（固定为第一个成员）；它是不是管理员，决定本屏有没有操作按钮 */
-  var famViewerPhone = '13800138000';
-  function famViewerIsAdmin(){
-    var is = false;
-    famMembers.forEach(function(x){ if (x.phone === famViewerPhone && x.admin) is = true; });
-    return is;
+  function loadFamily(){
+    if (!authToken) { famMembers = []; famIsAdmin = false; renderFamList(); return; }
+    api.getFamily().then(function(data){
+      var list = (data && (data.members || data.items || data.list)) || [];
+      famMembers = list.map(mapFamilyMember);
+      /* 服务端没单给「我是不是管理员」：按名单里管理员那一行判定，真权限仍由服务端 403 兜底 */
+      famIsAdmin = famMembers.some(function(x){ return x.admin; });
+      renderFamList();
+    }).catch(function(err){
+      famMembers = [];
+      famIsAdmin = false;
+      renderFamList();
+      setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+    });
   }
+  function famViewerIsAdmin(){ return famIsAdmin; }
   var famList = document.getElementById('famList');
-  /* 邀请码状态：famInviteCode 是当前生成的 6 位邀请码；famJoinRequest 是对方输码后发来的加入申请；
-     famInviteByAdmin 记这次是谁邀请的——管理员邀请的直接进组不用审批，非管理员邀请的要管理员点通过 */
+  /* 邀请码状态：邀请码与邀请话都由服务端 POST /family/invite 生成，客户端不本地编码；
+     famInviteMsgClosed 记邀请话框是否被关掉——关掉只收框、码仍有效 */
   var famInviteCode = null;
-  var famJoinRequest = null;
-  var famInviteByAdmin = false;
-  /* 邀请话（预留）：点邀请当场把占位下载地址＋这次的 6 位码拼成一整段话显示在标题行下方；
-     famInviteMsgClosed 记邀请话框是否被关掉——关掉只收框、码仍有效，之后才走原来的对方输码进组 */
+  var famInviteText = '';
   var famInviteMsgClosed = false;
-  var famInviteJoinTimer = null;
   var FAM_DOWNLOAD_PLACEHOLDER = 'https://jianti.example.com/download';
   function buildInviteText(code){
+    if (famInviteText) return famInviteText;
     return '邀请你加入「简题」家庭组！点这里下载简题 App：' + FAM_DOWNLOAD_PLACEHOLDER + '（下载地址占位），打开 App 输入邀请码 ' + code + '，就能完成注册并加入家庭组。';
-  }
-  function simulateInviteJoin(){
-    if (!famInviteCode || famJoinRequest) return;
-    if (famInviteByAdmin) {
-      /* 管理员邀请的：对方输码即直接批准进组，不走审批 */
-      famMembers.push({ phone:'13300138006', admin:false, appNo: nextFamAppNo() });
-      famInviteCode = null;
-      famInviteByAdmin = false;
-      renderFamList();
-      setAcctFeedback('13300138006 已加入家庭组，管理员邀请的直接进组、不用审批。');
-    } else {
-      /* 非管理员邀请的：先挂申请，管理员在本屏点「通过」才进组 */
-      famJoinRequest = { phone:'13300138006' };
-      renderFamList();
-      setAcctFeedback('13300138006 已输入邀请码申请加入，等管理员通过。');
-    }
   }
   /* 邀请话框三个按钮只接一次线：复制＝整段话进剪贴板；分享＝调系统分享、调不起来就退回复制；关闭＝收起框，码继续有效 */
   function copyInviteText(done){
@@ -2883,9 +2854,6 @@
   if (famInviteCloseBtn) famInviteCloseBtn.addEventListener('click', function(){
     famInviteMsgClosed = true;
     renderFamList();
-    /* 框收起后对方才输码进组（原有流程）：管理员邀请的直接进组，非管理员邀请的挂申请行 */
-    if (famInviteJoinTimer) clearTimeout(famInviteJoinTimer);
-    famInviteJoinTimer = setTimeout(simulateInviteJoin, 1200);
   });
   /* 删除确认：点「删除」只打开确认层，点「确认删除」才真正移除 */
   var famKickConfirm = document.getElementById('famKickConfirm');
@@ -2898,10 +2866,14 @@
   if (famKickOk) famKickOk.addEventListener('click', function(){
     if (!pendingKick || !famViewerIsAdmin()) { closeKickConfirm(); return; }
     var phone = pendingKick.phone;
-    famMembers = famMembers.filter(function(x){ return x !== pendingKick; });
+    var memberNo = pendingKick.memberNo;
     closeKickConfirm();
-    renderFamList();
-    setAcctFeedback('已将 ' + phone + ' 从家庭组删除。');
+    api.deleteFamilyMember(memberNo).then(function(){
+      setAcctFeedback('已将 ' + phone + ' 从家庭组删除。');
+      loadFamily();
+    }).catch(function(err){
+      setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+    });
   });
   /* 转让确认：点「转让」只打开确认层，点「确认」才真正转让，点「取消」不转 */
   var famTransferConfirm = document.getElementById('famTransferConfirm');
@@ -2914,27 +2886,14 @@
     if (!pendingTransfer || !famViewerIsAdmin()) { closeTransferConfirm(); return; }
     var target = pendingTransfer;
     var phone = target.phone;
-    famMembers.forEach(function(x){ x.admin = (x === target); });
     closeTransferConfirm();
-    renderFamList();
-    setAcctFeedback('管理员已转让给 ' + phone + '；当前账号已不是管理员，只能查看成员。');
+    api.transferFamily(target.memberNo).then(function(){
+      setAcctFeedback('管理员已转让给 ' + phone + '；当前账号已不是管理员，只能查看成员。');
+      loadFamily();
+    }).catch(function(err){
+      setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+    });
   });
-  /* 第 15 屏联动：成员3 的手机终端行（终端5）初始藏在已绑定终端列表里，成员3 在本屏点「通过」进组时自动亮出来——成员通过审批，终端自动跟着加，不用手动再绑 */
-  function revealMemberTerminal(){
-    var row = document.getElementById('termRow5');
-    if (!row || row.style.display !== 'none') return;
-    /* 编号顺延：扫码已先加了终端占住前号时，成员3 这行改排到下一个号，不许两个终端5 */
-    var list = document.getElementById('boundList');
-    if (list) {
-      var n = 0;
-      Array.prototype.forEach.call(list.querySelectorAll('.device-row'), function(r){
-        if (r !== row && r.style.display !== 'none') n += 1;
-      });
-      var nameEl = row.querySelector('.term-name');
-      if (nameEl && n >= 5) nameEl.textContent = '终端' + (n + 1);
-    }
-    row.style.display = '';
-  }
   function renderFamList(){
     if (!famList) return;
     famList.innerHTML = '';
@@ -2989,13 +2948,13 @@
         approveBtn.type = 'button';
         approveBtn.textContent = '通过';
         approveBtn.addEventListener('click', function(){
-          m.pending = false;
-          /* 联动：成员通过审批进组的同时，他那台手机终端自动加进第 15 屏已绑定终端——成员3 通过后顺延为终端5（设备码 0582 9016 4739 0528），不用手动再绑 */
-          if (m.appNo === 3) revealMemberTerminal();
-          renderFamList();
-          setAcctFeedback(m.appNo === 3
-            ? '已通过，' + m.phone + ' 已加入家庭组，终端5 已自动加入终端管理。'
-            : '已通过，' + m.phone + ' 已加入家庭组。');
+          api.approveFamilyMember(m.memberNo).then(function(){
+            setAcctFeedback('已通过，' + m.phone + ' 已加入家庭组。');
+            loadFamily();
+            loadTerminals();
+          }).catch(function(err){
+            setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+          });
         });
         actions.appendChild(approveBtn);
         var rejectBtn = document.createElement('button');
@@ -3003,9 +2962,12 @@
         rejectBtn.type = 'button';
         rejectBtn.textContent = '拒绝';
         rejectBtn.addEventListener('click', function(){
-          famMembers = famMembers.filter(function(x){ return x !== m; });
-          renderFamList();
-          setAcctFeedback('已拒绝 ' + m.phone + ' 的加入申请。');
+          api.rejectFamilyMember(m.memberNo).then(function(){
+            setAcctFeedback('已拒绝 ' + m.phone + ' 的加入申请。');
+            loadFamily();
+          }).catch(function(err){
+            setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+          });
         });
         actions.appendChild(rejectBtn);
         row.appendChild(actions);
@@ -3060,17 +3022,7 @@
     var inviteText = document.getElementById('famInviteText');
     if (invitePanel && inviteText) {
       if (famInviteCode && !famInviteMsgClosed) {
-        inviteText.innerHTML = '';
-        var pre = document.createElement('span');
-        pre.textContent = '邀请你加入「简题」家庭组！点这里下载简题 App：' + FAM_DOWNLOAD_PLACEHOLDER + '（下载地址占位），打开 App 输入邀请码 ';
-        inviteText.appendChild(pre);
-        var codeB = document.createElement('b');
-        codeB.className = 'num';
-        codeB.textContent = famInviteCode;
-        inviteText.appendChild(codeB);
-        var post = document.createElement('span');
-        post.textContent = '，就能完成注册并加入家庭组。';
-        inviteText.appendChild(post);
+        inviteText.textContent = buildInviteText(famInviteCode);
         invitePanel.hidden = false;
       } else {
         invitePanel.hidden = true;
@@ -3088,57 +3040,19 @@
       inviteBtn.type = 'button';
       inviteBtn.textContent = '邀请成员';
       inviteBtn.addEventListener('click', function(){
-        famInviteCode = String(Math.floor(100000 + Math.random() * 900000));
-        famInviteByAdmin = famViewerIsAdmin();
-        famInviteMsgClosed = false;
-        if (famInviteJoinTimer) { clearTimeout(famInviteJoinTimer); famInviteJoinTimer = null; }
-        renderFamList();
-        setAcctFeedback('邀请话已生成，点「复制」或「分享」发给对方。');
+        inviteBtn.disabled = true;
+        api.inviteFamily({}).then(function(data){
+          famInviteText = (data && (data.invite_text || data.inviteText)) || '';
+          var hit = /(\d{6})/.exec(famInviteText);
+          famInviteCode = hit ? hit[1] : null;
+          famInviteMsgClosed = false;
+          renderFamList();
+          setAcctFeedback(famInviteCode ? '邀请话已生成，点「复制」或「分享」发给对方。' : '服务端未返回邀请码，请稍后再试。');
+        }).catch(function(err){
+          setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+        }).then(function(){ inviteBtn.disabled = false; });
       });
       slot.appendChild(inviteBtn);
-    }
-    if (famJoinRequest) {
-      var jrow = document.createElement('div');
-      jrow.className = 'fam-join-row';
-      var jp = document.createElement('span');
-      jp.className = 'jr-phone num';
-      jp.textContent = famJoinRequest.phone;
-      jrow.appendChild(jp);
-      var jl = document.createElement('span');
-      jl.className = 'jr-lab';
-      jl.textContent = '申请加入';
-      jrow.appendChild(jl);
-      /* 「通过」「不批」只有管理员能点：非管理员只看得到申请行，没有审批按钮 */
-      var jacts = document.createElement('span');
-      jacts.className = 'fam-actions';
-      if (canOperate) {
-      var okBtn = document.createElement('button');
-      okBtn.className = 'mini-btn solid';
-      okBtn.type = 'button';
-      okBtn.textContent = '通过';
-      okBtn.addEventListener('click', function(){
-        var phone = famJoinRequest.phone;
-        famMembers.push({ phone: phone, admin:false, appNo: nextFamAppNo() });
-        famJoinRequest = null;
-        famInviteCode = null;
-        renderFamList();
-        setAcctFeedback('已通过，' + phone + ' 已加入家庭组。');
-      });
-      jacts.appendChild(okBtn);
-      var noBtn = document.createElement('button');
-      noBtn.className = 'mini-btn';
-      noBtn.type = 'button';
-      noBtn.textContent = '不批';
-      noBtn.addEventListener('click', function(){
-        famJoinRequest = null;
-        renderFamList();
-        setAcctFeedback('已拒绝该加入申请。');
-      });
-      jacts.appendChild(noBtn);
-      jrow.appendChild(jacts);
-      }
-      /* 申请行挂在成员列表最上边，不占邀请入口的位置 */
-      famList.insertBefore(jrow, famList.firstChild);
     }
   }
   renderFamList();
@@ -3201,20 +3115,15 @@
   document.getElementById('bindGuideBack').addEventListener('click', function(){ bindGuidePage.hidden = true; });
   document.getElementById('bindGuideClose').addEventListener('click', function(){ bindGuidePage.hidden = true; });
   /* 扫码绑定：点它整屏弹出第 3 屏取景器那样的拍照界面，本屏下边不留任何提醒行；
-     拍到二维码（快门）或点确认钮，绑定即成功：先弹「绑定成功」提示，关掉提示就能在
-     下边「已绑定终端」列表里看到新加的一行——扫一个、加一个，终端编号顺着已有台数往后排
-     （现四台→终端5，再扫一次→终端6），行里是二维码里的 16 位设备ID（4-4-4-4 分组）、
-     按码里第 1 位类型码定的终端类型，行尾带「解绑」（与老行同一套解绑确认）。
-     演示码：扫描载荷 JianTi-2864190752386419，其他演示设备码见下方 DEMO_TERMINAL_CODES */
+     用摄像头实读二维码（BarcodeDetector），读不到载荷就不绑、不编设备号；绑定成功后按服务端列表重画 */
   var bindScanPage = document.getElementById('bindScanPage');
   var scanFlash = document.getElementById('scanFlash');
   var bindSuccessDialog = document.getElementById('bindSuccessDialog');
   var bindSuccessText = document.getElementById('bindSuccessText');
   var scanBindDone = false;
-  var DEMO_TERMINAL_CODES = ['2864190752386419', '1762904831578260', '1938275680415692', '0582901647390528'];
-  var scannedCodeIndex = 0;
   var SCAN_TYPE_BY_CODE = { '2':'安卓', '3':'苹果', '4':'鸿蒙', '0':'其他' };
   function loadTerminals(){
+    if (!authToken) { renderTerminals([]); return; }
     api.listTerminals().then(function(data){
       var list = (data && (data.terminals || data.items || data.list)) || [];
       renderTerminals(list);
@@ -3222,22 +3131,34 @@
       setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
     });
   }
+  /* 已绑定终端一律按服务端列表现建行，本地不留演示设备号；多少台建多少行 */
   function renderTerminals(list){
     var box = document.getElementById('boundList');
     if (!box) return;
-    var rows = Array.prototype.slice.call(box.querySelectorAll('.device-row'));
-    rows.forEach(function(r){ r.style.display = 'none'; });
+    box.innerHTML = '';
     list.forEach(function(item, index){
-      var row = rows[index];
-      if (!row) return;
       var id = normalizeTerminalId(item && (item.device_id || item.terminal_id || item.id || item.code));
-      var code = row.querySelector('.dev-code');
-      if (code) code.textContent = formatDeviceId(id);
-      var name = row.querySelector('.term-name');
-      if (name) name.textContent = item && (item.name || item.terminal_name) || ('终端' + (index + 1));
-      var type = row.querySelector('.term-type');
-      if (type) type.textContent = item && (item.type_name || item.type) || SCAN_TYPE_BY_CODE[id.charAt(0)] || '其他';
-      row.style.display = '';
+      var row = document.createElement('div');
+      row.className = 'info-row device-row';
+      var name = document.createElement('span');
+      name.className = 'term-name';
+      name.textContent = (item && (item.name || item.terminal_name)) || ('终端' + (index + 1));
+      var code = document.createElement('b');
+      code.className = 'num dev-code';
+      code.textContent = formatDeviceId(id);
+      var type = document.createElement('span');
+      type.className = 'term-type';
+      type.textContent = (item && (item.type_name || item.type)) || SCAN_TYPE_BY_CODE[id.charAt(0)] || '其他';
+      var btn = document.createElement('button');
+      btn.className = 'mini-btn';
+      btn.type = 'button';
+      btn.textContent = '解绑';
+      btn.addEventListener('click', function(){
+        unbindPendingRow = row;
+        if (unbindDialog) unbindDialog.hidden = false;
+      });
+      row.appendChild(name); row.appendChild(code); row.appendChild(type); row.appendChild(btn);
+      box.appendChild(row);
     });
   }
   function visibleDeviceCount(){
@@ -3249,70 +3170,82 @@
     });
     return n;
   }
-  function addScannedTerminal(){
-    var list = document.getElementById('boundList');
-    if (!list) return null;
-    var raw = DEMO_TERMINAL_CODES[scannedCodeIndex % DEMO_TERMINAL_CODES.length];
-    scannedCodeIndex += 1;
-    var code = formatDeviceId(raw);
-    var typeLabel = SCAN_TYPE_BY_CODE[raw.charAt(0)] || '其他';
-    var num = visibleDeviceCount() + 1;
-    var row = document.createElement('div');
-    row.className = 'info-row device-row';
-    var nameEl = document.createElement('span');
-    nameEl.className = 'term-name';
-    nameEl.textContent = '终端' + num;
-    var codeEl = document.createElement('b');
-    codeEl.className = 'num dev-code';
-    codeEl.textContent = code;
-    var typeEl = document.createElement('span');
-    typeEl.className = 'term-type';
-    typeEl.textContent = typeLabel;
-    var unbindBtn = document.createElement('button');
-    unbindBtn.className = 'mini-btn';
-    unbindBtn.type = 'button';
-    unbindBtn.textContent = '解绑';
-    unbindBtn.addEventListener('click', function(){
-      unbindPendingRow = row;
-      unbindDialog.hidden = false;
+  /* 扫码绑定：开摄像头实读二维码（BarcodeDetector），把原始载荷交 /terminals/bind-scan；
+     读不到就提示重扫，不编设备号；浏览器没有解码能力时提示改用「输入设备号」。 */
+  var scanVideo = document.getElementById('scanVideo');
+  var scanStream = null;
+  var scanTimer = null;
+  var scanPayload = '';
+  var scanDetector = null;
+  function stopScanCamera(){
+    if (scanTimer) { clearTimeout(scanTimer); scanTimer = null; }
+    if (scanStream) { scanStream.getTracks().forEach(function(t){ t.stop(); }); scanStream = null; }
+    if (scanVideo) { scanVideo.pause(); scanVideo.srcObject = null; scanVideo.hidden = true; }
+  }
+  function scanTick(){
+    if (!scanDetector || !scanVideo || bindScanPage.hidden || scanBindDone) return;
+    scanDetector.detect(scanVideo).then(function(codes){
+      if (codes && codes.length) {
+        var raw = codes[0].rawValue || '';
+        if (normalizeTerminalId(raw)) { scanPayload = raw; completeScanBind(); return; }
+      }
+      if (!bindScanPage.hidden && !scanBindDone) scanTimer = setTimeout(scanTick, 400);
+    }).catch(function(){
+      if (!bindScanPage.hidden && !scanBindDone) scanTimer = setTimeout(scanTick, 700);
     });
-    row.appendChild(nameEl);
-    row.appendChild(codeEl);
-    row.appendChild(typeEl);
-    row.appendChild(unbindBtn);
-    /* 新行排在列表末尾；成员3 那行（终端5 预留行）还藏着时插到它前边，编号与上下顺序对得上 */
-    var reserved = document.getElementById('termRow5');
-    if (reserved && reserved.style.display === 'none' && reserved.parentNode === list) list.insertBefore(row, reserved);
-    else list.appendChild(row);
-    return { num: num, code: code };
+  }
+  function startScanCamera(){
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setAcctFeedback('当前环境打不开摄像头，请改用「输入设备号」。');
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }, audio:false }).then(function(stream){
+      scanStream = stream;
+      scanVideo.srcObject = stream;
+      scanVideo.hidden = false;
+      return scanVideo.play();
+    }).then(function(){
+      if (typeof BarcodeDetector === 'undefined') {
+        setAcctFeedback('当前浏览器不支持二维码解码，请改用「输入设备号」。');
+        return;
+      }
+      scanDetector = new BarcodeDetector({ formats:['qr_code'] });
+      scanTick();
+    }).catch(function(){
+      setAcctFeedback('打不开摄像头，请检查权限，或改用「输入设备号」。');
+    });
   }
   function completeScanBind(){
     if (scanBindDone) return;
+    if (!scanPayload) { setAcctFeedback('还没扫到二维码，对准板子上的码再试。'); return; }
     scanBindDone = true;
-    var raw = DEMO_TERMINAL_CODES[scannedCodeIndex % DEMO_TERMINAL_CODES.length];
     var btn = document.getElementById('bindScanConfirm');
     btn.disabled = true;
-    api.bindScan({ device_id:raw, payload:'JianTi-' + raw }).then(function(){
-      scannedCodeIndex += 1;
+    var raw = scanPayload;
+    api.bindScan({ qr_payload:raw }).then(function(data){
+      stopScanCamera();
       bindScanPage.hidden = true;
-      var added = addScannedTerminal();
-      if (bindSuccessText && added) bindSuccessText.textContent = '终端' + added.num + ' 已加入已绑定终端 · 设备ID:' + added.code;
+      var id = normalizeTerminalId((data && (data.device_id || data.terminal_id)) || raw);
+      if (bindSuccessText) bindSuccessText.textContent = '设备ID:' + formatDeviceId(id) + ' 已加入已绑定终端。';
       if (bindSuccessDialog) bindSuccessDialog.hidden = false;
       loadTerminals();
     }).catch(function(err){
       scanBindDone = false;
+      scanPayload = '';
       setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
     }).then(function(){ btn.disabled = false; });
   }
   document.getElementById('bindScanBtn').addEventListener('click', function(){
     scanBindDone = false;
+    scanPayload = '';
     bindScanPage.hidden = false;
+    startScanCamera();
   });
-  document.getElementById('bindScanBack').addEventListener('click', function(){ bindScanPage.hidden = true; });
+  document.getElementById('bindScanBack').addEventListener('click', function(){ stopScanCamera(); bindScanPage.hidden = true; });
   document.getElementById('bindScanConfirm').addEventListener('click', function(){ completeScanBind(); });
   document.getElementById('bindScanShutter').addEventListener('click', function(){
     if (scanFlash) { scanFlash.classList.add('on'); setTimeout(function(){ scanFlash.classList.remove('on'); }, 60); }
-    setTimeout(completeScanBind, 320);
+    completeScanBind();
   });
   document.getElementById('bindSuccessOk').addEventListener('click', function(){
     if (bindSuccessDialog) bindSuccessDialog.hidden = true;
@@ -3347,15 +3280,6 @@
      点确认才把该行从已绑定列表里拿掉，点取消什么都不变；屏面下边不留任何提醒或提示文字 */
   var unbindDialog = document.getElementById('unbindDialog');
   var unbindPendingRow = null;
-  function wireUnbind(btnId){
-    var b = document.getElementById(btnId);
-    if (!b) return;
-    b.addEventListener('click', function(){
-      unbindPendingRow = b.closest('.device-row');
-      unbindDialog.hidden = false;
-    });
-  }
-  wireUnbind('unbindBtn'); wireUnbind('unbindBtn2'); wireUnbind('unbindBtn3'); wireUnbind('unbindBtn4'); wireUnbind('unbindBtn5');
   document.getElementById('unbindCancel').addEventListener('click', function(){
     unbindDialog.hidden = true;
     unbindPendingRow = null;
@@ -3368,9 +3292,9 @@
     var btn = document.getElementById('unbindOk');
     btn.disabled = true;
     api.unbindTerminal(device).then(function(){
-      row.style.display = 'none';
       unbindDialog.hidden = true;
       unbindPendingRow = null;
+      loadTerminals();
     }).catch(function(err){
       unbindDialog.hidden = true;
       unbindPendingRow = null;
@@ -3407,16 +3331,15 @@
       Array.prototype.forEach.call(document.querySelectorAll('#officialSeg .official-row'), function(x){ x.classList.toggle('active', x === b); });
     });
   });
-  /* 官方模型 余额与充值（本轮补全）：官方页框底余额条、充值弹窗里的当前余额共用同一个余额变量；
-     点框底「充值」打开弹窗，弹窗里点「查余额」刷新并显示当前余额；选一档金额点「确认充值」后余额加上该档金额，
-     弹窗与框底两处一起更新，弹窗不关、反馈行写充值成功与新余额；点「取消」只关弹窗、不改余额 */
-  var officialBalance = 0;
+  /* 官方模型余额与充值：接口文档里没有「官方模型余额／充值」端点，未接入前余额一律显示 ¥--；
+     点「确认充值」只如实提示未接入，不本地加钱、不假装充值成功 */
+  var officialBalance = null;
   var rechargeAmt = 30;
   var officialBalanceAmt = document.getElementById('officialBalanceAmt');
   var rechargeBalanceAmt = document.getElementById('rechargeBalanceAmt');
   var rechargeDialog = document.getElementById('rechargeDialog');
   var rechargeFeedback = document.getElementById('rechargeFeedback');
-  function fmtBalance(v){ return '¥' + v.toFixed(2); }
+  function fmtBalance(v){ return (v == null || isNaN(Number(v))) ? '¥--' : '¥' + Number(v).toFixed(2); }
   function renderOfficialBalance(){
     if (officialBalanceAmt) officialBalanceAmt.textContent = fmtBalance(officialBalance);
     if (rechargeBalanceAmt) rechargeBalanceAmt.textContent = fmtBalance(officialBalance);
@@ -3435,7 +3358,7 @@
   var rechargeCheckBtn = document.getElementById('rechargeCheckBtn');
   if (rechargeCheckBtn) rechargeCheckBtn.addEventListener('click', function(){
     renderOfficialBalance();
-    if (rechargeFeedback) rechargeFeedback.textContent = '当前余额 ' + fmtBalance(officialBalance) + '（已刷新）';
+    if (rechargeFeedback) rechargeFeedback.textContent = '余额接口未接入，暂时查不到。';
   });
   Array.prototype.forEach.call(document.querySelectorAll('#rechargeAmtSeg button'), function(b){
     b.addEventListener('click', function(){
@@ -3445,41 +3368,51 @@
   });
   var rechargeConfirmBtn = document.getElementById('rechargeConfirmBtn');
   if (rechargeConfirmBtn) rechargeConfirmBtn.addEventListener('click', function(){
-    officialBalance += rechargeAmt;
-    renderOfficialBalance();
-    if (rechargeFeedback) rechargeFeedback.textContent = '充值成功 ¥' + rechargeAmt + '，当前余额 ' + fmtBalance(officialBalance) + '。';
+    /* 不做本地充值确认：没有支付／余额接口，点了也不许改余额 */
+    if (rechargeFeedback) rechargeFeedback.textContent = '充值接口未接入，本次未扣款、余额不变。';
   });
-  /* 用量查询：官方页框底「用量查询」打开查询页；页内按时间范围（7日内／30日内／3个月内）切换，
-     分模型列调用次数与费用、框底列合计；余额与官方页／充值弹窗共用同一个余额变量，
-     页底点「充值」关本页、打开充值弹窗；返回箭头回官方模型选择页 */
+  /* 用量查询：只渲染服务端 GET /records 返回的实数，没有的项显示 ---；接口不给费用，不编费用 */
   var usagePage = document.getElementById('usagePage');
   var usageBalanceAmt = document.getElementById('usageBalanceAmt');
   var usageTotalText = document.getElementById('usageTotalText');
-  var usageData = {
-    d7:  { lite:[86,0], deepseek:[18,1.26], qwen:[12,0.84], doubao:[9,0.63], kimi:[3,0.47] },
-    d30: { lite:[372,0], deepseek:[74,5.18], qwen:[48,3.36], doubao:[31,2.17], kimi:[17,3.14] },
-    d90: { lite:[1015,0], deepseek:[203,14.21], qwen:[131,9.17], doubao:[84,5.88], kimi:[53,9.14] }
-  };
+  var USAGE_KEYS = ['lite','deepseek','qwen','doubao','kimi'];
+  var USAGE_API_RANGE = { d7:'7d', d30:'30d', d90:'90d' };
   var usageRange = 'd7';
-  function renderUsage(){
-    var d = usageData[usageRange];
-    var totalCalls = 0, totalCost = 0;
-    Object.keys(d).forEach(function(k){
-      totalCalls += d[k][0]; totalCost += d[k][1];
+  var usageRecords = [];
+  function renderUsageReport(){
+    var totalCalls = 0, has = false;
+    USAGE_KEYS.forEach(function(k){
+      var row = null;
+      usageRecords.forEach(function(item){
+        if (item && String(item.model || item.name || item.key) === k) row = item;
+      });
+      var calls = row && row.calls != null ? Number(row.calls) : null;
       var c = document.querySelector('[data-usage-calls="' + k + '"]');
       var m = document.querySelector('[data-usage-cost="' + k + '"]');
-      if (c) c.textContent = d[k][0] + ' 次';
-      if (m) m.textContent = '¥' + d[k][1].toFixed(2);
+      if (c) c.textContent = calls == null ? '---' : calls + ' 次';
+      if (m) m.textContent = '---';
+      if (calls != null) { totalCalls += calls; has = true; }
     });
-    if (usageTotalText) usageTotalText.textContent = totalCalls + ' 次 · ¥' + totalCost.toFixed(2);
+    if (usageTotalText) usageTotalText.textContent = has ? totalCalls + ' 次' : '---';
     if (usageBalanceAmt) usageBalanceAmt.textContent = fmtBalance(officialBalance);
+  }
+  function renderUsageRecords(data){
+    usageRecords = (data && (data.models || data.items)) || [];
+    renderUsageReport();
+  }
+  function loadUsage(){
+    usageRecords = [];
+    renderUsageReport();
+    api.listRecords({ range: USAGE_API_RANGE[usageRange] || '7d' }).then(renderUsageRecords)
+      .catch(function(err){
+        renderUsageRecords({ models:[] });
+        setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+      });
   }
   var usageOpenBtn = document.getElementById('usageOpenBtn');
   if (usageOpenBtn) usageOpenBtn.addEventListener('click', function(){
-    renderUsage();
     if (usagePage) usagePage.hidden = false;
-    api.listRecords({ range:usageRange === 'd7' ? 7 : (usageRange === 'd30' ? 30 : 90) }).then(renderUsageRecords)
-      .catch(function(){ renderUsageRecords({ models:[] }); });
+    loadUsage();
   });
   var usageBack = document.getElementById('usageBack');
   if (usageBack) usageBack.addEventListener('click', function(){
@@ -3489,28 +3422,9 @@
     b.addEventListener('click', function(){
       usageRange = b.getAttribute('data-range') || 'd7';
       Array.prototype.forEach.call(document.querySelectorAll('#usageRangeSeg button'), function(x){ x.classList.toggle('active', x === b); });
-      renderUsage();
-      api.listRecords({ range:usageRange === 'd7' ? 7 : (usageRange === 'd30' ? 30 : 90) }).then(renderUsageRecords)
-        .catch(function(){ renderUsageRecords({ models:[] }); });
+      loadUsage();
     });
   });
-  function renderUsageRecords(data){
-    var list = data && (data.models || data.items) || [];
-    var totalCalls = 0, totalCost = 0;
-    Object.keys(usageData[usageRange]).forEach(function(k){
-      var c = document.querySelector('[data-usage-calls="' + k + '"]');
-      var m = document.querySelector('[data-usage-cost="' + k + '"]');
-      var row = null;
-      list.forEach(function(item){ if (item && String(item.model || item.name || item.key) === k) row = item; });
-      var calls = row && row.calls != null ? Number(row.calls) || 0 : 0;
-      var cost = row && row.cost != null ? Number(row.cost) || 0 : 0;
-      totalCalls += calls; totalCost += cost;
-      if (c) c.textContent = calls + ' 次';
-      if (m) m.textContent = '¥' + cost.toFixed(2);
-    });
-    if (usageTotalText) usageTotalText.textContent = totalCalls + ' 次 · ¥' + totalCost.toFixed(2);
-    if (usageBalanceAmt) usageBalanceAmt.textContent = fmtBalance(officialBalance);
-  }
   var usageRechargeBtn = document.getElementById('usageRechargeBtn');
   if (usageRechargeBtn) usageRechargeBtn.addEventListener('click', function(){
     if (usagePage) usagePage.hidden = true;
@@ -3518,7 +3432,7 @@
     renderOfficialBalance();
     if (rechargeDialog) rechargeDialog.hidden = false;
   });
-  renderUsage();
+  renderUsageReport();
   /* 我的模型 类型：三选一，点哪个哪个黑底 */
   Array.prototype.forEach.call(document.querySelectorAll('#freeTypeSeg button'), function(b){
     b.addEventListener('click', function(){
@@ -3802,7 +3716,8 @@
   renderQuestion();
   renderResult();
   renderAsk();
-  renderUsage();
+  renderDailyUsage();
+  renderUsageReport();
   render();
   applyVisibility();
   envText();
