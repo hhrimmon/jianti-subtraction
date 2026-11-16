@@ -38,6 +38,8 @@
 4. 接口无超时，DNS 挂起时界面状态一直不定——加 8 秒 AbortController 超时与统一提示。
 5. 注册接口路径/字段与接口文档不符（`/users/register`、`login_password`、`sms_code`）——改为 `/auth/register`、`password`、`code`。
 6. 预支倍率为 1（演示值）——按裁决改 0，且倍率为 0 时不本地拦截、交给服务端判定上限。
+7. 第 13 屏两个输入框仍是静态初值（倍率框显示 1，与算出来的 5 张矛盾）——`renderCardBalance()` 里把 `dailyInput` / `ratioInput` 同步为 `dailyTotal` / `advanceRatio`，正在输入时不覆盖；实测初值为 5 / 0，等号后 `5 张`。
+8. 官方基地址缺端口（代码默认 `http://solve.mhq-ai.xyz`，文档写 `solve.mhq-ai.xyz:8000`）——`DEFAULT_BASE_URL` 改为 `http://solve.mhq-ai.xyz:8000`。
 
 ## 5. 未覆盖
 

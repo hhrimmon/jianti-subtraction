@@ -1703,7 +1703,7 @@
 <script>
 (function(){
   /* --- 真实接口适配层：官方地址写死不显示；自有 IP 由第16屏设置填入后才切换 --- */
-  var DEFAULT_BASE_URL = 'http://solve.mhq-ai.xyz';
+  var DEFAULT_BASE_URL = 'http://solve.mhq-ai.xyz:8000';
   var baseURL = DEFAULT_BASE_URL;
   var authToken = '';
   var terminalToken = '';
@@ -1920,6 +1920,9 @@
     if (lv) lv.textContent = dailyTotal * advanceRatio;
     var fl = document.getElementById('formulaLine');
     if (fl) fl.textContent = (dailyTotal * (1 + advanceRatio)) + ' 张';
+    /* 13屏两个输入框跟着状态走，避免静态初值与算出来的张数自相矛盾；正在输入时不覆盖 */
+    if (dailyInput && document.activeElement !== dailyInput) dailyInput.value = dailyTotal;
+    if (ratioInput && document.activeElement !== ratioInput) ratioInput.value = advanceRatio;
   }
   /* 使用记录：总日志，只记总数；每笔按时间记，列表按日期范围（7日/30日/3个月）数 */
   var evShoot = [], evIdeas = [], evCards = [], evCardsDaily = [], evAdvance = [], evAsk = [];
