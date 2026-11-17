@@ -2157,11 +2157,15 @@
   }
   var prevBtn = document.getElementById('prevBtn'); if (prevBtn) prevBtn.addEventListener('click', function(){ goTo(current - 1); });
   var nextBtn = document.getElementById('nextBtn'); if (nextBtn) nextBtn.addEventListener('click', function(){ goTo(current + 1); });
+  /* 屏间切换只认屏内按钮：不接方向键。安卓软键盘的「下一步」会把焦点往后挪，
+     WebView 的焦点前移可能合成方向键事件，接了方向键就会在注册、登录等屏莫名翻页。
+     输入框里的回车/键盘动作键也只吞掉默认行为，不触发任何跳屏。 */
   document.addEventListener('keydown', function(e){
-    if (e.target && (e.target.tagName === 'INPUT')) return;
-    if (e.key === 'ArrowRight') goTo(current + 1);
-    if (e.key === 'ArrowLeft') goTo(current - 1);
-  });
+    if (e.key === 'Enter') {
+      var t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) e.preventDefault();
+    }
+  }, true);
   /* 屏内跳转按钮（齿轮 / 管理格 / 返回管理等） */
   Array.prototype.forEach.call(document.querySelectorAll('.screen button[data-goto]'), function(b){
     b.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
