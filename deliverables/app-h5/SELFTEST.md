@@ -62,7 +62,7 @@
 27. 卡规则未回显（P1）——`loadCardRules()` 读 B12 `daily_total`/`advance_ratio`；每日张数 1–9、倍率 0–3 夹紧。
 28. 用量/使用记录未按文档取数（P1）——用量改 A9 `GET /usage?range=7d|30d|90d`，五个官方模型名映射，合计取 `total_cost`；三组统计取 B11 `summary`，日志用服务端 `date`+`time`，来源默认“终端 1”。
 29. 家庭组 ID 写死 `12345678`（P1）——改为读 `GET /family` 的 `family_group_id`，拿不到显示 `---`。
-30. 家庭组管理员判定靠猜（P2）——优先 `data.role`，否则按“我的 `member_no` 对应行”的 role，两者都没有就不显示管理员入口。
+30. 家庭组管理员判定靠猜（P2）——改为缓存登录（B16）返回的 `role`／`member_no`：有 `role` 按“管理员/admin”判，没 `role` 就用缓存的 `member_no` 与服务端 `GET /family` 的 `admin_member_no` 比对，两者都没有才判非管理员（`GET /family` 顶层本来就不给 `role`／`member_no`）。
 31. 手动绑定成功后终端列表不刷新（P2）——成功后调 `loadTerminals()`；扫绑定码路径同样刷新。
 32. 拍题上传缺 8MB 预检/413/429/40001 分支（P2）——超 8MB 不发；413 连续两次提示“照片太大，请靠近一点拍”；429 读 `Retry-After` 提示 N 秒后手动重试；`40001` 跳设置屏提示“设备未绑定，请先绑定终端”。
 33. 同一张照片重发换新幂等键（P2）——按照片内容哈希复用同一个 `Idempotency-Key`。
@@ -70,8 +70,26 @@
 35. 空白题文案与文档不一致（P2）——`no_question` 提示“这张里没有题目”，`recognition_failed` 仍提示“没看清题目，请重拍”。
 36. 终端 401 只给一句话（P2）——按码区分：`40101` 提示“登录已失效”，未绑定提示“设备未绑定”，都回设置屏并清终端 token。
 37. 启动时未登录也会发管理接口、可能被 401 顶回登录/设置屏（本轮顺带）——`loadRecords`/`loadCardBalance`/`configServer`/`loadApplications` 在无 token 时跳过，界面留 `---`。
+38. 家庭组管理员判定读错数据源（WBC 复审打回，P2 回归）——原写法在 `GET /family` 顶层找 `role`／`member_no`，而顶层只有 `family_group_id`／`status`／`admin_member_no`／`members`，导致 `famIsAdmin` 恒 false、管理员按钮不渲染。改为登录/注册成功时缓存 `role`／`member_no`（退出登录、管理口 401、重置管理密码时清空），进家庭组时按“有 role 看 role，无 role 用 member_no 比对 admin_member_no”判定。
+39. 预支上限 fallback 成 0（复审 Optional）——`advanceLimit` 与 `dailyTotal` 都为 null 时不再按 0 本地拦，`limit` 置 null、跳过本地上限判断，交给服务端 A5 裁决（服务端返回真实上限/错误码）。
+40. `loadCardRules()` 未登录也发 B12（复审 Optional）——补 `if (!authToken)` 守卫，与同批其他 loader 一致，无 token 直接 `renderCardBalance()` 返回。
 
 本轮复测（Playwright/Edge headless，1280×720）：16 屏 `pageerror` 0 条；解题卡三处余额、每日张数、公式结果均为 `---`，13 屏两个输入框为空；三组统计 `---`；家庭组标题显示“家庭组ID ---”、成员行显示 `---`，点「邀请成员」真实发出 `POST /family/invite`（`file://` 下跨域失败并如实提示）、不生成邀请码；用量页五行官方模型均 `---`、合计 `---`；已绑定终端 0 行。
+
+复审回归复测（第 38–40 条，拦截接口伪造返回，走真实 UI 路径）：
+
+| 场景 | 期望 | 实测 |
+|---|---|---|
+| 登录返回 `role:'管理员'` | 显示管理员操作 | 2 行、按钮 `删除(disabled)` / `转让` / `删除` |
+| 登录返回 `role:'admin'` | 同上 | 同上 |
+| 登录无 `role`、`member_no=5`、`admin_member_no=5` | 判为管理员 | 同上 |
+| 登录无 `role`、`member_no=6` | 判非管理员 | 2 行、0 个操作按钮 |
+| 登录 `role:'成员'`、`member_no=5` | 判非管理员 | 2 行、0 个操作按钮 |
+| 登录既无 `role` 也无 `member_no` | 判非管理员 | 2 行、0 个操作按钮 |
+| 未拿到 A3/B12 点「预支」 | 不被本地 0 上限拦住，真实发 A5 | 发出 `POST /cards/advance`，提示“解题卡已领取，请合理使用。” |
+| 未登录进 13 屏 | 不发 B12 | 只有启动的 `GET /config/environment`，公式 `---` |
+
+以上八个场景 `pageerror` 均为 0 条。
 
 ## 5. 未覆盖
 

@@ -1692,6 +1692,14 @@
   var baseURL = DEFAULT_BASE_URL;
   var authToken = '';
   var terminalToken = '';
+  /* 登录（B16）返回的 role / member_no 缓存一份：GET /family 顶层不给这两项，
+     管理员判定只能靠登录时的 role 或与 admin_member_no 比对 */
+  var authRole = '';
+  var authMemberNo = null;
+  function setAuthIdentity(data){
+    authRole = (data && (data.role || data.my_role)) || '';
+    authMemberNo = data && data.member_no != null ? data.member_no : null;
+  }
   /* 设备 ID 按 U10 生成：第 1 位类型码（1 嵌入式、2 安卓、3 苹果、4 鸿蒙、0 其他），
      后 15 位取本机唯一串的稳定哈希转纯数字；原始串号不上传、不外显。 */
   function makeDeviceId(){
@@ -1771,6 +1779,8 @@
               throw apiError(code === 40101 ? '登录已失效，请检查终端绑定。' : '设备未绑定或登录已失效，请检查终端绑定。', code || 401, 401);
             }
             authToken = '';
+            authRole = '';
+            authMemberNo = null;
             goTo(8);
             throw apiError('登录已失效，请重新登录。', code || 401, 401);
           }
@@ -2573,8 +2583,11 @@
     }).catch(function(){});
   }
   document.getElementById('claimAdvance').addEventListener('click', function(){
-    var limit = advanceLimit != null ? advanceLimit : (dailyTotal || 0) * advanceRatio;
-    if (limit > 0 && advanceCount >= limit) { claimFeedback.textContent = '今日预支已到上限。'; return; }
+    /* 上限只用于本地先拦一道：服务端没给 advance_limit、又没拿到每日张数时不做本地判断，
+       交给服务端裁决（A5 会返回真实上限与错误码），别把未知当 0 卡死用户 */
+    var limit = advanceLimit != null ? advanceLimit
+      : (dailyTotal != null && advanceRatio != null ? dailyTotal * advanceRatio : null);
+    if (limit != null && limit > 0 && advanceCount >= limit) { claimFeedback.textContent = '今日预支已到上限。'; return; }
     document.getElementById('claimAdvance').disabled = true;
     api.cardsAdvance(normalizeTerminalId(deviceId), idemKey()).then(function(data){
       if (data && data.balance != null) cardBalance = Math.max(0, Number(data.balance) || 0);
@@ -2705,6 +2718,7 @@
     document.getElementById('loginBtn').disabled = true;
     api.login(phone, pwd).then(function(data){
       loggedIn = true;
+      setAuthIdentity(data);
       renderAcctPhone(phone);
       fb.textContent = '';
       goTo(10);
@@ -2730,8 +2744,9 @@
     if (!phone || !code || !pwd) { fb.textContent = '先填手机号、验证码和密码。'; return; }
     if (!/^\d{6}$/.test(adminPwd)) { fb.textContent = '管理员密码还没输满。'; return; }
     document.getElementById('registerBtn').disabled = true;
-    api.register({ phone:phone, password:pwd, admin_password:adminPwd, code:code }).then(function(){
+    api.register({ phone:phone, password:pwd, admin_password:adminPwd, code:code }).then(function(data){
       fb.textContent = '';
+      setAuthIdentity(data);
       /* 管理员密码随注册一并保存到服务端、与账号绑定；点「注册」后出「注册成功」提示 */
       document.getElementById('regMain').hidden = true;
       document.getElementById('regSuccessView').hidden = false;
@@ -2748,6 +2763,8 @@
   document.getElementById('logoutBtn').addEventListener('click', function(){
     loggedIn = false;
     authToken = '';
+    authRole = '';
+    authMemberNo = null;
     goTo(8);
   });
 
@@ -2757,6 +2774,7 @@
   /* 输数字时只预览等号后的总数，不落库；点「确认」（或回车）才真正保存 */
   /* 进 13 屏按服务端 B12 回显卡规则；没拉到就保留 --- */
   function loadCardRules(){
+    if (!authToken) { renderCardBalance(); return Promise.resolve(); }
     return api.getCardRules().then(function(data){
       var d = data && data.daily_total != null ? parseInt(data.daily_total, 10) : NaN;
       var r = data && data.advance_ratio != null ? parseInt(data.advance_ratio, 10) : NaN;
@@ -2967,15 +2985,16 @@
       var list = (data && (data.members || data.items || data.list)) || [];
       famMembers = list.map(mapFamilyMember);
       famGroupId = data && (data.family_group_id != null ? data.family_group_id : data.group_id);
-      /* 管理员判定：优先用登录返回的 data.role；没有就按「我的 member_no 对应行」的 role；
-         不再用「名单里只要有管理员就算我是管理员」这种猜法 */
-      var role = data && (data.role || data.my_role);
-      var myNo = data && (data.my_member_no != null ? data.my_member_no : data.member_no);
+      /* 管理员判定：服务端 GET /family 顶层只给 family_group_id / status / admin_member_no / members，
+         没有 role / member_no；所以优先用登录（B16）时缓存的 role，
+         没有 role 就用缓存 member_no 与服务端 admin_member_no 比对，两者都没有才判非管理员 */
+      var role = authRole;
+      var myNo = authMemberNo;
+      var adminNo = data && data.admin_member_no;
       if (role) {
         famIsAdmin = role === '管理员' || role === 'admin';
-      } else if (myNo != null) {
-        var mine = famMembers.filter(function(x){ return String(x.memberNo) === String(myNo); })[0];
-        famIsAdmin = !!(mine && mine.admin);
+      } else if (myNo != null && adminNo != null) {
+        famIsAdmin = String(myNo) === String(adminNo);
       } else {
         famIsAdmin = false;
       }
