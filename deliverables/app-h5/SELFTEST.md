@@ -130,8 +130,8 @@
 
 - 线上官方服务器：本机出站被挡（`solve.mhq-ai.xyz:8000` 连不上），未联调；已用本地 v4 网关跑通上述链路。
 - 判题成功态（A2 返回 `done` 与题目/思路/结果）：本机网关未配 `QWEN_API_KEY`，只跑到 `failed`；成功态的渲染与原型比对见第 3 节，未接真实模型。
-- 真机（vivo X60）：未上，按约定先在模拟环境比对。
-- 原生相机：壳内仍是浏览器 `capture` 取景，未做原生相机封装；APK 壳已随交付（见第 7 节），但本机无 adb 设备/模拟器，未在真机上跑过。
+- 真机（vivo X60 / V2046A）：已装机验证壳 + 首页渲染（见 7.2）；登录/取卡/拍题业务链路未在真机复跑。
+- 原生相机：壳内仍是浏览器 `capture` 取景，未做原生相机封装；APK 壳已在 V2046A 真机装机、冷启与全屏验证（见 7.2）。
 
 ## 7. 本轮补充：沉浸式全屏 / 屏幕常亮（2026-11-17）
 
@@ -143,7 +143,7 @@
 | 全屏 | 首次 `pointerdown` 调 `documentElement.requestFullscreen({navigationUI:'hide'})`，已在全屏或壳不支持时直接跳过（异常吞掉，不影响业务） | 内联脚本 `node --check` 通过；全屏在壳内由壳接管，浏览器不支持时走跳过分支 |
 | 常亮 | `navigator.wakeLock.request('screen')`，`release` 后置空，`visibilitychange` 回前台重新申请；不支持或非安全上下文时静默跳过 | 内联脚本 `node --check` 通过；`navigator.wakeLock` 缺失或请求被拒时走 catch，不抛到业务代码 |
 
-本轮已打包 APK 并验签（见 7.1），未在真机/模拟器安装运行；H5 侧未做页面级复跑，上述为代码级检查。
+本轮 H5 侧上述为代码级检查；APK 壳已打包、验签并在 V2046A 真机装机首启（见 7.1 / 7.2）。
 
 说明：系统状态栏（信号/WiFi 那条缝）与 `FLAG_KEEP_SCREEN_ON` 属 APK 壳职责，H5 无法单独去掉系统状态栏；壳设沉浸式后 H5 不再额外留白。本轮未改服务端、未动线上配置。
 
@@ -169,5 +169,5 @@
 | 修复（只动壳） | `hideSystemBars()` 挪到 `setContentView(web)` 之后，并在 controller 为 null 时直接返回；`onWindowFocusChanged`/`onResume` 照旧重新隐藏。H5 业务逻辑未动 |
 | 真机安装 | `adb devices` 见 `1578472099005SJ  V2046A`；`adb install -r` 成功（vivo「外部来源应用」确认页用 `adb shell input tap` 点「继续安装」，无需浩爷手点）；装后拉回 `base.apk` 解开，`assets/index.html` 与交付 H5 同一 SHA256 |
 | 首启 | 冷启进入首页，无闪退、无黑屏；16:9 舞台居中、左右留黑，底部完整。截图 `_work/apk-shell/final-home.png` |
-| 宽屏适配（H5 两处，本轮一并带上） | 旧版 `.viewport` 用 `flex:1 1 680px` 铺满宽度，2376×1080 上 16:9 舞台高 430px 只露 360px、底部被裁。改为 `width:min(100%,177.78dvh);max-height:100dvh`（按高度定宽、左右留黑）、`.stage` 去 padding 并 `min-height:100dvh` 居中、`html,body` 加 `overflow:hidden;overscroll-behavior:none`。对照：旧版 `_work/apk-shell/headtest-home3.png`（底部裁切） vs 新版 `final-home.png`（完整） |
+| 宽屏适配（H5 三处，本轮一并带上） | 旧版 `.viewport` 用 `flex:1 1 680px` 铺满宽度，2376×1080 上 16:9 舞台高 430px 只露 360px、底部被裁。改为 `width:min(100%,177.78dvh);max-height:100dvh`（按高度定宽、左右留黑）、`.stage` 去 padding 并 `min-height:100dvh` 居中、`html,body` 加 `overflow:hidden;overscroll-behavior:none`。对照：旧版 `_work/apk-shell/headtest-home3.png`（底部裁切） vs 新版 `final-home.png`（完整） |
 | 未覆盖 | 登录/取卡/拍题等业务链路未在真机复跑（需真服务与账号），本轮只验到壳 + 首页渲染；H5 业务回归仍以 `08eb328` 的 WBC 结论为准 |

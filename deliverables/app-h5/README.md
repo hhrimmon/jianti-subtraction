@@ -8,6 +8,7 @@
 |---|---|
 | `index.html` | 全部实现，单文件（HTML + CSS + JS），无外部依赖、无 CDN |
 | `jianti-2.0.0-debug.apk` | 安卓 WebView 壳：沉浸式全屏（无状态栏/导航栏）、横屏、屏幕常亮，内置同一份 `index.html`；调试签名。2026-11-17 修 `hideSystemBars()` 调用时机导致的 API 30+ 闪崩，V2046A 真机首启通过（见 SELFTEST 7.2） |
+| `apk-shell/` | APK 壳源码：`src/com/jianti/app/MainActivity.java`、`AndroidManifest.xml`、`build.ps1`（重建脚本）。debug.keystore 为签名私钥，不入库 |
 | `README.md` | 本文件 |
 | `SELFTEST.md` | 自测记录（方法、结果、限制） |
 | `manifest.sha256` | 每个交付文件的 SHA256 |
@@ -21,6 +22,15 @@
    ```
 3. 打开后先在设置（第 6 屏）里确认网关：默认官方地址 `solve.mhq-ai.xyz:8000`（界面不显示该地址），也可填自有 IP（端口 8000）。
 4. 装 APK：`adb install -r jianti-2.0.0-debug.apk`。壳内已带 `assets/index.html`，不需要静态服务器；打开即横屏全屏、无状态栏、屏幕不熄灭。壳已开 `allowUniversalAccessFromFileURLs`，`file://` 页面可直接请求 http 网关。
+
+## APK 壳重建
+
+源码在 `apk-shell/`。在 Windows + PowerShell 下：
+
+1. 装 JDK 17、Android SDK（`build-tools\34.0.0` 与 `platforms\android-34`）。
+2. 用环境变量 `JT2_JDK`（JDK 根目录）、`JT2_SDK`（SDK 根目录）指到本机路径；不设则用脚本里的默认路径。
+3. 在 `apk-shell/` 目录运行 `.\build.ps1`：脚本把上一级 `index.html` 打进 `assets/`，编辑 `MainActivity.java`、d8 生成 dex、`aapt2 link → zipalign → apksigner` 签名，输出 `apk-shell/jianti-2.0.0-debug.apk` 并同步到上一级交付目录。`debug.keystore` 不入库，首次运行自动生成（`CN=Android Debug`，仅调试签名）。
+4. 已验证：从交付源码重建出的 `classes.dex` 与内嵌 `assets/index.html` 同交付 APK 逐字节一致；APK 整体 SHA 因调试 keystore 每次新建而不同，属预期。
 
 ## 接口对接
 
@@ -86,7 +96,7 @@
 ## 已知限制
 
 - 本版是 H5 实现 + 安卓 WebView 壳：拍照走浏览器 `capture` 能力，不是原生相机封装；壳只做全屏沉浸、常亮、相机权限转发，未做原生相机/扫码。
-- 状态栏隐藏与屏幕常亮由壳保证（沉浸式 sticky + `FLAG_KEEP_SCREEN_ON`）；H5 侧另加 Wake Lock 与首次点按全屏兜底，WebView 下 Wake Lock 可能不可用，以壳为准。壳已构建并验签，但本机没有 adb 设备/模拟器，未在真机上跑过。
+- 状态栏隐藏与屏幕常亮由壳保证（沉浸式 sticky + `FLAG_KEEP_SCREEN_ON`）；H5 侧另加 Wake Lock 与首次点按全屏兜底，WebView 下 Wake Lock 可能不可用，以壳为准。壳已在 V2046A 真机验证（无状态栏、横屏、常亮、各屏完整不裁底），详见 SELFTEST 7。
 - 扫码绑定用 `getUserMedia` + `BarcodeDetector` 实读二维码：浏览器不支持 `BarcodeDetector`（如部分 iOS）时提示改用「输入设备号」，不生成演示码。
 - 接口只按文档接通并做了降级。本轮已用本地网关（v4 包，127.0.0.1:8000）跑通注册→管理密码→四管理屏→手动绑定终端→拍题上传/轮询的真实联调；官方服务器在本机出站被挡（`solve.mhq-ai.xyz:8000` 连不上），线上环境未联调。
 - 拍题链路（A1/A2）已跑通到服务端返回 `failed`：本机网关未配 `QWEN_API_KEY`，判题成功态（题目/思路/结果）未接真实模型；本版未内置任何 token。
