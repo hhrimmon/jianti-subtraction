@@ -124,7 +124,7 @@
 
 整条链路 `pageerror` 0 条；`console.error` 只有上述 503/401/403 三条，均为预期状态码，不是脚本异常。
 
-联调中发现的**服务端（v3 / v4.0.0 同样）问题**（不是 App 问题，App 未改服务端）：报错早退路径（401/403）没读请求体，keep-alive 连接上残留 body 会把下一个请求顶掉，服务端回 `501 Unsupported method ('{"custom_ip":...}POST')`，浏览器复用连接时注册必然失败。v4 包复现脚本同样得到 `501`。本地测试副本已临时补“发响应前把未读 body 读掉”一行洞（仅测试目录，不在交付内）；正式服务端需确认是否已修。
+联调中发现的**服务端（v3 / v4.0.0 同样）问题**（不是 App 问题，App 未改服务端）：报错早退路径（401/403）没读请求体，keep-alive 连接上残留 body 会把下一个请求顶掉，服务端回 `501 Unsupported method ('{"custom_ip":...}POST')`，浏览器复用连接时注册必然失败。v4 包复现脚本同样得到 `501`。本地测试副本已临时补“发响应前把未读 body 读掉”一行洞（仅测试目录，不在交付内）；服务端 v5 已按 9090 裁决（消息 id 329）正式修入 `gateway.py`（`_drain_body`），本轮 v5 联调注册 201 通过，未再复现 501。
 
 ## 6. 未覆盖
 
@@ -166,8 +166,9 @@
 | 项 | 结论 |
 |---|---|
 | 根因 | `hideSystemBars()` 在 `setContentView()` 之前调用：API 30+ 时 `decor.getWindowInsetsController()` 尚未就绪，取到 null 后 `c.hide(...)` 直接 NPE，进程秒退（`ad8bd55` 的包一装就崩） |
-| 修复（只动壳） | `hideSystemBars()` 挪到 `setContentView(web)` 之后，并在 controller 为 null 时直接返回；`onWindowFocusChanged`/`onResume` 照旧重新隐藏。H5 业务逻辑未动 |
+| 修复（只动壳） | 保留 `onCreate` 里 `setContentView(web)` 之前那次 `hideSystemBars()` 调用（不挪顺序），改为在 `hideSystemBars()` 内判空：`decor` 为 null 直接返回，API 30+ 取到的 `WindowInsetsController` 为 null 时跳过 hide／行为设置；`setContentView` 之后再调一次，`onWindowFocusChanged`/`onResume` 照旧重新隐藏。H5 业务逻辑未动 |
 | 真机安装 | `adb devices` 见 `1578472099005SJ  V2046A`；`adb install -r` 成功（vivo「外部来源应用」确认页用 `adb shell input tap` 点「继续安装」，无需浩爷手点）；装后拉回 `base.apk` 解开，`assets/index.html` 与交付 H5 同一 SHA256 |
 | 首启 | 冷启进入首页，无闪退、无黑屏；16:9 舞台居中、左右留黑，底部完整。截图 `_work/apk-shell/final-home.png` |
 | 宽屏适配（H5 三处，本轮一并带上） | 旧版 `.viewport` 用 `flex:1 1 680px` 铺满宽度，2376×1080 上 16:9 舞台高 430px 只露 360px、底部被裁。改为 `width:min(100%,177.78dvh);max-height:100dvh`（按高度定宽、左右留黑）、`.stage` 去 padding 并 `min-height:100dvh` 居中、`html,body` 加 `overflow:hidden;overscroll-behavior:none`。对照：旧版 `_work/apk-shell/headtest-home3.png`（底部裁切） vs 新版 `final-home.png`（完整） |
+| 接口联调（服务端 v5.0.0） | 云盘 `platform-server-v5.zip`（MD5 `4d1d41df5f326f6bb1d6435069cba724`，111,149B）解到 `_work/smoke-local/platform-server-v5`，`JIANTI_HOST=0.0.0.0` 起在 8000、数据目录独立 `data-v5`；App 走 `127.0.0.1:8080` 全链路：注册 201 → 管理密码 200 → 卡管理／账户／终端／服务端 200 → 手动绑定终端 201 → `/solve` 202、轮询 failed（未配 `QWEN_API_KEY`，`model_not_connected`，App 显示「判题服务暂时接不通」）；`pageerror` 0，未再出现 501；手机同 Wi-Fi 经 `192.168.0.108:8000` 健康检查 200 |
 | 未覆盖 | 登录/取卡/拍题等业务链路未在真机复跑（需真服务与账号），本轮只验到壳 + 首页渲染；H5 业务回归仍以 `08eb328` 的 WBC 结论为准 |
