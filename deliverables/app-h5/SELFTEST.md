@@ -176,3 +176,22 @@
 ### 7.3 设置屏 SSID/信号（措辞更正，2026-11-17）
 
 设置屏 SSID/信号是**预留字段**：`applyNetInfo` 读 `/config/environment` 的 `ssid`/`wifi_ssid`/`signal`/`signal_strength`，但服务端 v5 `records.py` 的 `environment_info()` 只返 `temperature`/`city`/`memo`/`updated_at`，全包无这些字段，APK 壳也没有 WifiManager 桥。因此当前**恒显示 `---`**，有源才显示，不编假数据；真实 SSID/信号需另开原生上报，不在本轮。此前 commit `5f5a0f9` 标题「联网后取服务端真实值」措辞不准确，以此处为准。`signal` 若日后下发 dBm 数字会原样显示，届时再归一化。
+
+## 8. 第3屏取景器接真相机（9090 消息 483，2026-11-18）
+
+此前第 3 屏取景器是一张静态纸（假取景器），全 App 只有一个 `video` 且属于扫码绑定浮层；拍题这路根本没接摄像头。本轮按 483 指令改为真相机：
+
+| 项 | 实现 |
+|---|---|
+| 取景器实时流 | 第 3 屏 `.vf-view` 内新增 `#finderVideo`（`playsinline autoplay muted`），`startFinderCamera()` 用 `navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})` 起后置摄像头，`srcObject` 铺满取景框、`object-fit:cover`；四角框 `.vf-corner` 与闪白 `.cam-flash` 提到 video 之上（z-index 3/4） |
+| 只做拍题一种状态 | 无前置、无其他模式；`goTo(2)` 才开流，离开第 3 屏 `stopFinderCamera()` 停掉所有 track 并清 `srcObject`，不留后台摄像头占用 |
+| 快门抓真实帧 | `captureFromFinder()` 在流活着时用 `canvas.drawImage(video)` + `toBlob('image/jpeg',0.9)` 抓真实帧，抽 `processJpegBytes()` 复用绑定码识别（BarcodeDetector）与 `handleSolveBlob()` 发网关链路；闪白同步 |
+| 应急兜底 | `getUserMedia` 不可用／起不来时 video 隐藏，快门回落 `openSystemCamera()` 走原 `<input capture='environment'>` 系统相机；两条路都汇到 `processJpegBytes()` |
+| facingMode | 用理想值 `'environment'`（非 `exact`），避免部分设备因 `exact` 约束直接 `OverconstrainedError` 起不来流；真机后摄正常 |
+
+验证：
+
+- 本地专项（`_work/_tmp/camera-483.mjs`，Edge headless + `--use-fake-device-for-media-stream` 假摄像头，真实手势导航，不直接 goTo/改 transform）：**9/9 PASS** —— 进第 3 屏、video 有实时流（videoWidth>0、未暂停、轨 live、facingMode=environment）、抓两帧证实画面在实时变化、快门发出 `POST /solve`、离屏停流（video 隐藏且无流）。截图 `_work/apk-shell/local-visual/camera-483/`（s00–s02）。
+- 全链路回归（`mgmt-full-476.mjs`）：**22/22 ALL_PASS**，管理屏/卡管理/服务端配置/反馈提示未受 483 改动影响。
+- 真机（vivo V2046A，`1578472099005SJ`）：装 483 版 APK（内嵌 index SHA 与交付一致），冷启无 FATAL；真实手势进 home → 点拍照 → 取景器显示**真实摄像头实时画面**（桌上实物，非静态纸），四角框/快门/返回/确认齐全；截图 `_work/_tmp/jt483-finder2.png`、`jt483-shot.png`。真机未配自有服务器 IP（显示"服务器未连接"），故真机快门后的网关失败属环境限制；网关链路已由本地专项的假摄像头 `POST /solve` 证实。
+- 重打包：`jianti-2.0.0-debug.apk` SHA256 `7D8D9803…`，内嵌 `assets/index.html` SHA256 `8FCF2700…` 与交付 index 一致。

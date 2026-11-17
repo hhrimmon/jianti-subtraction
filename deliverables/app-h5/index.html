@@ -103,12 +103,15 @@
   .paper .q-tag{font-size:3.3cqw;font-weight:700;color:#6a6a6a;letter-spacing:.2em;}
   .paper .q{font-size:5.4cqw;font-weight:800;line-height:1.5;margin-top:1.4cqw;}
   .paper .hand{font-family:"Segoe Print","Bradley Hand","PingFang SC",cursive;font-size:4.9cqw;color:#232323;margin-top:1.6cqw;transform:rotate(-1.2deg);}
-  .vf-corner{position:absolute;width:5.6cqw;height:5.6cqw;pointer-events:none;}
+  .vf-corner{position:absolute;width:5.6cqw;height:5.6cqw;pointer-events:none;z-index:3;}
   .vf-corner.tl{top:1.5cqw;left:1.5cqw;border-top:1cqw solid #fff;border-left:1cqw solid #fff;}
   .vf-corner.tr{top:1.5cqw;right:1.5cqw;border-top:1cqw solid #fff;border-right:1cqw solid #fff;}
   .vf-corner.bl{bottom:1.5cqw;left:1.5cqw;border-bottom:1cqw solid #fff;border-left:1cqw solid #fff;}
   .vf-corner.br{bottom:1.5cqw;right:1.5cqw;border-bottom:1cqw solid #fff;border-right:1cqw solid #fff;}
-  .cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;}
+  /* 483：拍题取景器接真相机——实时画面铺满取景框，盖住静态纸（纸仅作兜底占位） */
+  .finder-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:1;pointer-events:none;}
+  .finder-video[hidden]{display:none;}
+  .cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4;}
   .cam-flash.on{opacity:.85;transition:none;}
   .cam-flash{transition:opacity .45s ease;}
   .vf-bar{display:flex;align-items:center;justify-content:space-between;padding:1.6cqw 6.5cqw 2.4cqw;flex:none;}
@@ -883,6 +886,7 @@
           <span class="vf-corner bl" aria-hidden="true"></span>
           <span class="vf-corner br" aria-hidden="true"></span>
         </div>
+        <video class="finder-video" id="finderVideo" playsinline autoplay muted hidden></video>
         <div class="cam-flash" id="camFlash"></div>
       </div>
       <div class="vf-bar">
@@ -2182,6 +2186,8 @@
     if (i === current) return;                        // 同屏不重复 render / 重复拉接口
     current = i;
     render();
+    /* 483：第3屏取景器（索引2）接真相机——进屏开后置实时流，离屏一律停流 */
+    if (current === 2) startFinderCamera(); else stopFinderCamera();
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
     if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; loadCardRules(); loadApplications(); loadRecords(); }
     if (current !== 12) { var lp = document.getElementById('logPage'); if (lp) lp.hidden = true; }
@@ -2320,6 +2326,77 @@
     }
   }
 
+  /* --- 483：第3屏取景器接真相机（后置 environment 实时流，只做拍题一种状态） --- */
+  var finderVideo = document.getElementById('finderVideo');
+  var finderStream = null;
+  var finderStarting = false;
+  function stopFinderCamera(){
+    finderStarting = false;
+    if (finderStream) { finderStream.getTracks().forEach(function(t){ t.stop(); }); finderStream = null; }
+    if (finderVideo) { try { finderVideo.pause(); } catch(e){} finderVideo.srcObject = null; finderVideo.hidden = true; }
+  }
+  function finderActive(){
+    return !!(finderStream && finderStream.getVideoTracks().some(function(t){ return t.readyState === 'live'; })
+      && finderVideo && finderVideo.videoWidth > 0);
+  }
+  function startFinderCamera(){
+    if (!finderVideo) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return; /* 底层不可用→快门走系统相机兜底 */
+    if (finderActive() || finderStarting) return;
+    finderStarting = true;
+    navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }, audio:false }).then(function(stream){
+      finderStarting = false;
+      if (current !== 2) { stream.getTracks().forEach(function(t){ t.stop(); }); return; } /* 已经离屏，别留流 */
+      stopFinderCamera();
+      finderStream = stream;
+      finderVideo.srcObject = stream;
+      finderVideo.hidden = false;
+      return finderVideo.play();
+    }).catch(function(){
+      finderStarting = false;
+      if (finderVideo) finderVideo.hidden = true;
+      /* 起不来不在这里刷提示，快门时自然回落到系统相机 */
+    });
+  }
+  function bytesToDataURL(arr){
+    var s = '', chunk = 0x8000;
+    for (var i = 0; i < arr.length; i += chunk) s += String.fromCharCode.apply(null, arr.subarray(i, i + chunk));
+    return 'data:image/jpeg;base64,' + btoa(s);
+  }
+  /* 抓真实帧（canvas）→ JPEG 字节 → 复用绑定码识别 + 发网关链路 */
+  function captureFromFinder(){
+    if (!finderActive()) { openSystemCamera(); return; }
+    var v = finderVideo;
+    var w = v.videoWidth, h = v.videoHeight;
+    var canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    var ctx = canvas.getContext('2d');
+    if (w > h) { /* 横屏摄像头画面裁成取景比例的居中区域，别拉伸变形 */
+      var side = Math.min(w, h), sx = (w - side) / 2, sy = (h - side) / 2;
+      ctx.drawImage(v, sx, sy, side, side, 0, 0, side, side);
+      canvas.width = side; canvas.height = side;
+    } else ctx.drawImage(v, 0, 0, w, h);
+    var f = document.getElementById('camFlash');
+    if (f) { f.classList.add('on'); setTimeout(function(){ f.classList.remove('on'); }, 180); }
+    canvas.toBlob(function(blob){
+      if (!blob) { showCaptureFeedback('拍到的画面读不出来，请再按一次快门'); return; }
+      var reader = new FileReader();
+      reader.onload = function(){
+        var arr = new Uint8Array(reader.result || []);
+        processJpegBytes(arr);
+      };
+      reader.onerror = function(){ showCaptureFeedback('照片读取失败，请重拍'); };
+      reader.readAsArrayBuffer(blob);
+    }, 'image/jpeg', 0.9);
+  }
+  function openSystemCamera(){
+    var input = captureInput;
+    if (!input) { showCaptureFeedback('打不开摄像头，请检查权限后重试'); return; }
+    if (input.files && input.files.length) { capture(); return; }
+    input.onchange = function(){ if (input.files && input.files.length) capture(); };
+    input.click();
+  }
+
   /* --- 第2→3→4屏 --- */
   document.getElementById('toFinder').addEventListener('click', function(){ goTo(2); });
   document.getElementById('finderBack').addEventListener('click', function(){ goTo(1); });
@@ -2362,6 +2439,40 @@
       showCaptureFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
     });
   }
+  /* 拿到 JPEG 字节后的共用链路：先查绑定码，没码再发网关解题。
+     系统相机兜底（capture）和真相机抓帧（captureFromFinder）都走这里 */
+  function processJpegBytes(arr){
+    var dataURL = bytesToDataURL(arr);
+    var proceed = function(){
+      /* 同一张照片（内容哈希相同）重发沿用同一个 key，防服务端重复建 job */
+      handleSolveBlob(new Blob([arr], { type:'image/jpeg' }), solveKeyFor(hashPhoto(arr)));
+    };
+    if (window.BarcodeDetector && /^data:image\/jpeg/i.test(dataURL)) {
+      var image = new Image();
+      image.onload = function(){
+        new window.BarcodeDetector({ formats:['qr_code'] }).detect(image).then(function(codes){
+          var codeText = '';
+          (codes || []).some(function(c){ var v = c && c.rawValue; if (/JianTi[-_]?\d{16}/i.test(v || '')) { codeText = v; return true; } return false; });
+          var match = codeText.match(/JianTi[-_]?(\d{16})/i);
+          if (match) {
+            /* 拍到的是本方绑定码：先绑终端，本次照片不解题 */
+            var id = normalizeTerminalId(match[1]);
+            if (!/^[0-4]\d{15}$/.test(id)) { showCaptureFeedback('绑定码格式不对，请重拍'); return; }
+            api.bindScan({ qr_payload:codeText }).then(function(){
+              showCaptureFeedback('已绑定终端 ' + formatDeviceId(id));
+              loadTerminals();
+            }).catch(function(err){
+              showCaptureFeedback(err && err.message ? err.message : '绑定失败，请稍后再试');
+            });
+            return;
+          }
+          proceed();
+        }).catch(proceed);
+      };
+      image.onerror = proceed;
+      image.src = dataURL;
+    } else proceed();
+  }
   function capture(){
     var f = document.getElementById('camFlash');
     f.classList.add('on');
@@ -2370,43 +2481,10 @@
     if (firstImage) {
       var firstReader = new FileReader();
       firstReader.onload = function(){
-        var fr = new FileReader();
-        fr.onload = function(){
-          var image = new Image();
-          var proceed = function(){
-            var bytes = atob(String(firstReader.result || '').split(',')[1] || '');
-            var arr = new Uint8Array(bytes.length);
-            for (var i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-            /* 同一张照片（内容哈希相同）重发沿用同一个 key，防服务端重复建 job */
-            handleSolveBlob(new Blob([arr], { type:'image/jpeg' }), solveKeyFor(hashPhoto(arr)));
-          };
-          if (window.BarcodeDetector && /^data:image\/jpeg/i.test(String(fr.result || ''))) {
-            image.onload = function(){
-              new window.BarcodeDetector({ formats:['qr_code'] }).detect(image).then(function(codes){
-                var codeText = '';
-                (codes || []).some(function(c){ var v = c && c.rawValue; if (/JianTi[-_]?\d{16}/i.test(v || '')) { codeText = v; return true; } return false; });
-                var match = codeText.match(/JianTi[-_]?(\d{16})/i);
-                if (match) {
-                  /* 拍到的是本方绑定码：先绑终端，本次照片不解题 */
-                  var id = normalizeTerminalId(match[1]);
-                  if (!/^[0-4]\d{15}$/.test(id)) { showCaptureFeedback('绑定码格式不对，请重拍'); return; }
-                  api.bindScan({ qr_payload:codeText }).then(function(){
-                    showCaptureFeedback('已绑定终端 ' + formatDeviceId(id));
-                    loadTerminals();
-                  }).catch(function(err){
-                    showCaptureFeedback(err && err.message ? err.message : '绑定失败，请稍后再试');
-                  });
-                  return;
-                }
-                proceed();
-              }).catch(proceed);
-            };
-            image.onerror = proceed;
-            image.src = String(fr.result || '');
-          } else proceed();
-        };
-        fr.onerror = function(){ showCaptureFeedback('照片读取失败，请重拍'); };
-        fr.readAsDataURL(firstImage);
+        var bytes = atob(String(firstReader.result || '').split(',')[1] || '');
+        var arr = new Uint8Array(bytes.length);
+        for (var i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+        processJpegBytes(arr);
       };
       firstReader.onerror = function(){ showCaptureFeedback('照片读取失败，请重拍'); };
       firstReader.readAsDataURL(firstImage);
@@ -2415,22 +2493,8 @@
     /* 没照片不再拿 96×96 假图顶上去发网关 */
     showCaptureFeedback('还没有照片，请先拍一张题目的照片。');
   }
-  document.getElementById('shutterBtn').addEventListener('click', function(){
-    var input = captureInput;
-    if (input && input.files && input.files.length) { capture(); return; }
-    if (input) {
-      input.onchange = function(){ if (input.files && input.files.length) capture(); };
-      input.click();
-    }
-  });
-  document.getElementById('finderConfirm').addEventListener('click', function(){
-    var input = captureInput;
-    if (input && input.files && input.files.length) { capture(); return; }
-    if (input) {
-      input.onchange = function(){ if (input.files && input.files.length) capture(); };
-      input.click();
-    }
-  });
+  document.getElementById('shutterBtn').addEventListener('click', function(){ captureFromFinder(); });
+  document.getElementById('finderConfirm').addEventListener('click', function(){ captureFromFinder(); });
 
   /* --- 第5/6屏 五道题（与板子稿同一套数据） --- */
   var QUESTIONS = [];
