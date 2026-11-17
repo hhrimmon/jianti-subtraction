@@ -970,8 +970,8 @@
         <div class="settings-grid">
           <div class="box set-box">
             <div class="set-title">网络连接</div>
-            <div class="set-line"><span>SSID</span><b id="ssidValue">Home-702</b></div>
-            <div class="set-line"><span>信号强弱</span><b>强</b></div>
+            <div class="set-line"><span>SSID</span><b id="ssidValue">---</b></div>
+            <div class="set-line"><span>信号强弱</span><b id="signalValue">---</b></div>
             <button type="button" id="configWifiBtn" class="config-wifi-btn">配置 Wi-Fi</button>
           </div>
           <div class="box set-box">
@@ -1962,6 +1962,18 @@
     return String(input || '').replace(/\s/g, '');
   }
   function formatDeviceId(id){ return String(id || '').replace(/(\d{4})(?=\d)/g, '$1 '); }
+  /* 设置屏网络信息：SSID 与信号强弱只认服务端下发的真实值，未联网／查不到显示 ---，
+     不用演示值；SSID 只显前 8 位 */
+  var ssidValue = document.getElementById('ssidValue');
+  var signalValue = document.getElementById('signalValue');
+  function applyNetInfo(data){
+    var env = (data && (data.environment || data.config)) || {};
+    var ssid = (data && (data.ssid || data.wifi_ssid)) || env.ssid || env.wifi_ssid || '';
+    var signal = data && data.signal != null ? data.signal : (data && data.signal_strength != null ? data.signal_strength : null);
+    if (signal == null) signal = env.signal != null ? env.signal : (env.signal_strength != null ? env.signal_strength : null);
+    if (ssidValue) ssidValue.textContent = ssid ? String(ssid).slice(0, 8) : '---';
+    if (signalValue) signalValue.textContent = signal == null || signal === '' ? '---' : String(signal);
+  }
   function envText(){
     var t = document.querySelector('.temp');
     var m = document.querySelector('.memo-text');
@@ -1970,9 +1982,11 @@
       var memo = data && (data.memo || (data.environment && data.environment.memo) || (data.config && data.config.memo) || (data.config && data.config.MEMO));
       if (t) t.textContent = temperature == null || temperature === '' ? '---°C' : (/^-?\d+(\.\d+)?$/.test(String(temperature)) ? temperature + '°C' : String(temperature));
       if (m) m.textContent = (memo == null || memo === '') ? '---' : String(memo);
+      applyNetInfo(data);
     }).catch(function(){
       if (t) t.textContent = '---°C';
       if (m) m.textContent = '---';
+      applyNetInfo(null);
     });
   }
 
@@ -2481,9 +2495,6 @@
   document.getElementById('rBackBtn').addEventListener('click', function(){ goTo(4); });
 
   /* --- 第7屏 设置 --- */
-  var SSID_FULL = 'Home-702-5G';
-  var ssidValue = document.getElementById('ssidValue');
-  if (ssidValue) ssidValue.textContent = SSID_FULL.slice(0, 8);
   var serverMode = 'pub';
   var srvOpts = Array.prototype.slice.call(document.querySelectorAll('.srv-opt'));
   function selectSrv(row){
