@@ -1054,7 +1054,7 @@
           </div>
           <div class="form-wrap">
             <div class="box form-box">
-              <div class="field"><label for="loginPhone">手机号</label><input id="loginPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="输入手机号"></div>
+              <div class="field"><label for="loginPhone">手机号</label><input id="loginPhone" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="输入手机号"></div>
               <div class="field"><label for="loginPwd">密码</label><input id="loginPwd" type="password" autocomplete="current-password" placeholder="输入密码"></div>
             </div>
             <button class="big-btn" id="loginBtn" type="button">登录</button>
@@ -1081,7 +1081,7 @@
           <div class="form-wrap">
             <div class="reg-main" id="regMain">
               <div class="box form-box">
-                <div class="field"><label for="regPhone">手机号</label><input id="regPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="输入手机号"></div>
+                <div class="field"><label for="regPhone">手机号</label><input id="regPhone" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="输入手机号"></div>
                 <div class="field"><label for="regCode">验证码</label><input id="regCode" type="text" inputmode="numeric" placeholder="输入验证码"><button class="mini-btn" id="regCodeBtn" type="button">获取验证码</button></div>
                 <div class="field"><label for="regPwd">密码</label><input id="regPwd" type="password" autocomplete="new-password" placeholder="设置密码"></div>
                 <div class="field"><label style="width:17cqw;">管理员密码</label><div class="pin-row" id="regAdminRow"><input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理员密码第 1 位"><input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理员密码第 2 位"><input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理员密码第 3 位"><input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理员密码第 4 位"><input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理员密码第 5 位"><input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理员密码第 6 位"></div><span class="pin-hint">六位数字</span></div>
@@ -1136,7 +1136,7 @@
             <!-- 重置链路：输入手机号 → 下发验证码 → 设新的六位管理密码并保存到服务端 -->
             <div class="reset-view" id="resetView" hidden>
               <div class="box form-box">
-                <div class="field"><label for="resetPhone">手机号</label><input id="resetPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="输入手机号"></div>
+                <div class="field"><label for="resetPhone">手机号</label><input id="resetPhone" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="输入手机号"></div>
                 <div class="field"><label for="resetCode">验证码</label><input id="resetCode" type="text" inputmode="numeric" placeholder="输入验证码"><button class="mini-btn" id="resetCodeBtn" type="button">获取验证码</button></div>
                 <div class="pin-set-label">设置新的六位管理密码</div>
                 <div class="pin-row" id="rstRow">
@@ -1671,19 +1671,20 @@
           <div class="mcp-feedback" id="mcpFeedback"></div>
         </div>
       </div>
-      <div class="fam-confirm" id="gwLanDialog" hidden role="dialog" aria-modal="true" aria-labelledby="gwLanTitle">
-        <div class="box fam-confirm-card gw-dialog-card">
-          <div class="fam-confirm-title" id="gwLanTitle">自有服务器</div>
-          <div class="gw-ip-field"><label for="gwLanInput">服务器 IP</label><input id="gwLanInput" type="text" inputmode="decimal" autocomplete="off" placeholder="输入自有服务器 IP" aria-label="自有服务器 IP"></div>
-          <div class="gw-dialog-feedback" id="gwLanFeedback"></div>
-          <div class="row-actions">
-            <button type="button" class="ghost" id="gwLanCancel">取消</button>
-            <button type="button" id="gwLanUse">确认</button>
-          </div>
-        </div>
-      </div>
     </section>
 
+  </div>
+  <!-- 自有服务器 IP 弹窗提到 .viewport 这一层：第 7 屏设置与第 16 屏服务端管理共用同一个弹窗、同一份配置 -->
+  <div class="fam-confirm" id="gwLanDialog" hidden role="dialog" aria-modal="true" aria-labelledby="gwLanTitle">
+    <div class="box fam-confirm-card gw-dialog-card">
+      <div class="fam-confirm-title" id="gwLanTitle">自有服务器</div>
+      <div class="gw-ip-field"><label for="gwLanInput">服务器 IP</label><input id="gwLanInput" type="text" inputmode="decimal" autocomplete="off" placeholder="输入自有服务器 IP" aria-label="自有服务器 IP"></div>
+      <div class="gw-dialog-feedback" id="gwLanFeedback"></div>
+      <div class="row-actions">
+        <button type="button" class="ghost" id="gwLanCancel">取消</button>
+        <button type="button" id="gwLanUse">确认</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2157,14 +2158,17 @@
   }
   var prevBtn = document.getElementById('prevBtn'); if (prevBtn) prevBtn.addEventListener('click', function(){ goTo(current - 1); });
   var nextBtn = document.getElementById('nextBtn'); if (nextBtn) nextBtn.addEventListener('click', function(){ goTo(current + 1); });
-  /* 屏间切换只认屏内按钮：不接方向键。安卓软键盘的「下一步」会把焦点往后挪，
-     WebView 的焦点前移可能合成方向键事件，接了方向键就会在注册、登录等屏莫名翻页。
-     输入框里的回车/键盘动作键也只吞掉默认行为，不触发任何跳屏。 */
+  /* 屏间切换只认屏内按钮：不接方向键，也不让软键盘的回车／「下一步」触发任何跳屏。
+     安卓软键盘的「下一步」会把焦点往后挪；焦点落到按钮上后再按回车，WebView 会当成
+     点击这个按钮（于是翻页、乱跳）。这里在捕获阶段把 Enter 的默认行为一律吞掉，
+     只保留输入框自己绑定的回车监听（如每日张数、预支倍率）。 */
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Enter') {
-      var t = e.target;
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) e.preventDefault();
-    }
+    if (e.key !== 'Enter') return;
+    var t = e.target;
+    if (t && t.tagName === 'TEXTAREA') return;
+    e.preventDefault();
+    /* 焦点在按钮上时连冒泡也停掉，避免合成一次按钮点击 */
+    if (t && t.tagName === 'BUTTON') e.stopPropagation();
   }, true);
   /* 屏内跳转按钮（齿轮 / 管理格 / 返回管理等） */
   Array.prototype.forEach.call(document.querySelectorAll('.screen button[data-goto]'), function(b){
@@ -2509,9 +2513,15 @@
     serverMode = row.getAttribute('data-server');
   }
   srvOpts.forEach(function(row){
-    row.addEventListener('click', function(){ selectSrv(row); });
+    /* 第7屏「服务器连接」：官方服务器直接选中；自有服务器先弹 IP 输入框，确认后才生效
+       （与第16屏服务端管理同一份配置，改一处三处同步） */
+    row.addEventListener('click', function(){
+      if (row.getAttribute('data-server') === 'lan') { openGwLanDialog(); return; }
+      selectSrv(row);
+      setGwMode('pub', true);
+    });
     row.addEventListener('keydown', function(e){
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectSrv(row); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); }
     });
   });
   /* 连通测试：走通黑点白勾＋箭头变勾；自有服务器模式第二步「互联网」不测、默认通过 */
@@ -2743,6 +2753,15 @@
     var d = String(p || '').replace(/\D/g, '');
     if (acctPhone && d.length === 11) acctPhone.textContent = d;
   }
+  /* 手机号输入框：只收数字、最多 11 位，多输的当场截掉（登录／注册／重置三处同一套） */
+  ['loginPhone','regPhone','resetPhone'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function(){
+      var v = el.value.replace(/\D/g, '').slice(0, 11);
+      if (v !== el.value) el.value = v;
+    });
+  });
   /* 第 1、2 屏左上角同一个管理入口：已登录直达输密码，未登录先登录 */
   Array.prototype.forEach.call(document.querySelectorAll('.mgmt-entry'), function(b){
     b.addEventListener('click', function(){ goTo(loggedIn ? 10 : 8); });
@@ -3865,14 +3884,18 @@
     if (gwLanDialog) gwLanDialog.hidden = true;
     if (gwLanFeedback) gwLanFeedback.textContent = '';
   }
+  /* 第7屏「自有服务器」与第16屏共用这个弹窗：打开时带回已存的 IP，确认才生效 */
+  function openGwLanDialog(){
+    if (gwLanInput) gwLanInput.value = gwLanIp || '';
+    if (gwLanFeedback) gwLanFeedback.textContent = '';
+    if (gwLanDialog) gwLanDialog.hidden = false;
+    if (gwLanInput) gwLanInput.focus();
+  }
   Array.prototype.forEach.call(document.querySelectorAll('#gwSeg button'), function(b){
     b.addEventListener('click', function(){
       if (b.getAttribute('data-gw') === 'pub') { setGwMode('pub', false); }
-      else { if (gwLanFeedback) gwLanFeedback.textContent = ''; if (gwLanDialog) gwLanDialog.hidden = false; if (gwLanInput) gwLanInput.focus(); }
+      else { openGwLanDialog(); }
     });
-  });
-  srvOpts.forEach(function(row){
-    row.addEventListener('click', function(){ setGwMode(row.getAttribute('data-server'), true); });
   });
   document.getElementById('gwLanCancel').addEventListener('click', closeGwLanDialog);
   /* 自有服务器弹窗：手动输服务器 IP，点确认才生效，横条上「自有服务器」随即变选中态 */
