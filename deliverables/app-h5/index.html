@@ -44,7 +44,6 @@
   /* ---------- 版面：16:9 屏面居中 ---------- */
   .stage{display:flex;align-items:center;justify-content:center;width:100%;min-height:100dvh;padding:0;}
   .track{position:absolute;inset:0;display:flex;transition:transform .38s cubic-bezier(.32,.72,.24,1);}
-  .track.dragging{transition:none;}
   /* 锁屏⇄home 转圈拖动时盖进来的目标屏浮层：在轨道之上、跟着手指走，盖满后底下再无动画切到目标屏 */
   .loop-overlay{position:absolute;inset:0;z-index:40;overflow:hidden;background:var(--screen);pointer-events:none;}
   .loop-overlay[hidden]{display:none;}
@@ -3885,12 +3884,14 @@
   });
 
   /* --- 横滑翻屏（点在按钮/输入框上不触发） ---
-     第 1 屏锁屏与第 2 屏 home 是一个两屏转圈：左右任意方向滑都只在这一对里互换——
-     锁屏左滑进 home、home 再往同一方向滑回锁屏，右滑同理；home 滑屏永远进不了第 3 屏，
-     第 3 屏只能点拍照钮进。转圈拖动时目标屏做成一层浮层、跟着手指从滑动方向那侧盖进来，
-     底层轨道不动，第 3 屏不会被拖出来；其余屏仍走原来的线性拖动。 */
+     只有第 1 屏锁屏与第 2 屏 home 可以左右滑：这两屏是一个两屏转圈，左右任意方向滑
+     都只在这一对里互换——锁屏左滑进 home、home 再往同一方向滑回锁屏，右滑同理；
+     home 滑屏永远进不了第 3 屏，第 3 屏只能点拍照钮进。转圈拖动时目标屏做成一层浮层、
+     跟着手指从滑动方向那侧盖进来，底层轨道不动，第 3 屏不会被拖出来。
+     第 3 屏及其后所有屏（拍摄、处理、思路、结果、设置、领取、登录、注册、管理密码、
+     管理各屏）一律不响应横滑，只能点屏内按钮或返回键进出。 */
   var startX = null, dx = 0;
-  var loopDrag = false, loopTarget = 0, loopBusy = false;
+  var loopTarget = 0, loopBusy = false;
   var loopOverlay = document.createElement('div');
   loopOverlay.className = 'loop-overlay';
   loopOverlay.hidden = true;
@@ -3908,78 +3909,53 @@
   viewport.addEventListener('pointerdown', function(e){
     if (loopBusy) return;
     if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.srv-opt')) return;
+    /* 只有第 1、2 屏可滑，其余屏不接管手势，交给屏内自己的滚动与点击 */
+    if (current !== 0 && current !== 1) return;
     startX = e.clientX; dx = 0;
-    if (current === 0 || current === 1) {
-      loopDrag = true;
-      loopTarget = current === 0 ? 1 : 0;
-      buildLoopOverlay(loopTarget);
-      loopOverlay.hidden = false;
-      loopOverlay.style.transition = 'none';
-      loopOverlay.style.transform = 'translateX(' + viewport.clientWidth + 'px)';
-      return;
-    }
-    /* 拖动前把相邻两屏亮出来，滑的时候才有画面 */
-    [current - 1, current, current + 1].forEach(function(i){
-      if (screens[i]) screens[i].classList.remove('off');
-    });
-    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
-    track.classList.add('dragging');
+    loopTarget = current === 0 ? 1 : 0;
+    buildLoopOverlay(loopTarget);
+    loopOverlay.hidden = false;
+    loopOverlay.style.transition = 'none';
+    loopOverlay.style.transform = 'translateX(' + viewport.clientWidth + 'px)';
   });
   viewport.addEventListener('pointermove', function(e){
     if (startX === null) return;
     dx = e.clientX - startX;
-    if (loopDrag) {
-      var lw = viewport.clientWidth;
-      var x = dx < 0 ? lw + dx : -lw + dx;
-      if (x > lw) x = lw;
-      if (x < -lw) x = -lw;
-      loopOverlay.style.transform = 'translateX(' + x + 'px)';
-      return;
-    }
-    var w = track.clientWidth;
-    var next = -current * w + dx;
-    if (next > 0) next = next * 0.3;
-    if (next < -(total - 1) * w) next = -(total - 1) * w + (next + (total - 1) * w) * 0.3;
-    track.style.transform = 'translateX(' + next + 'px)';
+    var lw = viewport.clientWidth;
+    var x = dx < 0 ? lw + dx : -lw + dx;
+    if (x > lw) x = lw;
+    if (x < -lw) x = -lw;
+    loopOverlay.style.transform = 'translateX(' + x + 'px)';
   });
   function endDrag(){
     if (startX === null) return;
     var w = viewport.clientWidth;
-    if (loopDrag) {
-      loopDrag = false;
-      var d = dx, target = loopTarget;
-      startX = null; dx = 0;
-      if (d === 0) { loopOverlay.hidden = true; return; }
-      if (Math.abs(d) > w * 0.18) {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          loopOverlay.hidden = true;
-          goTo(target);
-          return;
-        }
-        /* 浮层先滑满整屏，底下轨道再无动画切到目标屏，揭开浮层就是目标屏本身 */
-        loopBusy = true;
-        loopOverlay.style.transition = 'transform .28s cubic-bezier(.32,.72,.24,1)';
-        loopOverlay.style.transform = 'translateX(0px)';
-        setTimeout(function(){
-          track.style.transition = 'none';
-          goTo(target);
-          void track.offsetWidth;
-          track.style.transition = '';
-          loopOverlay.hidden = true;
-          loopBusy = false;
-        }, 300);
-      } else {
-        loopOverlay.style.transition = 'transform .25s cubic-bezier(.32,.72,.24,1)';
-        loopOverlay.style.transform = 'translateX(' + (d < 0 ? w : -w) + 'px)';
-        setTimeout(function(){ loopOverlay.hidden = true; }, 270);
-      }
-      return;
-    }
-    track.classList.remove('dragging');
-    if (dx < -w * 0.18) goTo(current + 1);
-    else if (dx > w * 0.18) goTo(current - 1);
-    else render();
+    var d = dx, target = loopTarget;
     startX = null; dx = 0;
+    if (d === 0) { loopOverlay.hidden = true; return; }
+    if (Math.abs(d) > w * 0.18) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        loopOverlay.hidden = true;
+        goTo(target);
+        return;
+      }
+      /* 浮层先滑满整屏，底下轨道再无动画切到目标屏，揭开浮层就是目标屏本身 */
+      loopBusy = true;
+      loopOverlay.style.transition = 'transform .28s cubic-bezier(.32,.72,.24,1)';
+      loopOverlay.style.transform = 'translateX(0px)';
+      setTimeout(function(){
+        track.style.transition = 'none';
+        goTo(target);
+        void track.offsetWidth;
+        track.style.transition = '';
+        loopOverlay.hidden = true;
+        loopBusy = false;
+      }, 300);
+    } else {
+      loopOverlay.style.transition = 'transform .25s cubic-bezier(.32,.72,.24,1)';
+      loopOverlay.style.transform = 'translateX(' + (d < 0 ? w : -w) + 'px)';
+      setTimeout(function(){ loopOverlay.hidden = true; }, 270);
+    }
   }
   viewport.addEventListener('pointerup', endDrag);
   viewport.addEventListener('pointercancel', endDrag);
