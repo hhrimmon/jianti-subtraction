@@ -172,3 +172,7 @@
 | 宽屏适配（H5 三处，本轮一并带上） | 旧版 `.viewport` 用 `flex:1 1 680px` 铺满宽度，2376×1080 上 16:9 舞台高 430px 只露 360px、底部被裁。改为 `width:min(100%,177.78dvh);max-height:100dvh`（按高度定宽、左右留黑）、`.stage` 去 padding 并 `min-height:100dvh` 居中、`html,body` 加 `overflow:hidden;overscroll-behavior:none`。对照：旧版 `_work/apk-shell/headtest-home3.png`（底部裁切） vs 新版 `final-home.png`（完整） |
 | 接口联调（服务端 v5.0.0） | 云盘 `platform-server-v5.zip`（MD5 `4d1d41df5f326f6bb1d6435069cba724`，111,149B）解到 `_work/smoke-local/platform-server-v5`，`JIANTI_HOST=0.0.0.0` 起在 8000、数据目录独立 `data-v5`；App 走 `127.0.0.1:8080` 全链路：注册 201 → 管理密码 200 → 卡管理／账户／终端／服务端 200 → 手动绑定终端 201 → `/solve` 202、轮询 failed（未配 `QWEN_API_KEY`，`model_not_connected`，App 显示「判题服务暂时接不通」）；`pageerror` 0，未再出现 501；手机同 Wi-Fi 经 `192.168.0.108:8000` 健康检查 200 |
 | 未覆盖 | 登录/取卡/拍题等业务链路未在真机复跑（需真服务与账号），本轮只验到壳 + 首页渲染；H5 业务回归仍以 `08eb328` 的 WBC 结论为准 |
+
+### 7.3 设置屏 SSID/信号（措辞更正，2026-11-17）
+
+设置屏 SSID/信号是**预留字段**：`applyNetInfo` 读 `/config/environment` 的 `ssid`/`wifi_ssid`/`signal`/`signal_strength`，但服务端 v5 `records.py` 的 `environment_info()` 只返 `temperature`/`city`/`memo`/`updated_at`，全包无这些字段，APK 壳也没有 WifiManager 桥。因此当前**恒显示 `---`**，有源才显示，不编假数据；真实 SSID/信号需另开原生上报，不在本轮。此前 commit `5f5a0f9` 标题「联网后取服务端真实值」措辞不准确，以此处为准。`signal` 若日后下发 dBm 数字会原样显示，届时再归一化。
