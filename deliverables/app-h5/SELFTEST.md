@@ -159,4 +159,15 @@
 | 联网 | `INTERNET` + `usesCleartextTraffic="true"`；WebView 开 `allowFileAccessFromFileURLs` / `allowUniversalAccessFromFileURLs`，`file://` 页面可直接请求 http 网关 |
 | 相机 | `CAMERA` 权限 + `WebChromeClient.onPermissionRequest` 直接授予 `getUserMedia` |
 | 构建 | 无 Gradle：`aapt2 link` → `javac`（JDK 17）→ `d8` → `jar uf` → `zipalign -f 4` → `apksigner`（调试 keystore，`androiddebugkey`） |
-| 验证 | `apksigner verify` 通过；`jar tf` 见 `assets/index.html`、`classes.dex`、`resources.arsc`；未在真机/模拟器安装运行（本机无 adb 设备） |
+| 验证 | `apksigner verify` 通过；`jar tf` 见 `assets/index.html`、`classes.dex`、`resources.arsc`；真机首启见 7.2 |
+
+### 7.2 闪崩修复与真机首启（2026-11-17，V2046A）
+
+| 项 | 结论 |
+|---|---|
+| 根因 | `hideSystemBars()` 在 `setContentView()` 之前调用：API 30+ 时 `decor.getWindowInsetsController()` 尚未就绪，取到 null 后 `c.hide(...)` 直接 NPE，进程秒退（`ad8bd55` 的包一装就崩） |
+| 修复（只动壳） | `hideSystemBars()` 挪到 `setContentView(web)` 之后，并在 controller 为 null 时直接返回；`onWindowFocusChanged`/`onResume` 照旧重新隐藏。H5 业务逻辑未动 |
+| 真机安装 | `adb devices` 见 `1578472099005SJ  V2046A`；`adb install -r` 成功（vivo「外部来源应用」确认页用 `adb shell input tap` 点「继续安装」，无需浩爷手点）；装后拉回 `base.apk` 解开，`assets/index.html` 与交付 H5 同一 SHA256 |
+| 首启 | 冷启进入首页，无闪退、无黑屏；16:9 舞台居中、左右留黑，底部完整。截图 `_work/apk-shell/final-home.png` |
+| 宽屏适配（H5 两处，本轮一并带上） | 旧版 `.viewport` 用 `flex:1 1 680px` 铺满宽度，2376×1080 上 16:9 舞台高 430px 只露 360px、底部被裁。改为 `width:min(100%,177.78dvh);max-height:100dvh`（按高度定宽、左右留黑）、`.stage` 去 padding 并 `min-height:100dvh` 居中、`html,body` 加 `overflow:hidden;overscroll-behavior:none`。对照：旧版 `_work/apk-shell/headtest-home3.png`（底部裁切） vs 新版 `final-home.png`（完整） |
+| 未覆盖 | 登录/取卡/拍题等业务链路未在真机复跑（需真服务与账号），本轮只验到壳 + 首页渲染；H5 业务回归仍以 `08eb328` 的 WBC 结论为准 |

@@ -7,7 +7,7 @@
 | 文件 | 说明 |
 |---|---|
 | `index.html` | 全部实现，单文件（HTML + CSS + JS），无外部依赖、无 CDN |
-| `jianti-2.0.0-debug.apk` | 安卓 WebView 壳：沉浸式全屏（无状态栏/导航栏）、横屏、屏幕常亮，内置同一份 `index.html`；调试签名 |
+| `jianti-2.0.0-debug.apk` | 安卓 WebView 壳：沉浸式全屏（无状态栏/导航栏）、横屏、屏幕常亮，内置同一份 `index.html`；调试签名。2026-11-17 修 `hideSystemBars()` 调用时机导致的 API 30+ 闪崩，V2046A 真机首启通过（见 SELFTEST 7.2） |
 | `README.md` | 本文件 |
 | `SELFTEST.md` | 自测记录（方法、结果、限制） |
 | `manifest.sha256` | 每个交付文件的 SHA256 |
