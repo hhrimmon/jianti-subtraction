@@ -73,6 +73,10 @@
 38. 家庭组管理员判定读错数据源（WBC 复审打回，P2 回归）——原写法在 `GET /family` 顶层找 `role`／`member_no`，而顶层只有 `family_group_id`／`status`／`admin_member_no`／`members`，导致 `famIsAdmin` 恒 false、管理员按钮不渲染。改为登录/注册成功时缓存 `role`／`member_no`，退出登录、管理口 401、手机验证码重置管理密码（重置成功即退出登录）三处清空缓存；进家庭组时按“有 role 看 role，无 role 用 member_no 比对 admin_member_no”判定。
 39. 预支上限 fallback 成 0（复审 Optional）——`advanceLimit` 与 `dailyTotal` 都为 null 时不再按 0 本地拦，`limit` 置 null、跳过本地上限判断，交给服务端 A5 裁决（服务端返回真实上限/错误码）。
 40. `loadCardRules()` 未登录也发 B12（复审 Optional）——补 `if (!authToken)` 守卫，与同批其他 loader 一致，无 token 直接 `renderCardBalance()` 返回。
+41. 服务端骨架信封与文档不一致（本地联调发现）——骨架报错是 `{"error":{"code","message"}}`、成功时直接返回数据对象（无 `code`），原 `request()` 只判 `code===0`，会把骨架的成功响应一律当失败。改为先取 `error.code/message`，成功响应无 `code` 也按成功取数据（有 `data` 取 `data`，否则整包当数据）。
+42. 注册后没 token 就进管理口（本地联调发现）——骨架 v3 注册响应带 token；若换到不带 token 的实现，`api.register` 会自动用同一手机号/密码补一次登录再返回，避免注册后立刻 401。
+43. 登录/注册后 home 余额一直 `---`（本地联调发现）——登录成功、注册成功点「下一步」时各补一次 `loadCardBalance()` + `loadApplications()`，进管理前余额已是服务端实数。
+44. 进卡管理只拉 B12/B2、不拉 B11（本地联调发现）——`goTo(12)` 补 `loadRecords()`，使用记录三项进屏即按服务端 7 日汇总渲染，不再停在 `---`。
 
 本轮复测（Playwright/Edge headless，1280×720）：16 屏 `pageerror` 0 条；解题卡三处余额、每日张数、公式结果均为 `---`，13 屏两个输入框为空；三组统计 `---`；家庭组标题显示“家庭组ID ---”、成员行显示 `---`，点「邀请成员」真实发出 `POST /family/invite`（`file://` 下跨域失败并如实提示）、不生成邀请码；用量页五行官方模型均 `---`、合计 `---`；已绑定终端 0 行。
 
@@ -91,8 +95,32 @@
 
 以上八个场景 `pageerror` 均为 0 条。
 
-## 5. 未覆盖
+## 5. 本地网关联调（第 41–44 条）
 
-- 真实接口联调：未做（不碰线上配置、不碰 token；`file://` 下跨域被拦）。
+环境：本机起服务端骨架 v3（`python app.py`，`127.0.0.1:8000`，数据目录独立临时目录），App 用 `python -m http.server 8080` 起在 `127.0.0.1:8080`；Playwright/Edge headless 加 `--disable-web-security`（骨架不带 CORS 头）。路径全走可达 UI：home → 服务端管理把网关切到自有服务器并填 `127.0.0.1` → 回 home 管理口 → 注册（真实手机号占位 + 六位管理密码）→ 管理密码 → 卡管理/账户管理/终端管理/服务端管理。
+
+| 步骤 | 请求 | 实测 |
+|---|---|---|
+| 启动 | `GET /config/environment` | 官方地址本机不可达（503），属环境限制，不影响后面走自有网关 |
+| 切网关（未登录） | `POST /config/server` | 401 `unauthorized`，界面不报错，地址已切到本机 |
+| 注册 | `POST /auth/register` | 201，返回 `family_id`、`member_no:1`、`role:"管理员"`、`token` |
+| 注册后立即刷新 | `POST /cards/check` | 200 `daily_cards:5, advance_ratio:0, balance:5, total_available:5`；home 显示 `5 / 5 张` |
+| 注册后立即刷新 | `GET /applications?status=pending` | 403 `admin_password_required`（未验管理密码，符合预期） |
+| 管理密码 | `POST /auth/admin-password/verify` | 200 `verified:true` |
+| 卡管理 | `GET /cards/rules` | 200 同 A3 口径，13 屏每日张数 `5`、预支倍率 `0`、公式 `= 5 张` |
+| 卡管理 | `GET /applications?status=pending` | 200 `items:[]`，界面「暂无申请」 |
+| 卡管理 | `GET /records?range=7d` | 200 `summary` 全 0，使用记录三项 `0（次）/0（道）/0（张）` |
+| 账户管理 | `GET /family` | 200 `family_group_id:23036673`、`admin_member_no:1`、成员 1 为管理员，删除按钮可见 |
+| 终端管理 | `GET /terminals` | 200 `items:[]`，界面 0 行（空列表不编设备号） |
+| 服务端管理 | — | 网关设置/模型管理正常渲染 |
+
+整条链路 `pageerror` 0 条；`console.error` 只有上述 503/401/403 三条，均为预期状态码，不是脚本异常。
+
+联调中发现的**服务端（v3 骨架）问题**（不是 App 问题，App 未改服务端）：报错早退路径（401/403）没读请求体，keep-alive 连接上残留 body 会把下一个请求顶掉，服务端回 `501 Unsupported method ('{"custom_ip":...}POST')`，浏览器复用连接时注册必然失败。本地测试副本已临时补“发响应前把未读 body 读掉”一行洞（仅测试目录，不在交付内）；正式服务端需确认是否已修。
+
+## 6. 未覆盖
+
+- 线上官方服务器：本机出站被挡（`solve.mhq-ai.xyz:8000` 连不上），未联调；已用本地 v3 网关跑通上述链路。
+- 拍题链路（A1/A2）：需真实终端 token 与已绑定设备，本轮未跑。
 - 真机（vivo X60）：未上，按约定先在模拟环境比对。
 - 原生相机与安装包：本版为 H5，不含原生壳。

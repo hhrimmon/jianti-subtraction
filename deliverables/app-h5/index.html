@@ -1769,7 +1769,14 @@
       .then(function(resp){
         if (timer) clearTimeout(timer);
         return resp.json().catch(function(){ return null; }).then(function(envelope){
+          /* 服务端骨架返回两种信封：文档的 {code,message,data}，以及实际的
+             {error:{code,message}} / 成功时直接给数据对象。这里先归一成 code/message 再判 */
           var code = envelope && envelope.code;
+          var message = envelope && envelope.message;
+          if (envelope && envelope.error && typeof envelope.error === 'object') {
+            code = envelope.error.code;
+            message = envelope.error.message;
+          }
           if (resp.status === 401) {
             /* 终端口与管理口分开处理：终端提示检查绑定、回设置页；管理口清 token 回登录页。
                终端 401 再按码区分「登录失效（40101）」与「未绑定」，不混成一句话 */
@@ -1784,16 +1791,17 @@
             goTo(8);
             throw apiError('登录已失效，请重新登录。', code || 401, 401);
           }
-          if (!resp.ok || !envelope || code !== 0) {
-            var err = apiError(envelope && envelope.message, code, resp.status);
+          if (!resp.ok || !envelope || (code !== undefined && code !== 0)) {
+            var err = apiError(message, code, resp.status);
             err.httpStatus = resp.status;
             if (resp.status === 429) err.retryAfter = Math.max(1, parseInt(resp.headers.get('Retry-After'), 10) || 5);
             /* 40001 设备未绑定：按文档跳设置页，提示绑定 */
             if (opts.terminal && code === 40001) { goTo(6); err.message = '设备未绑定，请先绑定终端。'; }
             throw err;
           }
-          if (resp.ok && (!envelope || envelope.code === undefined)) return envelope || {};
-          return envelope.data || {};
+          /* 文档信封取 data；骨架成功响应本身就是数据对象 */
+          if (envelope && envelope.data !== undefined) return envelope.data;
+          return envelope || {};
         });
       })
       .catch(function(err){
@@ -1899,8 +1907,15 @@
   api.register = function(payload){
     return request('POST', '/auth/register', { body:payload, auth:false }).then(function(data){
       var token = tokenOf(data);
-      if (token) setAuthToken(token);
-      return data;
+      if (token) { setAuthToken(token); return data; }
+      /* 服务端注册响应不带 token：用刚注册的凭据自动登录一次，
+         否则紧接着进管理口会 401；登录失败不影响“注册成功”，退回去手动登录 */
+      return api.login(payload.phone, payload.password).then(function(loginData){
+        var merged = {};
+        Object.keys(data || {}).forEach(function(k){ merged[k] = data[k]; });
+        Object.keys(loginData || {}).forEach(function(k){ merged[k] = loginData[k]; });
+        return merged;
+      }).catch(function(){ return data; });
     });
   };
   api.sendCode = function(phone, purpose){ return request('POST', '/auth/send-code', { body:{ phone:phone, purpose:purpose }, auth:false }); };
@@ -2104,7 +2119,7 @@
     current = i;
     render();
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
-    if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; loadCardRules(); loadApplications(); }
+    if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; loadCardRules(); loadApplications(); loadRecords(); }
     if (current !== 12) { var lp = document.getElementById('logPage'); if (lp) lp.hidden = true; }
     /* 第14屏家庭组、第15屏终端管理：进屏按服务端现取，本地不写死名单／设备号 */
     if (current === 13) loadFamily();
@@ -2721,6 +2736,8 @@
       setAuthIdentity(data);
       renderAcctPhone(phone);
       fb.textContent = '';
+      /* 登录后立刻按服务端刷新卡余额与待批申请，home 的「今日剩余」不再是 --- */
+      loadCardBalance(); loadApplications();
       goTo(10);
     }).catch(function(err){ fb.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
       .then(function(){ document.getElementById('loginBtn').disabled = false; });
@@ -2758,6 +2775,8 @@
     document.getElementById('regMain').hidden = false;
     loggedIn = true;
     renderAcctPhone(document.getElementById('regPhone').value);
+    /* 注册成功即已登录：先按服务端刷新卡余额与待批申请，再进管理密码屏 */
+    loadCardBalance(); loadApplications();
     goTo(10);
   });
   document.getElementById('logoutBtn').addEventListener('click', function(){
