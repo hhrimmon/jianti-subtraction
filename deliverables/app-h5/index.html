@@ -2126,6 +2126,40 @@
 
   var screens = Array.prototype.slice.call(document.querySelectorAll('.screen'));
   var hideTimer = null;
+  /* 乱串页根因与三层防护：
+     安卓软键盘的「下一项／下一页」会把焦点推到隐藏屏(.screen.off)里的控件上，
+     WebView 随后把回车合成成对该控件的 click → 隐藏屏的跳转按钮被执行 → 跳到不相干的屏。
+     ① 非当前屏设 inert + tabindex=-1，焦点根本进不去；
+     ② 捕获阶段拦截一切「来自非当前屏」的 click（含 WebView 合成 click）；
+     ③ goTo 对「目标就是当前屏」直接早退，不做重复 render / 重复拉接口。 */
+  function isCurrentScreen(el){
+    if (!el || !el.closest) return true;              // 全局浮层/弹窗不在任何 .screen 内，不拦
+    var s = el.closest('.screen');
+    if (!s) return true;
+    return screens.indexOf(s) === current;            // 实时跟随 current，不等 .off 的 400ms 延迟
+  }
+  function syncFocus(){
+    var ae = document.activeElement;
+    screens.forEach(function(s, i){
+      if (i !== current) {
+        if (ae && s.contains && s.contains(ae) && ae.blur) ae.blur();
+        s.setAttribute('inert', '');
+        var f = s.querySelectorAll('input,button,select,textarea,a[href],[tabindex]');
+        for (var k = 0; k < f.length; k++) {
+          if (!f[k].hasAttribute('data-tab-saved')) f[k].setAttribute('data-tab-saved', f[k].getAttribute('tabindex') || '');
+          f[k].setAttribute('tabindex', '-1');
+        }
+      } else {
+        s.removeAttribute('inert');
+        var f2 = s.querySelectorAll('[data-tab-saved]');
+        for (var j = 0; j < f2.length; j++) {
+          var v = f2[j].getAttribute('data-tab-saved');
+          if (v) f2[j].setAttribute('tabindex', v); else f2[j].removeAttribute('tabindex');
+          f2[j].removeAttribute('data-tab-saved');
+        }
+      }
+    });
+  }
   function applyVisibility(){
     screens.forEach(function(s, i){ s.classList.toggle('off', i !== current); });
   }
@@ -2134,11 +2168,13 @@
     /* 目标屏先亮出来再滑过去，滑完（380ms）把其余屏藏掉，
        非当前屏的控件不参与命中测试 */
     if (screens[current]) screens[current].classList.remove('off');
+    syncFocus();                                      // 焦点限制立即生效，不等 400ms 动画
     if (hideTimer) clearTimeout(hideTimer);
     hideTimer = setTimeout(applyVisibility, 400);
   }
   function goTo(i){
     if (i < 0 || i > total - 1) return;
+    if (i === current) return;                        // 同屏不重复 render / 重复拉接口
     current = i;
     render();
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
@@ -2158,17 +2194,31 @@
   }
   var prevBtn = document.getElementById('prevBtn'); if (prevBtn) prevBtn.addEventListener('click', function(){ goTo(current - 1); });
   var nextBtn = document.getElementById('nextBtn'); if (nextBtn) nextBtn.addEventListener('click', function(){ goTo(current + 1); });
+  /* ② 捕获阶段丢弃一切「来自非当前屏」的 click（含 WebView 把回车合成出的 click）。
+     正常点击当前屏控件、以及不在任何 .screen 里的全局弹窗，都放行。 */
+  document.addEventListener('click', function(e){
+    if (e.target && !isCurrentScreen(e.target)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
   /* 屏间切换只认屏内按钮：不接方向键，也不让软键盘的回车／「下一步」触发任何跳屏。
-     安卓软键盘的「下一步」会把焦点往后挪；焦点落到按钮上后再按回车，WebView 会当成
+     安卓软键盘的「下一项」会把焦点往后挪；焦点落到按钮上后再按回车，WebView 会当成
      点击这个按钮（于是翻页、乱跳）。这里在捕获阶段把 Enter 的默认行为一律吞掉，
-     只保留输入框自己绑定的回车监听（如每日张数、预支倍率）。 */
+     长按/连发的 repeat 也直接掐断；只保留输入框自己绑定的回车监听
+     （如每日张数、预支倍率）。 */
   document.addEventListener('keydown', function(e){
     if (e.key !== 'Enter') return;
     var t = e.target;
     if (t && t.tagName === 'TEXTAREA') return;
     e.preventDefault();
-    /* 焦点在按钮上时连冒泡也停掉，避免合成一次按钮点击 */
-    if (t && t.tagName === 'BUTTON') e.stopPropagation();
+    if (e.repeat) { e.stopPropagation(); return; }     // 连发回车直接吞，不做任何动作
+    /* 焦点在按钮/可点击行上时连冒泡也停掉，避免合成一次按钮点击。
+       点完立即 blur，防止焦点残留被下一次回车再次合成点击。 */
+    if (t && (t.tagName === 'BUTTON' || t.tagName === 'A' || t.getAttribute && t.getAttribute('role') === 'button')) {
+      e.stopPropagation();
+      if (t.blur) t.blur();
+    }
   }, true);
   /* 屏内跳转按钮（齿轮 / 管理格 / 返回管理等） */
   Array.prototype.forEach.call(document.querySelectorAll('.screen button[data-goto]'), function(b){
