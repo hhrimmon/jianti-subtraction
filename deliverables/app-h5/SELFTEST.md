@@ -59,7 +59,7 @@
 24. 设备号编造（P1）——`makeDeviceId()` 生成 16 位纯数字，首位类型码（1 嵌入式/2 安卓/3 苹果/4 鸿蒙/0 其他），后 15 位由本机种子稳定哈希；`localStorage` 只存种子，不存 token。
 25. 官方模型列表/选中态未接 B8/B9（P1）——按 `items[]` + `active_model_id` 渲染，点行调 `selectModel({model_id,line:'official'})` 成功才高亮。
 26. 待批申请只在本地出现（P1）——`loadApplications()` 拉 B2 `status=pending`，每 30 秒轮询，有单弹消息条；没登录不发请求。
-27. 卡规则未回显（P1）——`loadCardRules()` 读 B12 `daily_total`/`advance_ratio`；每日张数 1–9、倍率 0–3 夹紧。
+27. 卡规则未回显（P1）——`loadCardRules()` 读 B13 `daily_total`/`advance_ratio`；每日张数 1–9、倍率 0–3 夹紧。
 28. 用量/使用记录未按文档取数（P1）——用量改 A9 `GET /usage?range=7d|30d|90d`，五个官方模型名映射，合计取 `total_cost`；三组统计取 B11 `summary`，日志用服务端 `date`+`time`，来源默认“终端 1”。
 29. 家庭组 ID 写死 `12345678`（P1）——改为读 `GET /family` 的 `family_group_id`，拿不到显示 `---`。
 30. 家庭组管理员判定靠猜（P2）——改为缓存登录（B16）返回的 `role`／`member_no`：有 `role` 按“管理员/admin”判，没 `role` 就用缓存的 `member_no` 与服务端 `GET /family` 的 `admin_member_no` 比对，两者都没有才判非管理员（`GET /family` 顶层本来就不给 `role`／`member_no`）。
@@ -72,11 +72,11 @@
 37. 启动时未登录也会发管理接口、可能被 401 顶回登录/设置屏（本轮顺带）——`loadRecords`/`loadCardBalance`/`configServer`/`loadApplications` 在无 token 时跳过，界面留 `---`。
 38. 家庭组管理员判定读错数据源（WBC 复审打回，P2 回归）——原写法在 `GET /family` 顶层找 `role`／`member_no`，而顶层只有 `family_group_id`／`status`／`admin_member_no`／`members`，导致 `famIsAdmin` 恒 false、管理员按钮不渲染。改为登录/注册成功时缓存 `role`／`member_no`，退出登录、管理口 401、手机验证码重置管理密码（重置成功即退出登录）三处清空缓存；进家庭组时按“有 role 看 role，无 role 用 member_no 比对 admin_member_no”判定。
 39. 预支上限 fallback 成 0（复审 Optional）——`advanceLimit` 与 `dailyTotal` 都为 null 时不再按 0 本地拦，`limit` 置 null、跳过本地上限判断，交给服务端 A5 裁决（服务端返回真实上限/错误码）。
-40. `loadCardRules()` 未登录也发 B12（复审 Optional）——补 `if (!authToken)` 守卫，与同批其他 loader 一致，无 token 直接 `renderCardBalance()` 返回。
+40. `loadCardRules()` 未登录也发 B13（复审 Optional）——补 `if (!authToken)` 守卫，与同批其他 loader 一致，无 token 直接 `renderCardBalance()` 返回。
 41. 服务端骨架信封与文档不一致（本地联调发现）——骨架报错是 `{"error":{"code","message"}}`、成功时直接返回数据对象（无 `code`），原 `request()` 只判 `code===0`，会把骨架的成功响应一律当失败。改为先取 `error.code/message`，成功响应无 `code` 也按成功取数据（有 `data` 取 `data`，否则整包当数据）。
 42. 注册后没 token 就进管理口（本地联调发现）——骨架 v3 注册响应带 token；若换到不带 token 的实现，`api.register` 会自动用同一手机号/密码补一次登录再返回，避免注册后立刻 401。
 43. 登录/注册后 home 余额一直 `---`（本地联调发现）——登录成功、注册成功点「下一步」时各补一次 `loadCardBalance()` + `loadApplications()`，进管理前余额已是服务端实数。
-44. 进卡管理只拉 B12/B2、不拉 B11（本地联调发现）——`goTo(12)` 补 `loadRecords()`，使用记录三项进屏即按服务端 7 日汇总渲染，不再停在 `---`。
+44. 进卡管理只拉 B13/B2、不拉 B11（本地联调发现）——`goTo(12)` 补 `loadRecords()`，使用记录三项进屏即按服务端 7 日汇总渲染，不再停在 `---`。
 45. A1 上传成功后卡在取景器、不进处理屏也不轮询（本轮冒烟发现）——`handleSolveBlob` 里残留一句 `resetSolve();`，全文没有这个函数，`.then` 里抛 `ReferenceError` 被 `.catch` 当接口错误吞掉。删掉该调用，改为直接 `goTo(3)` + `startWaiting()`。
 46. 取景器提示走 `alert`（本轮冒烟发现）——`showCaptureFeedback` 找 `#finderFeedback`，但第 3 屏没有这个元素，所有提示（没看清、设备未绑定、照片太大等）都落到 `window.alert`。补一个 `.pin-toast` 浮条 `#finderFeedback`，与其它屏一致，几秒自动消失、不占版面。
 47. 手动绑定终端没验证过（本轮补测）——屏 14「输入设备号」填 App 自己算出的 16 位设备号，B15 返回 201 并刷新列表；随后 A1 的 `X-Terminal-Id` 正是这台已绑终端。
@@ -94,12 +94,12 @@
 | 登录无 `role`、`member_no=6` | 判非管理员 | 2 行、0 个操作按钮 |
 | 登录 `role:'成员'`、`member_no=5` | 判非管理员 | 2 行、0 个操作按钮 |
 | 登录既无 `role` 也无 `member_no` | 判非管理员 | 2 行、0 个操作按钮 |
-| 未拿到 A3/B12 点「预支」 | 不被本地 0 上限拦住，真实发 A5 | 发出 `POST /cards/advance`，提示“解题卡已领取，请合理使用。” |
-| 未登录进 13 屏 | 不发 B12 | 只有启动的 `GET /config/environment`，公式 `---` |
+| 未拿到 A3/B13 点「预支」 | 不被本地 0 上限拦住，真实发 A5 | 发出 `POST /cards/advance`，提示“解题卡已领取，请合理使用。” |
+| 未登录进 13 屏 | 不发 B13 | 只有启动的 `GET /config/environment`，公式 `---` |
 
 以上八个场景 `pageerror` 均为 0 条。
 
-## 5. 本地网关联调（第 41–47 条）
+## 5. 本地网关联调（第 41–48 条）
 
 环境：本机起服务端骨架 v4.0.0（`platform-server-v4.zip`，MD5 `b698b18c5e9a7a287c86d729986e658e`，`python app.py`，`127.0.0.1:8000`，数据目录独立临时目录），App 用 `python -m http.server 8080` 起在 `127.0.0.1:8080`；Playwright/Edge headless 加 `--disable-web-security`（骨架不带 CORS 头）。路径全走可达 UI：home → 服务端管理把网关切到自有服务器并填 `127.0.0.1` → 回 home 管理口 → 注册（真实手机号占位 + 六位管理密码）→ 管理密码 → 卡管理/账户管理/终端管理/服务端管理 → 终端管理手动绑定 → 回 home 拍题。
 

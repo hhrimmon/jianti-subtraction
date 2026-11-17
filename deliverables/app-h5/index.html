@@ -2793,7 +2793,7 @@
   var dailyInput = document.getElementById('dailyInput');
   var ratioInput = document.getElementById('ratioInput');
   /* 输数字时只预览等号后的总数，不落库；点「确认」（或回车）才真正保存 */
-  /* 进 13 屏按服务端 B12 回显卡规则；没拉到就保留 --- */
+  /* 进 13 屏按服务端 B13 回显卡规则；没拉到就保留 --- */
   function loadCardRules(){
     if (!authToken) { renderCardBalance(); return Promise.resolve(); }
     return api.getCardRules().then(function(data){
@@ -2816,7 +2816,7 @@
   function confirmFormula(){
     var d = parseInt(dailyInput.value, 10);
     if (isNaN(d)) d = dailyTotal == null ? 5 : dailyTotal;
-    /* 每日张数 1–9，倍率 0–3（接口文档 B12） */
+    /* 每日张数 1–9，倍率 0–3（接口文档 B13） */
     d = Math.max(1, Math.min(9, d));
     var r = parseInt(ratioInput.value, 10);
     if (isNaN(r)) r = advanceRatio;
