@@ -2935,6 +2935,8 @@
     api.resetAdminPassword({ phone:document.getElementById('resetPhone').value.trim(), code:document.getElementById('resetCode').value.trim(), new_admin_password:rst.value() }).then(function(){
       loggedIn = false;
       authToken = '';
+      authRole = '';
+      authMemberNo = null;
       rst.clear();
       document.getElementById('resetPhone').value = '';
       document.getElementById('resetCode').value = '';

@@ -70,7 +70,7 @@
 35. 空白题文案与文档不一致（P2）——`no_question` 提示“这张里没有题目”，`recognition_failed` 仍提示“没看清题目，请重拍”。
 36. 终端 401 只给一句话（P2）——按码区分：`40101` 提示“登录已失效”，未绑定提示“设备未绑定”，都回设置屏并清终端 token。
 37. 启动时未登录也会发管理接口、可能被 401 顶回登录/设置屏（本轮顺带）——`loadRecords`/`loadCardBalance`/`configServer`/`loadApplications` 在无 token 时跳过，界面留 `---`。
-38. 家庭组管理员判定读错数据源（WBC 复审打回，P2 回归）——原写法在 `GET /family` 顶层找 `role`／`member_no`，而顶层只有 `family_group_id`／`status`／`admin_member_no`／`members`，导致 `famIsAdmin` 恒 false、管理员按钮不渲染。改为登录/注册成功时缓存 `role`／`member_no`（退出登录、管理口 401、重置管理密码时清空），进家庭组时按“有 role 看 role，无 role 用 member_no 比对 admin_member_no”判定。
+38. 家庭组管理员判定读错数据源（WBC 复审打回，P2 回归）——原写法在 `GET /family` 顶层找 `role`／`member_no`，而顶层只有 `family_group_id`／`status`／`admin_member_no`／`members`，导致 `famIsAdmin` 恒 false、管理员按钮不渲染。改为登录/注册成功时缓存 `role`／`member_no`，退出登录、管理口 401、手机验证码重置管理密码（重置成功即退出登录）三处清空缓存；进家庭组时按“有 role 看 role，无 role 用 member_no 比对 admin_member_no”判定。
 39. 预支上限 fallback 成 0（复审 Optional）——`advanceLimit` 与 `dailyTotal` 都为 null 时不再按 0 本地拦，`limit` 置 null、跳过本地上限判断，交给服务端 A5 裁决（服务端返回真实上限/错误码）。
 40. `loadCardRules()` 未登录也发 B12（复审 Optional）——补 `if (!authToken)` 守卫，与同批其他 loader 一致，无 token 直接 `renderCardBalance()` 返回。
 
