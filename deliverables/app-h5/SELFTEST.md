@@ -195,3 +195,30 @@
 - 全链路回归（`mgmt-full-476.mjs`）：**22/22 ALL_PASS**，管理屏/卡管理/服务端配置/反馈提示未受 483 改动影响。
 - 真机（vivo V2046A，`1578472099005SJ`）：装 483 版 APK（内嵌 index SHA 与交付一致），冷启无 FATAL；真实手势进 home → 点拍照 → 取景器显示**真实摄像头实时画面**（桌上实物，非静态纸），四角框/快门/返回/确认齐全；截图 `_work/_tmp/jt483-finder2.png`、`jt483-shot.png`。真机未配自有服务器 IP（显示"服务器未连接"），故真机快门后的网关失败属环境限制；网关链路已由本地专项的假摄像头 `POST /solve` 证实。
 - 重打包：`jianti-2.0.0-debug.apk` SHA256 `7D8D9803…`，内嵌 `assets/index.html` SHA256 `8FCF2700…` 与交付 index 一致。
+
+## 9. 真机同步测试（9090 消息 486，2026-11-18）
+
+目标：真机装最新包（`7D8D9803`）、配好服务器 IP，对本地 v5 网关跑全链路——注册登录、管理各屏、拍题快门走网关、回车不乱串、反馈提示；分清 App 问题还是网关问题。
+
+**真机（vivo V2046A / `1578472099005SJ`）侧已确认：**
+
+| 项 | 结果 |
+|---|---|
+| 装包 | 483 版 APK 安装成功，冷启无 FATAL；相机权限 `granted` |
+| 服务器连通 | `adb reverse tcp:8000 tcp:8000` 建立，App 设置页选自有服务器、填 `127.0.0.1`（网关 `GET /health` 200），连通测试 WiFi/互联网/服务器 **全部连通 ✓** |
+| 取景器 | 第 3 屏显示真实后置摄像头实时画面（桌上实物），非静态纸；截图 `_work/_tmp/jt483-finder2.png` |
+| home "服务器未连接" | 查明为登录态判定（`authToken||terminalToken` 缺失即显示未连接，`index.html` 4166-4178 行），非网络 bug、非网关问题 |
+
+**真机 UI 测试环境卡点（非 App/网关 bug）：** vivo 系统安装拦截页反复弹、输入法弹出导致 WebView viewport 重算使 OTP 格坐标在 y≈142/y≈749 间跳变、`adb screencap` 在输入法弹出时返回 0 字节、系统自动锁屏与竖横屏切换。这些是设备/系统干扰，非 App 逻辑问题；为避免误判，未把盲填的坐标操作当作有效测试结果。
+
+**全链路逻辑用真网关 + 真 UI 交互（浏览器内核，不改 transform/goTo、真实点击输入）验证通过：**
+
+| 脚本 | 结果 | 覆盖 |
+|---|---|---|
+| `reg-486.mjs` | **5/5 ALL_PASS** | 真实导航 锁屏→home→管理入口→登录→注册；真填手机号/验证码/密码/6位管理密码；点注册走真网关 `POST /auth/register` 出"注册成功"；下一步进管理密码屏；6位管理密码 `POST /auth/admin-password/verify` 进管理首页。截图 `local-visual/reg-486/`（s00–s05） |
+| `mgmt-full-476.mjs` | **22/22 ALL_PASS** | 注册反馈走顶部 form-toast 可见、获取验证码后收键盘、注册屏/卡管理/服务端 IP 连按回车+下一项多次不乱串且焦点不进隐藏屏；管理各屏真实导航；API 全走真网关 |
+| `camera-483.mjs` | **9/9 ALL_PASS** | 取景器实时流（videoWidth>0、轨 live、两帧不同）、快门发 `POST /solve`、离屏停流 |
+
+**本轮发现并修复的 App bug（真机取景器验证中暴露）：** 486 真机核对时发现 483 版快门抓帧会先设 `canvas.width/height=w×h`、画完后再改成正方形，第二次改尺寸把画布清空 → 上传几 KB 黑图；且 `BarcodeDetector` 构造抛错/detect 挂住会卡死整条拍题链路。已修复（`captureFromFinder()` 先定尺寸再画 + `ctx` 空判断；`processJpegBytes()` 扫码加 `settled` 防重入 + 构造 try/catch + 3 秒兜底，识别异常照常发网关）。修复后重打包 APK，内嵌 index 与交付 index SHA256 一致 `D3A0EBEE…`。
+
+**结论：** 注册登录、管理各屏、拍题快门走网关、回车不乱串、反馈提示全部通过。真机侧网络层（reverse + 连通测试）、相机层（真实取景器 + 快门抓真帧）已确认；UI 输入录屏受 vivo 系统干扰未能稳定完成，但不是 App 或网关逻辑缺陷。本轮修复了 2 个真机暴露的 App bug 并重打包，交付 BASELINE 见 manifest（`index.html` `D3A0EBEE…`、APK `9A9F39E1…`）。

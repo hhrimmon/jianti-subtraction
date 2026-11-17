@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
@@ -2368,14 +2368,17 @@
     if (!finderActive()) { openSystemCamera(); return; }
     var v = finderVideo;
     var w = v.videoWidth, h = v.videoHeight;
+    /* 先按取景比例定好画布尺寸再画：画完再改 canvas.width/height 会把画布清空，
+       抓出来是一张几 KB 的黑图 */
+    var side = Math.min(w, h);
     var canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
+    canvas.width = side; canvas.height = side;
     var ctx = canvas.getContext('2d');
-    if (w > h) { /* 横屏摄像头画面裁成取景比例的居中区域，别拉伸变形 */
-      var side = Math.min(w, h), sx = (w - side) / 2, sy = (h - side) / 2;
+    if (!ctx) return;
+    if (w !== h) { /* 非正方形画面裁中间正方形，别拉伸变形 */
+      var sx = (w - side) / 2, sy = (h - side) / 2;
       ctx.drawImage(v, sx, sy, side, side, 0, 0, side, side);
-      canvas.width = side; canvas.height = side;
-    } else ctx.drawImage(v, 0, 0, w, h);
+    } else ctx.drawImage(v, 0, 0, side, side);
     var f = document.getElementById('camFlash');
     if (f) { f.classList.add('on'); setTimeout(function(){ f.classList.remove('on'); }, 180); }
     canvas.toBlob(function(blob){
@@ -2448,13 +2451,20 @@
       handleSolveBlob(new Blob([arr], { type:'image/jpeg' }), solveKeyFor(hashPhoto(arr)));
     };
     if (window.BarcodeDetector && /^data:image\/jpeg/i.test(dataURL)) {
+      /* 扫码识别只是绑定码的附加判断，不能挡住主链路：
+         构造抛错、detect 挂住、图片解码失败，都要把这张照片照常发网关 */
+      var settled = false;
+      var proceedOnce = function(){ if (settled) return; settled = true; proceed(); };
       var image = new Image();
       image.onload = function(){
-        new window.BarcodeDetector({ formats:['qr_code'] }).detect(image).then(function(codes){
+        var detector;
+        try { detector = new window.BarcodeDetector({ formats:['qr_code'] }); } catch (e) { proceedOnce(); return; }
+        detector.detect(image).then(function(codes){
           var codeText = '';
           (codes || []).some(function(c){ var v = c && c.rawValue; if (/JianTi[-_]?\d{16}/i.test(v || '')) { codeText = v; return true; } return false; });
           var match = codeText.match(/JianTi[-_]?(\d{16})/i);
           if (match) {
+            settled = true; /* 已认出绑定码，这张照片按绑定处理，不再发解题 */
             /* 拍到的是本方绑定码：先绑终端，本次照片不解题 */
             var id = normalizeTerminalId(match[1]);
             if (!/^[0-4]\d{15}$/.test(id)) { showCaptureFeedback('绑定码格式不对，请重拍'); return; }
@@ -2466,11 +2476,12 @@
             });
             return;
           }
-          proceed();
-        }).catch(proceed);
+          proceedOnce();
+        }).catch(proceedOnce);
       };
-      image.onerror = proceed;
+      image.onerror = proceedOnce;
       image.src = dataURL;
+      setTimeout(proceedOnce, 3000); /* 识别卡住也不能让快门没反应，3 秒后照常发网关 */
     } else proceed();
   }
   function capture(){
