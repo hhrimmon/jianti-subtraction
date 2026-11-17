@@ -7,6 +7,7 @@
 | 文件 | 说明 |
 |---|---|
 | `index.html` | 全部实现，单文件（HTML + CSS + JS），无外部依赖、无 CDN |
+| `jianti-2.0.0-debug.apk` | 安卓 WebView 壳：沉浸式全屏（无状态栏/导航栏）、横屏、屏幕常亮，内置同一份 `index.html`；调试签名 |
 | `README.md` | 本文件 |
 | `SELFTEST.md` | 自测记录（方法、结果、限制） |
 | `manifest.sha256` | 每个交付文件的 SHA256 |
@@ -19,6 +20,7 @@
    npx serve .
    ```
 3. 打开后先在设置（第 6 屏）里确认网关：默认官方地址 `solve.mhq-ai.xyz:8000`（界面不显示该地址），也可填自有 IP（端口 8000）。
+4. 装 APK：`adb install -r jianti-2.0.0-debug.apk`。壳内已带 `assets/index.html`，不需要静态服务器；打开即横屏全屏、无状态栏、屏幕不熄灭。壳已开 `allowUniversalAccessFromFileURLs`，`file://` 页面可直接请求 http 网关。
 
 ## 接口对接
 
@@ -68,6 +70,7 @@
 - 提示浮条 `#finderFeedback` 从第 3 屏移到 `.viewport` 下的固定层（与 `#pinToast` 同级、在 `.track` 之上），取景器提示与第 5 屏解题卡解锁的失败提示都可见；此前它挂在第 3 屏内，第 5 屏调用时浮条虽显示却被轨道裁到屏外，用户看不到。
 - 本地联调补跑手动绑定终端（B4）与拍题 A1/A2：真实 JPEG 上传 202、轮询到服务端 `failed` 时回取景器并显示已定文案，不伪造成功。
 - 修信封归一的误伤：只有 HTTP 非 2xx 时顶层 `error` 才算错误信封；2xx 的失败 job 视图本身带 `error`（`no_question`/`model_not_connected` 等），现在按 `status` + `failure_reason` 走已定文案（如「这张里没有题目」「判题服务暂时接不通」），不再把服务端长句直接弹给用户。
+- 沉浸式全屏 + 屏幕常亮（H5 侧兜底）：`viewport-fit=cover` + `theme-color:#000` + `apple-mobile-web-app-status-bar-style:black-translucent`；首次点按申请 `requestFullscreen({navigationUI:'hide'})`；`navigator.wakeLock.request('screen')` 申请常亮，页面可见性恢复时重新申请。壳内由安卓壳设沉浸式与 `FLAG_KEEP_SCREEN_ON` 为主，H5 侧不额外加顶部安全区留白，避免再出一条状态栏缝。
 
 ## 演示值说明（非验收依据）
 
@@ -82,7 +85,8 @@
 
 ## 已知限制
 
-- 本版是 H5 实现，拍照走浏览器 `capture` 能力，不是原生相机封装；安装包（安卓原生壳）未包含在本次交付。
+- 本版是 H5 实现 + 安卓 WebView 壳：拍照走浏览器 `capture` 能力，不是原生相机封装；壳只做全屏沉浸、常亮、相机权限转发，未做原生相机/扫码。
+- 状态栏隐藏与屏幕常亮由壳保证（沉浸式 sticky + `FLAG_KEEP_SCREEN_ON`）；H5 侧另加 Wake Lock 与首次点按全屏兜底，WebView 下 Wake Lock 可能不可用，以壳为准。壳已构建并验签，但本机没有 adb 设备/模拟器，未在真机上跑过。
 - 扫码绑定用 `getUserMedia` + `BarcodeDetector` 实读二维码：浏览器不支持 `BarcodeDetector`（如部分 iOS）时提示改用「输入设备号」，不生成演示码。
 - 接口只按文档接通并做了降级。本轮已用本地网关（v4 包，127.0.0.1:8000）跑通注册→管理密码→四管理屏→手动绑定终端→拍题上传/轮询的真实联调；官方服务器在本机出站被挡（`solve.mhq-ai.xyz:8000` 连不上），线上环境未联调。
 - 拍题链路（A1/A2）已跑通到服务端返回 `failed`：本机网关未配 `QWEN_API_KEY`，判题成功态（题目/思路/结果）未接真实模型；本版未内置任何 token。

@@ -131,4 +131,32 @@
 - 线上官方服务器：本机出站被挡（`solve.mhq-ai.xyz:8000` 连不上），未联调；已用本地 v4 网关跑通上述链路。
 - 判题成功态（A2 返回 `done` 与题目/思路/结果）：本机网关未配 `QWEN_API_KEY`，只跑到 `failed`；成功态的渲染与原型比对见第 3 节，未接真实模型。
 - 真机（vivo X60）：未上，按约定先在模拟环境比对。
-- 原生相机与安装包：本版为 H5，不含原生壳。
+- 原生相机：壳内仍是浏览器 `capture` 取景，未做原生相机封装；APK 壳已随交付（见第 7 节），但本机无 adb 设备/模拟器，未在真机上跑过。
+
+## 7. 本轮补充：沉浸式全屏 / 屏幕常亮（2026-11-17）
+
+按 9090 指令（真机走 APK 壳、不锁屏、全屏不留状态栏）在 H5 侧做兜底，未改服务端：
+
+| 项 | 实现 | 验证方式 |
+|---|---|---|
+| 视口铺满 | `viewport-fit=cover`、`theme-color:#000`、`apple-mobile-web-app-status-bar-style:black-translucent` | 读取 `index.html` head 5–10 行；不加 `safe-area-inset-top` 留白，避免再出现一条顶部缝 |
+| 全屏 | 首次 `pointerdown` 调 `documentElement.requestFullscreen({navigationUI:'hide'})`，已在全屏或壳不支持时直接跳过（异常吞掉，不影响业务） | 内联脚本 `node --check` 通过；全屏在壳内由壳接管，浏览器不支持时走跳过分支 |
+| 常亮 | `navigator.wakeLock.request('screen')`，`release` 后置空，`visibilitychange` 回前台重新申请；不支持或非安全上下文时静默跳过 | 内联脚本 `node --check` 通过；`navigator.wakeLock` 缺失或请求被拒时走 catch，不抛到业务代码 |
+
+本轮已打包 APK 并验签（见 7.1），未在真机/模拟器安装运行；H5 侧未做页面级复跑，上述为代码级检查。
+
+说明：系统状态栏（信号/WiFi 那条缝）与 `FLAG_KEEP_SCREEN_ON` 属 APK 壳职责，H5 无法单独去掉系统状态栏；壳设沉浸式后 H5 不再额外留白。本轮未改服务端、未动线上配置。
+
+### 7.1 APK 壳（本轮已打包）
+
+| 项 | 实现 |
+|---|---|
+| 包名/版本 | `com.jianti.app`，versionName `2.0.0`，minSdk 24 / targetSdk 34 |
+| 全屏 | `setDecorFitsSystemWindows(false)` + `WindowInsetsController.hide(statusBars,navigationBars)`，API 30 以下走 `SYSTEM_UI_FLAG_IMMERSIVE_STICKY`；`onWindowFocusChanged`/`onResume` 重新隐藏 |
+| 常亮 | `FLAG_KEEP_SCREEN_ON` |
+| 横屏 | `screenOrientation="sensorLandscape"`（16:9 舞台） |
+| 内嵌页面 | `assets/index.html`，与交付的 H5 同一份字节（SHA256 一致） |
+| 联网 | `INTERNET` + `usesCleartextTraffic="true"`；WebView 开 `allowFileAccessFromFileURLs` / `allowUniversalAccessFromFileURLs`，`file://` 页面可直接请求 http 网关 |
+| 相机 | `CAMERA` 权限 + `WebChromeClient.onPermissionRequest` 直接授予 `getUserMedia` |
+| 构建 | 无 Gradle：`aapt2 link` → `javac`（JDK 17）→ `d8` → `jar uf` → `zipalign -f 4` → `apksigner`（调试 keystore，`androiddebugkey`） |
+| 验证 | `apksigner verify` 通过；`jar tf` 见 `assets/index.html`、`classes.dex`、`resources.arsc`；未在真机/模拟器安装运行（本机无 adb 设备） |

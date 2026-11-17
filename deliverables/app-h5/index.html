@@ -4,6 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light" />
+<meta name="theme-color" content="#000000" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <link rel="icon" href="data:," />
 <title>简题App设计</title>
 <style>
@@ -4008,6 +4012,24 @@
   } else {
     setServerChip(false);
   }
+  /* --- 屏幕常亮 + 全屏：APK 壳内由壳设沉浸式与 FLAG_KEEP_SCREEN_ON，H5 侧再兜一层 --- */
+  var wakeLock = null;
+  function keepAwake(){
+    if (!navigator.wakeLock || wakeLock || document.hidden) return;
+    navigator.wakeLock.request('screen').then(function(lock){
+      wakeLock = lock;
+      lock.addEventListener('release', function(){ wakeLock = null; });
+    }).catch(function(){});
+  }
+  keepAwake();
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) keepAwake(); });
+  /* 浏览器里没有壳时，首次点按申请全屏；壳内已有全屏时这一步直接跳过 */
+  window.addEventListener('pointerdown', function(){
+    var el = document.documentElement;
+    if (document.fullscreenElement || !el.requestFullscreen) return;
+    el.requestFullscreen({ navigationUI: 'hide' }).catch(function(){});
+  }, { once: true });
+
 })();
 </script>
 
