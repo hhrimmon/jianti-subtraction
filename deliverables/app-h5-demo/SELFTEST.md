@@ -63,3 +63,17 @@
 | 签名 | `apksigner verify --min-sdk-version 24` PASS |
 | APK | 95,086 字节，SHA256 `efe025b16df9d038e2cc4748ec73a794d71e30f2f7e724e2db92db1749ad4d14` |
 
+## 7. 用户上传图标替换重打包（2026-11-18）
+
+- 依据：用户上传 `image.png` 并要求「演示版呢，用这个icon换上」。
+- 改动范围：只换图标源图与五档 `ic_launcher.png`，`index.html` 一字未动；正常版 `../app-h5/` 未动。
+
+| 项 | 值 |
+|---|---|
+| 图标源图 | 用户上传 `image.png`（498×498 PNG，白底黑圆环＋白对号；无 alpha，角点 ARGB 255/255/255/255，中心 ARGB 255/0/0/0） |
+| 图标尺寸 | mdpi 48 / hdpi 72 / xhdpi 96 / xxhdpi 144 / xxxhdpi 192（HighQualityBicubic 重采样） |
+| 内嵌 H5 | `b92eef051ce37b71c46d410dd657eca631687ccf09114c69e34861adb4315cfd`（与 index.html 一致，未变） |
+| 包名 / 版本 / 名称 | `com.jianti.app.demo` / `2.0.0-demo` / 「简题演示」 |
+| 签名 | `apksigner verify --min-sdk-version 24` PASS |
+| APK | 95,086 字节，SHA256 `28a1574436744946fb91ec2f11bbc4923606ad1e9517774997e4415c36d353b9` |
+
