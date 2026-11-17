@@ -78,9 +78,10 @@
 43. 登录/注册后 home 余额一直 `---`（本地联调发现）——登录成功、注册成功点「下一步」时各补一次 `loadCardBalance()` + `loadApplications()`，进管理前余额已是服务端实数。
 44. 进卡管理只拉 B13/B2、不拉 B11（本地联调发现）——`goTo(12)` 补 `loadRecords()`，使用记录三项进屏即按服务端 7 日汇总渲染，不再停在 `---`。
 45. A1 上传成功后卡在取景器、不进处理屏也不轮询（本轮冒烟发现）——`handleSolveBlob` 里残留一句 `resetSolve();`，全文没有这个函数，`.then` 里抛 `ReferenceError` 被 `.catch` 当接口错误吞掉。删掉该调用，改为直接 `goTo(3)` + `startWaiting()`。
-46. 取景器提示走 `alert`（本轮冒烟发现）——`showCaptureFeedback` 找 `#finderFeedback`，但第 3 屏没有这个元素，所有提示（没看清、设备未绑定、照片太大等）都落到 `window.alert`。补一个 `.pin-toast` 浮条 `#finderFeedback`，与其它屏一致，几秒自动消失、不占版面。
-47. 手动绑定终端没验证过（本轮补测）——屏 14「输入设备号」填 App 自己算出的 16 位设备号，B15 返回 201 并刷新列表；随后 A1 的 `X-Terminal-Id` 正是这台已绑终端。
+46. 取景器提示走 `alert`（本轮冒烟发现）——`showCaptureFeedback` 找 `#finderFeedback`，但第 3 屏没有这个元素，所有提示（没看清、设备未绑定、照片太大等）都落到 `window.alert`。补一个 `.pin-toast` 浮条 `#finderFeedback`，几秒自动消失、不占版面；后续复审又发现它挂在第 3 屏内会被轨道裁掉（见第 49 条），已上提到 `.viewport` 固定层。
+47. 手动绑定终端没验证过（本轮补测）——屏 14「输入设备号」填 App 自己算出的 16 位设备号，B4（`POST /terminals/bind`）返回 201 并刷新列表；随后 A1 的 `X-Terminal-Id` 正是这台已绑终端。
 48. 信封归一误伤 2xx 的失败 job（abb 复审 P1）——`request()` 原先把“顶层带对象 error”一律当错误信封，而 v4 失败 job 的 200 轮询视图本身带 `error:{code:'no_question'|'model_not_connected'|...}`，于是被 THROW 成接口错误，`poll()` 里 `status:'failed'` + `failure_reason` 的分支永远走不到：空白题显示服务端长句而不是已定的「这张里没有题目」。改为**只有 `!resp.ok` 时**才把顶层 error 当错误信封，2xx 的 job 视图按数据交给调用方分流。复跑实测：`model_unavailable` 现在显示「判题服务暂时接不通」。
+49. 第 5 屏解题卡解锁失败提示不可见（abb 复审必需项）——`showCaptureFeedback()` 还被第 5 屏 `cardBtn` 的「请先拍题」（无题）与 cardsCheck/cardsDeduct 失败调用，这些调用不切屏，浮条仍在第 3 屏内，`.viewport{overflow:hidden}` + `.track` 平移把它裁到屏外，用户点按钮无任何可见反馈。把 `#finderFeedback` 提到 `.viewport` 下（与 `#pinToast` 同级、`.track` 之外，`z-index:20`），所有跨屏调用都可见；元素缺失时仍回退 `window.alert`。
 
 本轮复测（Playwright/Edge headless，1280×720）：16 屏 `pageerror` 0 条；解题卡三处余额、每日张数、公式结果均为 `---`，13 屏两个输入框为空；三组统计 `---`；家庭组标题显示“家庭组ID ---”、成员行显示 `---`，点「邀请成员」真实发出 `POST /family/invite`（`file://` 下跨域失败并如实提示）、不生成邀请码；用量页五行官方模型均 `---`、合计 `---`；已绑定终端 0 行。
 
@@ -111,7 +112,7 @@
 | 注册后立即刷新 | `POST /cards/check` | 200 `daily_cards:5, advance_ratio:0, balance:5, total_available:5`；home 显示 `5 / 5 张` |
 | 注册后立即刷新 | `GET /applications?status=pending` | 403 `admin_password_required`（未验管理密码，符合预期） |
 | 管理密码 | `POST /auth/admin-password/verify` | 200 `verified:true` |
-| 卡管理 | `GET /cards/rules` | 200 同 A3 口径，13 屏每日张数 `5`、预支倍率 `0`、公式 `= 5 张` |
+| 卡管理 | `GET /cards/rules` | 200 返回 `daily_total/advance_ratio/balance/advanced`（与 A3 的 `daily_cards` 字段名不同），13 屏每日张数 `5`、预支倍率 `0`、公式 `= 5 张` |
 | 卡管理 | `GET /applications?status=pending` | 200 `items:[]`，界面「暂无申请」 |
 | 卡管理 | `GET /records?range=7d` | 200 `summary` 全 0，使用记录三项 `0（次）/0（道）/0（张）` |
 | 账户管理 | `GET /family` | 200 `family_group_id:33417426`、`admin_member_no:1`、成员 1 为管理员，删除按钮可见 |

@@ -54,7 +54,7 @@
 ## 本轮（P0/P1/P2）已改
 
 - 审批按 B1 传 `grant_type`（按张 `cards` / 按倍 `times`）+ `grant_value`，张数 1–9、倍率 1–3；余额以服务端 `balance` 为准。
-- 改密码按 B14/B15 分别传 `type:'login'|'admin'`；重置管理密码验证码 purpose 用 `reset_admin_password`；MCP 登录字段 `captcha_code`，去掉无对应的验证码按钮。
+- 改密码按 B19（`POST /auth/passwords`）分别传 `type:'login'|'admin'`；重置管理密码验证码 purpose 用 `reset_admin_password`；MCP 登录字段 `captcha_code`，去掉无对应的验证码按钮。
 - 服务器配置保存 `server_mode:'custom'`；拍题先判绑定码（`JianTi-` + 16 位），扫到只绑定不解题。
 - 余额、每日张数、预支倍率、已预支、家庭组 ID、家庭组成员、三组统计、用量全部取服务端；拿不到显示 `---`，不再写死 5/5，也不按本地计数顶。
 - 官方模型列表按 B8 `items` + `active_model_id` 渲染，选中调 B9；用量按 A9 五个官方模型名映射，缺项 `---`。
@@ -65,8 +65,8 @@
 - 注册：注册响应不带 token 时自动用同一手机号/密码补一次登录再进管理口，避免注册后立刻 401。
 - 登录/注册成功后立刻按服务端刷新卡余额（A3）与待批申请（B2），home 的「今日剩余」不再停在 `---`；进卡管理同时拉 B11 使用记录（7 日）。
 - 修掉 A1 成功后残留的 `resetSolve()` 调用（该函数不存在，`.then` 抛 `ReferenceError` 被当接口错误吞掉，导致停在取景器、不进处理屏也不轮询）。
-- 第 3 屏补 `#finderFeedback` 浮条：此前该元素不存在，所有取景器提示（没看清、设备未绑定、照片太大等）都落到 `window.alert`；现在与其它屏一致，几秒自动消失、不占版面。
-- 本地联调补跑手动绑定终端（B15）与拍题 A1/A2：真实 JPEG 上传 202、轮询到服务端 `failed` 时回取景器并显示已定文案，不伪造成功。
+- 提示浮条 `#finderFeedback` 从第 3 屏移到 `.viewport` 下的固定层（与 `#pinToast` 同级、在 `.track` 之上），取景器提示与第 5 屏解题卡解锁的失败提示都可见；此前它挂在第 3 屏内，第 5 屏调用时浮条虽显示却被轨道裁到屏外，用户看不到。
+- 本地联调补跑手动绑定终端（B4）与拍题 A1/A2：真实 JPEG 上传 202、轮询到服务端 `failed` 时回取景器并显示已定文案，不伪造成功。
 - 修信封归一的误伤：只有 HTTP 非 2xx 时顶层 `error` 才算错误信封；2xx 的失败 job 视图本身带 `error`（`no_question`/`model_not_connected` 等），现在按 `status` + `failure_reason` 走已定文案（如「这张里没有题目」「判题服务暂时接不通」），不再把服务端长句直接弹给用户。
 
 ## 演示值说明（非验收依据）
