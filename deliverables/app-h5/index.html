@@ -1298,7 +1298,7 @@
               </div>
             </div>
             <div class="box fam-box">
-              <div class="fam-title-row"><div class="fam-title">家庭组管理</div><span class="fam-id num">家庭组ID 12345678</span><div class="fam-title-actions" id="famInviteSlot"><button class="mini-btn" type="button">邀请成员</button></div></div>
+              <div class="fam-title-row"><div class="fam-title">家庭组管理</div><span class="fam-id num" id="famGroupId">家庭组ID ---</span><div class="fam-title-actions" id="famInviteSlot"><button class="mini-btn" type="button">邀请成员</button></div></div>
               <div class="fam-invite-panel" id="famInvitePanel" hidden>
                 <div class="fam-invite-text" id="famInviteText"></div>
                 <div class="fam-invite-actions">
@@ -1654,7 +1654,7 @@
             <div class="field"><label for="mcpSiteInput">网站</label><input id="mcpSiteInput" type="text" inputmode="url" autocomplete="off" placeholder="输入要登录的网站地址"></div>
             <div class="field"><label for="mcpAcctInput">账号</label><input id="mcpAcctInput" type="text" autocomplete="off" placeholder="输入账号"></div>
             <div class="field"><label for="mcpPwdInput">密码</label><input id="mcpPwdInput" type="password" autocomplete="off" placeholder="输入密码"></div>
-            <div class="field"><label for="mcpCodeInput">验证码</label><input id="mcpCodeInput" type="text" autocomplete="off" placeholder="输入验证码"><button type="button" class="mini-btn" id="mcpCodeBtn">获取验证码</button></div>
+            <div class="field"><label for="mcpCodeInput">验证码</label><input id="mcpCodeInput" type="text" autocomplete="off" placeholder="输入验证码"></div>
           </div>
           <button type="button" class="big-btn" id="mcpLoginBtn">登录</button>
           <div class="mcp-risk-wrap">
@@ -1692,7 +1692,28 @@
   var baseURL = DEFAULT_BASE_URL;
   var authToken = '';
   var terminalToken = '';
-  var deviceId = '2864190752386419';
+  /* 设备 ID 按 U10 生成：第 1 位类型码（1 嵌入式、2 安卓、3 苹果、4 鸿蒙、0 其他），
+     后 15 位取本机唯一串的稳定哈希转纯数字；原始串号不上传、不外显。 */
+  function makeDeviceId(){
+    var ua = String(navigator.userAgent || '');
+    var type = /HarmonyOS|OpenHarmony/i.test(ua) ? '4'
+      : /iPhone|iPad|iPod/i.test(ua) ? '3'
+      : /Android/i.test(ua) ? '2'
+      : /Windows|Macintosh|Linux/i.test(ua) ? '1' : '0';
+    var seed = '';
+    try {
+      seed = localStorage.getItem('jt2-device-seed') || '';
+      if (!seed) { seed = String(Date.now()) + Math.random().toString(36).slice(2); localStorage.setItem('jt2-device-seed', seed); }
+    } catch (e) { seed = ua + '|' + (navigator.language || ''); }
+    var h1 = 2166136261, h2 = 5381, s = seed + '|' + ua + '|' + (navigator.language || '');
+    for (var i = 0; i < s.length; i++) {
+      h1 ^= s.charCodeAt(i); h1 = Math.imul(h1, 16777619) >>> 0;
+      h2 = ((h2 << 5) + h2 + s.charCodeAt(i)) >>> 0;
+    }
+    var digits = String(h1) + String(h2);
+    return type + (digits + '000000000000000').slice(0, 15);
+  }
+  var deviceId = makeDeviceId();
   var captureInput = document.createElement('input');
   captureInput.type = 'file'; captureInput.id = 'captureInput'; captureInput.accept = 'image/*'; captureInput.capture = 'environment';
   captureInput.style.display = 'none';
@@ -1739,21 +1760,26 @@
     return fetch(baseURL + path, { method:method, headers:headers, body:body, signal: controller ? controller.signal : undefined })
       .then(function(resp){
         if (timer) clearTimeout(timer);
-        if (resp.status === 401) {
-          /* 终端口与管理口分开处理：终端提示检查绑定、回设置页；管理口清 token 回登录页 */
-          if (opts.terminal) {
-            terminalToken = '';
-            goTo(6);
-            throw apiError('设备未绑定或登录已失效，请检查终端绑定。', 401, 401);
-          }
-          authToken = '';
-          goTo(8);
-          throw apiError('登录已失效，请重新登录。', 401, 401);
-        }
         return resp.json().catch(function(){ return null; }).then(function(envelope){
-          if (!resp.ok || !envelope || envelope.code !== 0) {
-            var err = apiError(envelope && envelope.message, envelope && envelope.code, resp.status);
+          var code = envelope && envelope.code;
+          if (resp.status === 401) {
+            /* 终端口与管理口分开处理：终端提示检查绑定、回设置页；管理口清 token 回登录页。
+               终端 401 再按码区分「登录失效（40101）」与「未绑定」，不混成一句话 */
+            if (opts.terminal) {
+              terminalToken = '';
+              goTo(6);
+              throw apiError(code === 40101 ? '登录已失效，请检查终端绑定。' : '设备未绑定或登录已失效，请检查终端绑定。', code || 401, 401);
+            }
+            authToken = '';
+            goTo(8);
+            throw apiError('登录已失效，请重新登录。', code || 401, 401);
+          }
+          if (!resp.ok || !envelope || code !== 0) {
+            var err = apiError(envelope && envelope.message, code, resp.status);
             err.httpStatus = resp.status;
+            if (resp.status === 429) err.retryAfter = Math.max(1, parseInt(resp.headers.get('Retry-After'), 10) || 5);
+            /* 40001 设备未绑定：按文档跳设置页，提示绑定 */
+            if (opts.terminal && code === 40001) { goTo(6); err.message = '设备未绑定，请先绑定终端。'; }
             throw err;
           }
           if (resp.ok && (!envelope || envelope.code === undefined)) return envelope || {};
@@ -1787,7 +1813,7 @@
     return request('POST', '/solve/' + encodeURIComponent(jobId) + '/skip', { terminal:true, terminalId:terminalId });
   };
   /* 端点总表：按《简题平台接口文档》2026-11-16 版核对，只作对照用，不参与运行。
-     A9（用量查询）、A11（记录上传）文档已停用/作废，不列。 */
+     A11（记录上传）文档已作废，不列。 */
   api.ENDPOINTS = {
     A1:'POST /solve',
     A2:'GET /solve/{job_id}',
@@ -1797,6 +1823,7 @@
     A6:'POST /applications',
     A7:'POST /applications/{id}/withdraw',
     A8:'GET /config/server',
+    A9:'GET /usage?range=7d|30d|90d',
     A10:'GET /config/environment',
     A12:'POST /solve/{job_id}/cancel',
     A13:'POST /solve/{job_id}/skip',
@@ -1881,6 +1908,8 @@
   api.selectModel = function(payload){ return request('POST', '/models/select', { body:payload }); };
   api.saveServerConfig = function(payload){ return request('POST', '/config/server', { body:payload }); };
   api.listRecords = function(params){ return request('GET', '/records?' + qs(params)); };
+  /* A9 用量查询：range 为 7d/30d/90d，返回 items[model, calls, cost] 与 total_cost */
+  api.getUsage = function(range){ return request('GET', '/usage?' + qs({ range:range })); };
   api.saveCardRules = function(payload){ return request('POST', '/cards/rules', { body:payload }); };
   api.getCardRules = function(){ return request('GET', '/cards/rules'); };
   api.getFamily = function(){ return request('GET', '/family'); };
@@ -1918,21 +1947,40 @@
   var current = 0, total = 16;
   var waitTimer = null, waitTimers = [];
 
-  /* 解题卡余额 —— 全稿唯一数据源：改这一个变量，所有屏一起变 */
-  var cardBalance = 5;
-  var dailyTotal = 5;
+  /* 解题卡余额：只认服务端 A3 返回值；未联网前为 null，界面显示 ---，不拿演示值 5 顶 */
+  var cardBalance = null;
+  var dailyTotal = null;
   var advanceRatio = 0;
   /* 服务端下发过预支上限就用它；没下发前按 每日张数×倍率 算 */
   var advanceLimit = null;
   var records = [];
   function renderCardBalance(){
-    Array.prototype.forEach.call(document.querySelectorAll('[data-card-balance]'), function(el){ el.textContent = cardBalance; });
-    Array.prototype.forEach.call(document.querySelectorAll('[data-daily-total]'), function(el){ el.textContent = dailyTotal; });
+    var bal = cardBalance == null ? '---' : cardBalance;
+    var tot = dailyTotal == null ? '---' : dailyTotal;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-card-balance]'), function(el){ el.textContent = bal; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-daily-total]'), function(el){ el.textContent = tot; });
     var fl = document.getElementById('formulaLine');
-    if (fl) fl.textContent = (dailyTotal * (1 + advanceRatio)) + ' 张';
+    if (fl) fl.textContent = dailyTotal == null ? '---' : (dailyTotal * (1 + advanceRatio)) + ' 张';
     /* 13屏两个输入框跟着状态走，避免静态初值与算出来的张数自相矛盾；正在输入时不覆盖 */
-    if (dailyInput && document.activeElement !== dailyInput) dailyInput.value = dailyTotal;
+    if (dailyInput && document.activeElement !== dailyInput) dailyInput.value = dailyTotal == null ? '' : dailyTotal;
     if (ratioInput && document.activeElement !== ratioInput) ratioInput.value = advanceRatio;
+  }
+  /* 启动/回屏时向 A3 查一次余额，以服务端为准；没登录没绑定就不发，界面留 --- */
+  function loadCardBalance(){
+    if (!authToken && !terminalToken) { renderCardBalance(); return Promise.resolve(null); }
+    return api.cardsCheck(null, normalizeTerminalId(deviceId)).then(function(data){
+      if (data && data.balance != null) cardBalance = Math.max(0, Number(data.balance) || 0);
+      if (data && data.daily_total != null) dailyTotal = Math.max(1, Math.min(9, parseInt(data.daily_total, 10) || 5));
+      if (data && data.advance_ratio != null) advanceRatio = Math.max(0, Math.min(3, parseInt(data.advance_ratio, 10) || 0));
+      if (data && data.advanced != null) {
+        advanceCount = Math.max(0, Number(data.advanced) || 0);
+        var ac = document.getElementById('advanceCount');
+        if (ac) ac.textContent = advanceCount;
+      }
+      if (data && data.advance_limit != null) advanceLimit = Math.max(0, Number(data.advance_limit) || 0);
+      renderCardBalance();
+      return data;
+    }).catch(function(){ renderCardBalance(); });
   }
   /* 使用记录：总日志，只记总数；每笔按时间记，列表按日期范围（7日/30日/3个月）数 */
   var evShoot = [], evIdeas = [], evCards = [], evCardsDaily = [], evAdvance = [], evAsk = [];
@@ -1943,41 +1991,43 @@
     arr.forEach(function(ts){ if (now - ts <= limit) n += 1; });
     return n;
   }
+  /* 三组数只认 B11 返回的 summary；没拉到就显示 ---，不拿本地计数顶 */
+  var recordSummary = null;
   function renderDailyUsage(){
+    var s = recordSummary || {};
     var map = {
-      useShoot: countIn(evShoot),
-      useIdeas: countIn(evIdeas),
-      useCards: countIn(evCards),
-      useCardsDaily: countIn(evCardsDaily)
+      useShoot: s.photo_success,
+      useIdeas: s.thinking_count,
+      useCards: s.cards_used
     };
     Object.keys(map).forEach(function(id){
       var el = document.getElementById(id);
-      if (el) el.textContent = map[id];
+      if (el) el.textContent = map[id] == null ? '---' : map[id];
     });
   }
-  /* 日志页：显示范围跟使用记录的时间按钮挂钩——当前选中 rangeDays 是几天就只列几天（7日内／30日内／3个月内），标题与空提示也随所选范围走；按时间从新到旧；每条四列竖着对齐——时间（月、日、时、分都补零，两位数）、来源（终端1／终端2／成员1／成员2／成员3，成员编号与第14屏家庭组里该成员的编号对应）、一句小话说明、多少张固定在最后 */
+  /* 日志页：显示范围跟使用记录的时间按钮挂钩——当前选中 rangeDays 是几天就只列几天（7日内／30日内／3个月内），标题与空提示也随所选范围走；按时间从新到旧；每条四列竖着对齐——时间（服务端 date + time，补零）、来源（终端 1／成员 1 两类）、一句小话说明、数量固定在最后 */
   function logRangeLabel(){
     return rangeDays >= 90 ? '3个月内' : rangeDays + '日内';
+  }
+  function rangeKey(){
+    return rangeDays >= 90 ? '90d' : rangeDays >= 30 ? '30d' : '7d';
   }
   function fmtLogTime(ts){
     var d = new Date(ts);
     function p(n){ return (n < 10 ? '0' : '') + n; }
-    return p(d.getMonth() + 1) + '月' + p(d.getDate()) + '日 ' + p(d.getHours()) + ':' + p(d.getMinutes());
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
   }
   function renderRecords(){
     var list = document.getElementById('recordList');
     if (!list) return;
     var sub = document.getElementById('logSub');
     if (sub) sub.textContent = logRangeLabel() + ' · 按时间从新到旧';
-    var now = Date.now();
-    var windowMs = rangeDays * 86400000;
-    var rows = records.filter(function(r){ return now - r.ts <= windowMs; });
     list.innerHTML = '';
-    rows.forEach(function(r){
+    records.forEach(function(r){
       var row = document.createElement('div');
       row.className = 'log-row num';
       var cols = [
-        ['log-col-time', fmtLogTime(r.ts)],
+        ['log-col-time', r.date && r.time ? r.date + ' ' + r.time : fmtLogTime(r.ts)],
         ['log-col-source', r.source],
         ['log-col-text', r.text],
         ['log-col-delta', r.delta]
@@ -1991,28 +2041,37 @@
       list.appendChild(row);
     });
     var empty = document.getElementById('recordEmpty');
-    if (empty) { empty.textContent = logRangeLabel() + '没有用卡记录'; empty.hidden = rows.length > 0; }
+    if (empty) { empty.textContent = logRangeLabel() + '没有用卡记录'; empty.hidden = records.length > 0; }
   }
   function addRecord(text, delta, source){
-    records.unshift({ ts: Date.now(), text: text, delta: delta, source: source || '终端1' });
+    records.unshift({ ts: Date.now(), text: text, delta: delta, source: source || '终端 1' });
     renderRecords();
   }
   function loadRecords(){
-    return api.listRecords({ days:rangeDays }).then(function(data){
-      var list = (data && (data.records || data.items || data.list)) || [];
+    /* 没登录不拉，避免启动时 401 把界面顶回登录页；三组数留 --- */
+    if (!authToken) { records = []; recordSummary = null; renderDailyUsage(); renderRecords(); return Promise.resolve(); }
+    return api.listRecords({ range:rangeKey(), page:1, page_size:50 }).then(function(data){
+      var list = (data && data.items) || [];
+      recordSummary = data && data.summary ? data.summary : null;
       records = list.map(function(r){
-        var ts = r && (r.created_at || r.time || r.ts);
-        var date = ts ? new Date(ts) : new Date();
+        var dateStr = r && r.date ? String(r.date) : '';
+        var timeStr = r && r.time ? String(r.time) : '';
+        var parsed = dateStr ? new Date((dateStr + ' ' + (timeStr || '00:00:00')).replace(/-/g, '/')) : null;
         return {
-          ts:isNaN(date.getTime()) ? Date.now() : date.getTime(),
-          source:r && (r.source || r.terminal_name || r.operator || r.device_id) || '终端1',
-          text:r && (r.text || r.description || r.action || r.type) || '',
-          delta:r && (r.delta || r.change || r.amount) || ''
+          ts: parsed && !isNaN(parsed.getTime()) ? parsed.getTime() : Date.now(),
+          date: dateStr,
+          time: timeStr,
+          source: r && r.source || '终端 1',
+          text: r && (r.description || r.text) || '',
+          delta: r && r.count != null ? r.count : ''
         };
       });
+      renderDailyUsage();
       renderRecords();
     }).catch(function(){
       records = [];
+      recordSummary = null;
+      renderDailyUsage();
       renderRecords();
     });
   }
@@ -2035,7 +2094,7 @@
     current = i;
     render();
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
-    if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; }
+    if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; loadCardRules(); loadApplications(); }
     if (current !== 12) { var lp = document.getElementById('logPage'); if (lp) lp.hidden = true; }
     /* 第14屏家庭组、第15屏终端管理：进屏按服务端现取，本地不写死名单／设备号 */
     if (current === 13) loadFamily();
@@ -2123,7 +2182,9 @@
         }
         if (status === 'failed') {
           var reason = data && data.failure_reason;
-          toShooter(reason === 'recognition_failed' || reason === 'no_question' ? '没看清题目，请重拍' : '判题服务暂时接不通');
+          if (reason === 'no_question') toShooter('这张里没有题目');
+          else if (reason === 'recognition_failed') toShooter('没看清题目，请重拍');
+          else toShooter('判题服务暂时接不通');
           return;
         }
         polled += 1;
@@ -2153,8 +2214,29 @@
   document.getElementById('toFinder').addEventListener('click', function(){ goTo(2); });
   document.getElementById('finderBack').addEventListener('click', function(){ goTo(1); });
   var activeJob = null;
-  function handleSolveBlob(blob){
-    api.solve(blob, normalizeTerminalId(deviceId), idemKey()).then(function(data){
+  /* 拍题上传：8MB 预检；同一张照片重发沿用同一个 Idempotency-Key（按照片内容哈希）；
+     413 连续两次提示「照片太大，请靠近一点拍」；429 读 Retry-After 由用户手动重试 */
+  var MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+  var tooLargeCount = 0;
+  var solveKeyByHash = {};
+  function hashPhoto(arr){
+    var h = 2166136261;
+    for (var i = 0; i < arr.length; i++) { h ^= arr[i]; h = Math.imul(h, 16777619); }
+    return (h >>> 0).toString(16) + '-' + arr.length;
+  }
+  function solveKeyFor(hash){
+    if (!solveKeyByHash[hash]) solveKeyByHash[hash] = idemKey();
+    return solveKeyByHash[hash];
+  }
+  function rejectPhotoTooLarge(){
+    tooLargeCount += 1;
+    showCaptureFeedback(tooLargeCount >= 2 ? '照片太大，请靠近一点拍' : '照片超过 8MB，请重拍一张');
+  }
+  function handleSolveBlob(blob, key){
+    if (!blob) { showCaptureFeedback('还没有照片，请先拍一张题目的照片。'); return; }
+    if (blob.size > MAX_UPLOAD_BYTES) { rejectPhotoTooLarge(); return; }
+    api.solve(blob, normalizeTerminalId(deviceId), key).then(function(data){
+      tooLargeCount = 0;
       var jobId = data && (data.job_id || data.jobId);
       if (!jobId) { showCaptureFeedback('判题服务暂时接不通'); return; }
       activeJob = { jobId:jobId, terminalId:normalizeTerminalId(deviceId), questions:[], key:currentQuestionKey };
@@ -2162,7 +2244,14 @@
       resetSolve();
       goTo(3);
       startWaiting();
-    }).catch(function(err){ showCaptureFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); });
+    }).catch(function(err){
+      if (err && (err.code === 41301 || err.status === 413 || err.httpStatus === 413)) { rejectPhotoTooLarge(); return; }
+      if (err && (err.code === 42901 || err.status === 429)) {
+        showCaptureFeedback('请求太频繁，请 ' + (err.retryAfter || 5) + ' 秒后再按快门重试。');
+        return;
+      }
+      showCaptureFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+    });
   }
   function capture(){
     var f = document.getElementById('camFlash');
@@ -2179,7 +2268,8 @@
             var bytes = atob(String(firstReader.result || '').split(',')[1] || '');
             var arr = new Uint8Array(bytes.length);
             for (var i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-            handleSolveBlob(new Blob([arr], { type:'image/jpeg' }));
+            /* 同一张照片（内容哈希相同）重发沿用同一个 key，防服务端重复建 job */
+            handleSolveBlob(new Blob([arr], { type:'image/jpeg' }), solveKeyFor(hashPhoto(arr)));
           };
           if (window.BarcodeDetector && /^data:image\/jpeg/i.test(String(fr.result || ''))) {
             image.onload = function(){
@@ -2188,8 +2278,16 @@
                 (codes || []).some(function(c){ var v = c && c.rawValue; if (/JianTi[-_]?\d{16}/i.test(v || '')) { codeText = v; return true; } return false; });
                 var match = codeText.match(/JianTi[-_]?(\d{16})/i);
                 if (match) {
+                  /* 拍到的是本方绑定码：先绑终端，本次照片不解题 */
                   var id = normalizeTerminalId(match[1]);
-                  if (/^[0-4]\d{15}$/.test(id)) setBaseURL('');
+                  if (!/^[0-4]\d{15}$/.test(id)) { showCaptureFeedback('绑定码格式不对，请重拍'); return; }
+                  api.bindScan({ qr_payload:codeText }).then(function(){
+                    showCaptureFeedback('已绑定终端 ' + formatDeviceId(id));
+                    loadTerminals();
+                  }).catch(function(err){
+                    showCaptureFeedback(err && err.message ? err.message : '绑定失败，请稍后再试');
+                  });
+                  return;
                 }
                 proceed();
               }).catch(proceed);
@@ -2205,17 +2303,8 @@
       firstReader.readAsDataURL(firstImage);
       return;
     }
-    var canvas = document.createElement('canvas');
-    canvas.width = 96; canvas.height = 96;
-    var ctx = canvas.getContext('2d');
-    if (ctx) {
-      var grad = ctx.createLinearGradient(0, 0, 96, 96);
-      grad.addColorStop(0, '#dbeafe'); grad.addColorStop(1, '#bfdbfe');
-      ctx.fillStyle = grad; ctx.fillRect(0, 0, 96, 96);
-      ctx.fillStyle = '#fff'; ctx.fillRect(24, 30, 48, 36);
-    }
-    if (canvas.toBlob) canvas.toBlob(function(blob){ if (blob) handleSolveBlob(blob); else showCaptureFeedback('照片读取失败，请重拍'); }, 'image/jpeg', 0.8);
-    else showCaptureFeedback('照片读取失败，请重拍');
+    /* 没照片不再拿 96×96 假图顶上去发网关 */
+    showCaptureFeedback('还没有照片，请先拍一张题目的照片。');
   }
   document.getElementById('shutterBtn').addEventListener('click', function(){
     var input = captureInput;
@@ -2279,7 +2368,7 @@
     if (qOpened[qi] || q.unlocked) {
       cardBtn.textContent = '已解锁';
     } else {
-      cardBtn.innerHTML = '解题卡 <span class="num">' + cardBalance + '</span>张';
+      cardBtn.innerHTML = '解题卡 <span class="num">' + (cardBalance == null ? '---' : cardBalance) + '</span>张';
     }
     cardBtn.classList.toggle('used', !!(qOpened[qi] || q.unlocked));
   }
@@ -2463,9 +2552,28 @@
   });
   document.getElementById('askPushApprove').addEventListener('click', function(){ askDecide(true); });
   document.getElementById('askPushClose').addEventListener('click', function(){ hideAskPush(); });
-  var claimNote = document.getElementById('claimNote');
+  /* B2 拉待批申请：消息条不再只靠本机点「发送申请」才出现；没登录不拉，避免 401 把界面顶回登录页 */
+  function loadApplications(){
+    if (!authToken) return Promise.resolve();
+    return api.listApplications({ status:'pending' }).then(function(data){
+      var list = (data && (data.items || data.applications)) || [];
+      var first = list[0];
+      if (first) {
+        askApplicationId = first.application_id || first.id || '';
+        askPending = true;
+        askNote = '';
+        renderAsk();
+        showAskPush();
+      } else {
+        askPending = false;
+        askApplicationId = '';
+        renderAsk();
+        hideAskPush();
+      }
+    }).catch(function(){});
+  }
   document.getElementById('claimAdvance').addEventListener('click', function(){
-    var limit = advanceLimit != null ? advanceLimit : dailyTotal * advanceRatio;
+    var limit = advanceLimit != null ? advanceLimit : (dailyTotal || 0) * advanceRatio;
     if (limit > 0 && advanceCount >= limit) { claimFeedback.textContent = '今日预支已到上限。'; return; }
     document.getElementById('claimAdvance').disabled = true;
     api.cardsAdvance(normalizeTerminalId(deviceId), idemKey()).then(function(data){
@@ -2476,7 +2584,7 @@
       else if (data && data.remaining_advance != null) advanceLimit = Math.max(0, advanceCount + (Number(data.remaining_advance) || 0));
       advanceCountEl.textContent = advanceCount;
       evAdvance.push(Date.now());
-      addRecord('预支领取解题卡', '+1 张', '终端1');
+      addRecord('预支领取解题卡', '+1 张', '终端 1');
       renderCardBalance(); renderQuestion(); renderDailyUsage();
       claimFeedback.textContent = '解题卡已领取，请合理使用。';
       document.getElementById('claimAdvance').disabled = false;
@@ -2490,7 +2598,7 @@
     if (askPending) return;
     document.getElementById('claimAsk').disabled = true;
     var q = QUESTIONS[qi];
-    api.applicationCreate(activeJob && activeJob.terminalId || normalizeTerminalId(deviceId), idemKey(), q && q.question_id, claimNote && claimNote.value).then(function(data){
+    api.applicationCreate(activeJob && activeJob.terminalId || normalizeTerminalId(deviceId), idemKey(), q && q.question_id).then(function(data){
       askPending = true;
       askNote = '';
       askApplicationId = data && (data.application_id || data.id || data.appId) || '';
@@ -2540,24 +2648,30 @@
     var amt = parseInt(askAmount.value, 10);
     if (approve) {
       if (isNaN(amt) || amt < 1) amt = 1;
-      if (askMode === 'ratio') amt = Math.min(9, amt);
-      else amt = Math.min(99, amt);
+      /* 按张 1–9 张；按倍 1–3 倍（接口文档 B1） */
+      if (askMode === 'ratio') amt = Math.min(3, amt);
+      else amt = Math.min(9, amt);
     }
     var btn = approve ? askApprove : askReject;
     btn.disabled = true;
     var op = approve
-      ? api.approveApplication(askApplicationId, { amount:amt, mode:askMode }, idemKey())
+      ? api.approveApplication(askApplicationId, {
+          grant_type: askMode === 'ratio' ? 'times' : 'cards',
+          grant_value: amt
+        }, idemKey())
       : api.rejectApplication(askApplicationId, idemKey());
     op.then(function(data){
       askPending = false;
       hideAskPush();
       claimCancel.hidden = true;
       if (approve) {
-        var grant = askMode === 'ratio' ? dailyTotal * amt : amt;
+        var grant = data && data.granted_cards != null
+          ? Math.max(0, Number(data.granted_cards) || 0)
+          : (askMode === 'ratio' ? (dailyTotal || 0) * amt : amt);
         askNote = '已批准，解题卡 +' + grant + '。';
         addRecord('批准申请，发放解题卡', '+' + grant + ' 张', '成员1');
         if (data && data.balance != null) cardBalance = Math.max(0, Number(data.balance) || 0);
-        else cardBalance += grant;
+        else cardBalance = (cardBalance || 0) + grant;
         renderCardBalance(); renderQuestion();
       } else {
         askNote = '已不同意。';
@@ -2641,29 +2755,40 @@
   var dailyInput = document.getElementById('dailyInput');
   var ratioInput = document.getElementById('ratioInput');
   /* 输数字时只预览等号后的总数，不落库；点「确认」（或回车）才真正保存 */
+  /* 进 13 屏按服务端 B12 回显卡规则；没拉到就保留 --- */
+  function loadCardRules(){
+    return api.getCardRules().then(function(data){
+      var d = data && data.daily_total != null ? parseInt(data.daily_total, 10) : NaN;
+      var r = data && data.advance_ratio != null ? parseInt(data.advance_ratio, 10) : NaN;
+      if (!isNaN(d)) dailyTotal = Math.max(1, Math.min(9, d));
+      if (!isNaN(r)) advanceRatio = Math.max(0, Math.min(3, r));
+      renderCardBalance();
+    }).catch(function(){ renderCardBalance(); });
+  }
   function previewFormula(){
     var d = parseInt(dailyInput.value, 10);
     var r = parseInt(ratioInput.value, 10);
     if (isNaN(d) || isNaN(r)) return;
-    d = Math.max(0, Math.min(9, d));
+    d = Math.max(1, Math.min(9, d));
     r = Math.max(0, Math.min(3, r));
     var fl = document.getElementById('formulaLine');
     if (fl) fl.textContent = (d * (1 + r)) + ' 张';
   }
   function confirmFormula(){
     var d = parseInt(dailyInput.value, 10);
-    if (isNaN(d)) d = dailyTotal;
-    d = Math.max(0, Math.min(9, d));
+    if (isNaN(d)) d = dailyTotal == null ? 5 : dailyTotal;
+    /* 每日张数 1–9，倍率 0–3（接口文档 B12） */
+    d = Math.max(1, Math.min(9, d));
     var r = parseInt(ratioInput.value, 10);
     if (isNaN(r)) r = advanceRatio;
     r = Math.max(0, Math.min(3, r));
     var btn = document.getElementById('formulaConfirm');
     btn.disabled = true;
-    api.saveCardRules({ daily_total:d, advance_ratio:r }).then(function(){
-      var used = dailyTotal - cardBalance;
+    api.saveCardRules({ daily_total:d, advance_ratio:r }).then(function(data){
       dailyTotal = d;
       advanceRatio = r;
-      cardBalance = Math.max(0, dailyTotal - Math.max(0, used));
+      /* 余额以服务端返回为准，不本地拿旧值重算 */
+      if (data && data.balance != null) cardBalance = Math.max(0, Number(data.balance) || 0);
       dailyInput.value = dailyTotal;
       ratioInput.value = advanceRatio;
       renderCardBalance(); renderQuestion();
@@ -2775,7 +2900,7 @@
     var fb = document.getElementById('resetFeedback');
     if (!/^1\d{10}$/.test(phone)) { fb.textContent = '先填正确的手机号。'; return; }
     document.getElementById('resetCodeBtn').disabled = true;
-    api.sendCode(phone, 'reset').then(function(){ fb.textContent = '验证码已发送。'; })
+    api.sendCode(phone, 'reset_admin_password').then(function(){ fb.textContent = '验证码已发送。'; })
       .catch(function(err){ fb.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
       .then(function(){ document.getElementById('resetCodeBtn').disabled = false; });
   });
@@ -2789,7 +2914,7 @@
     if (!document.getElementById('resetCode').value) { fb.textContent = '先输入验证码。'; return; }
     if (!/^\d{6}$/.test(rst.value())) { rst.focusFirstEmpty(); return; }
     document.getElementById('resetSaveBtn').disabled = true;
-    api.resetAdminPassword({ phone:document.getElementById('resetPhone').value.trim(), sms_code:document.getElementById('resetCode').value.trim(), admin_password:rst.value() }).then(function(){
+    api.resetAdminPassword({ phone:document.getElementById('resetPhone').value.trim(), code:document.getElementById('resetCode').value.trim(), new_admin_password:rst.value() }).then(function(){
       loggedIn = false;
       authToken = '';
       rst.clear();
@@ -2819,6 +2944,12 @@
      member_no＝成员编号，跟人走（转让不换号）；role 管理员／成员／待审批；type 苹果／安卓 */
   var famMembers = [];
   var famIsAdmin = false;
+  var famGroupId = null;
+  /* 家庭组 ID 只认服务端 family_group_id；没拉到显示 --- */
+  function renderFamGroupId(){
+    var el = document.getElementById('famGroupId');
+    if (el) el.textContent = '家庭组ID ' + (famGroupId == null || famGroupId === '' ? '---' : famGroupId);
+  }
   function mapFamilyMember(m){
     var role = (m && (m.role || m.status)) || '';
     return {
@@ -2831,16 +2962,30 @@
     };
   }
   function loadFamily(){
-    if (!authToken) { famMembers = []; famIsAdmin = false; renderFamList(); return; }
+    if (!authToken) { famMembers = []; famIsAdmin = false; famGroupId = null; renderFamGroupId(); renderFamList(); return; }
     api.getFamily().then(function(data){
       var list = (data && (data.members || data.items || data.list)) || [];
       famMembers = list.map(mapFamilyMember);
-      /* 服务端没单给「我是不是管理员」：按名单里管理员那一行判定，真权限仍由服务端 403 兜底 */
-      famIsAdmin = famMembers.some(function(x){ return x.admin; });
+      famGroupId = data && (data.family_group_id != null ? data.family_group_id : data.group_id);
+      /* 管理员判定：优先用登录返回的 data.role；没有就按「我的 member_no 对应行」的 role；
+         不再用「名单里只要有管理员就算我是管理员」这种猜法 */
+      var role = data && (data.role || data.my_role);
+      var myNo = data && (data.my_member_no != null ? data.my_member_no : data.member_no);
+      if (role) {
+        famIsAdmin = role === '管理员' || role === 'admin';
+      } else if (myNo != null) {
+        var mine = famMembers.filter(function(x){ return String(x.memberNo) === String(myNo); })[0];
+        famIsAdmin = !!(mine && mine.admin);
+      } else {
+        famIsAdmin = false;
+      }
+      renderFamGroupId();
       renderFamList();
     }).catch(function(err){
       famMembers = [];
       famIsAdmin = false;
+      famGroupId = null;
+      renderFamGroupId();
       renderFamList();
       setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
     });
@@ -3094,8 +3239,8 @@
         inviteBtn.disabled = true;
         api.inviteFamily({}).then(function(data){
           famInviteText = (data && (data.invite_text || data.inviteText)) || '';
-          var hit = /(\d{6})/.exec(famInviteText);
-          famInviteCode = hit ? hit[1] : null;
+          /* 邀请码以服务端 data.invite_code 为准，不从整段话里正则抠 */
+          famInviteCode = (data && (data.invite_code || data.inviteCode)) || null;
           famInviteMsgClosed = false;
           renderFamList();
           setAcctFeedback(famInviteCode ? '邀请话已生成，点「复制」或「分享」发给对方。' : '服务端未返回邀请码，请稍后再试。');
@@ -3131,7 +3276,7 @@
     if (loginNewPwd.value !== loginNewPwd2.value) { loginPwdFeedback.textContent = '两次输入的新密码不一致。'; loginNewPwd2.focus(); return; }
     var btn = document.getElementById('loginPwdOk');
     btn.disabled = true;
-    api.updatePasswords({ old_password:loginOldPwd.value, login_password:loginNewPwd.value }).then(function(){
+    api.updatePasswords({ type:'login', old_password:loginOldPwd.value, new_password:loginNewPwd.value, new_password_confirm:loginNewPwd2.value }).then(function(){
       closeLoginPwdDialog();
       setAcctFeedback('登录密码已修改。');
     }).catch(function(err){ loginPwdFeedback.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
@@ -3154,7 +3299,7 @@
     if (!/^\d{6}$/.test(mgmtPin.value())) { mgmtPin.focusFirstEmpty(); return; }
     var btn = document.getElementById('mgmtPwdOk');
     btn.disabled = true;
-    api.updatePasswords({ admin_password:mgmtPin.value() }).then(function(){
+    api.updatePasswords({ type:'admin', new_admin_password:mgmtPin.value() }).then(function(){
       mgmtPinVerified = false;
       closeMgmtPwdDialog();
       setAcctFeedback('管理密码已修改。');
@@ -3172,7 +3317,7 @@
   var bindSuccessDialog = document.getElementById('bindSuccessDialog');
   var bindSuccessText = document.getElementById('bindSuccessText');
   var scanBindDone = false;
-  var SCAN_TYPE_BY_CODE = { '2':'安卓', '3':'苹果', '4':'鸿蒙', '0':'其他' };
+  var SCAN_TYPE_BY_CODE = { '1':'嵌入式', '2':'安卓', '3':'苹果', '4':'鸿蒙', '0':'其他' };
   function loadTerminals(){
     if (!authToken) { renderTerminals([]); return; }
     api.listTerminals().then(function(data){
@@ -3324,6 +3469,7 @@
     api.bindTerminal({ device_id:d }).then(function(){
       closeBindNumDialog();
       setAcctFeedback('设备 ' + formatDeviceId(d) + ' 已绑定。');
+      loadTerminals();
     }).catch(function(err){ setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); })
       .then(function(){ btn.disabled = false; });
   });
@@ -3371,16 +3517,50 @@
   /* 官方模型：点行尾「进入 →」打开官方模型选择页；页内二选一是二次选择，只在页内保持高亮，不改主行选中；
      点右上角返回箭头回第 16 屏 */
   var officialModelPage = document.getElementById('officialModelPage');
+  /* B8 取模型列表、B9 提交选择；接口没回来时保留原型静态 5 行可点 */
+  function bindOfficialRow(btn, modelId){
+    btn.addEventListener('click', function(){
+      if (!modelId) {
+        Array.prototype.forEach.call(document.querySelectorAll('#officialSeg .official-row'), function(x){ x.classList.toggle('active', x === btn); });
+        return;
+      }
+      api.selectModel({ model_id:modelId, line:'official' }).then(function(){
+        Array.prototype.forEach.call(document.querySelectorAll('#officialSeg .official-row'), function(x){ x.classList.toggle('active', x === btn); });
+      }).catch(function(err){ setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); });
+    });
+  }
+  function renderModels(data){
+    var list = (data && data.items) || [];
+    var box = document.getElementById('officialSeg');
+    if (!box || !list.length) return;
+    var activeId = data.active_model_id || '';
+    box.innerHTML = '';
+    list.forEach(function(m, i){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'official-row' + (i === list.length - 1 ? ' last' : '');
+      var dot = document.createElement('span'); dot.className = 'model-dot'; dot.setAttribute('aria-hidden', 'true');
+      var nm = document.createElement('span'); nm.className = 'model-row-name'; nm.textContent = m.model_name || m.name || m.model_id || '';
+      btn.appendChild(dot); btn.appendChild(nm);
+      if (m.is_default) { var d = document.createElement('span'); d.className = 'official-default'; d.textContent = '默认'; btn.appendChild(d); }
+      var sel = m.selected || (activeId && String(m.model_id) === String(activeId));
+      btn.classList.toggle('active', !!sel);
+      bindOfficialRow(btn, m.model_id);
+      box.appendChild(btn);
+    });
+  }
+  function loadModels(){
+    return api.listModels().then(renderModels).catch(function(){});
+  }
   document.getElementById('officialApiBtn').addEventListener('click', function(){
     if (officialModelPage) officialModelPage.hidden = false;
+    loadModels();
   });
   document.getElementById('officialBack').addEventListener('click', function(){
     if (officialModelPage) officialModelPage.hidden = true;
   });
   Array.prototype.forEach.call(document.querySelectorAll('#officialSeg .official-row'), function(b){
-    b.addEventListener('click', function(){
-      Array.prototype.forEach.call(document.querySelectorAll('#officialSeg .official-row'), function(x){ x.classList.toggle('active', x === b); });
-    });
+    bindOfficialRow(b, null);
   });
   /* 官方模型余额与充值：接口文档里没有「官方模型余额／充值」端点，未接入前余额一律显示 ¥--；
      点「确认充值」只如实提示未接入，不本地加钱、不假装充值成功 */
@@ -3422,41 +3602,47 @@
     /* 不做本地充值确认：没有支付／余额接口，点了也不许改余额 */
     if (rechargeFeedback) rechargeFeedback.textContent = '充值接口未接入，本次未扣款、余额不变。';
   });
-  /* 用量查询：只渲染服务端 GET /records 返回的实数，没有的项显示 ---；接口不给费用，不编费用 */
+  /* 用量查询：走 A9 GET /usage?range=7d|30d|90d，按 5 个官方模型名取 calls 与 cost，缺项显示 --- */
   var usagePage = document.getElementById('usagePage');
   var usageBalanceAmt = document.getElementById('usageBalanceAmt');
   var usageTotalText = document.getElementById('usageTotalText');
-  var USAGE_KEYS = ['lite','deepseek','qwen','doubao','kimi'];
+  var USAGE_MODEL_NAMES = {
+    lite:'JT Lite 2.0', deepseek:'DeepSeek-V4.1-Flash', qwen:'千问 Qwen 3.8',
+    doubao:'豆包 Seed-2.1-Turbo', kimi:'Kimi-K3.1-Pro'
+  };
   var USAGE_API_RANGE = { d7:'7d', d30:'30d', d90:'90d' };
   var usageRange = 'd7';
-  var usageRecords = [];
+  var usageItems = [];
+  var usageTotalCost = null;
+  function fmtCost(v){ return v == null || isNaN(Number(v)) ? '---' : '¥' + Number(v).toFixed(2); }
   function renderUsageReport(){
-    var totalCalls = 0, has = false;
-    USAGE_KEYS.forEach(function(k){
+    Object.keys(USAGE_MODEL_NAMES).forEach(function(k){
       var row = null;
-      usageRecords.forEach(function(item){
-        if (item && String(item.model || item.name || item.key) === k) row = item;
+      usageItems.forEach(function(item){
+        if (item && String(item.model || item.model_name || '') === USAGE_MODEL_NAMES[k]) row = item;
       });
       var calls = row && row.calls != null ? Number(row.calls) : null;
+      var cost = row && row.cost != null ? Number(row.cost) : null;
       var c = document.querySelector('[data-usage-calls="' + k + '"]');
       var m = document.querySelector('[data-usage-cost="' + k + '"]');
       if (c) c.textContent = calls == null ? '---' : calls + ' 次';
-      if (m) m.textContent = '---';
-      if (calls != null) { totalCalls += calls; has = true; }
+      if (m) m.textContent = fmtCost(cost);
     });
-    if (usageTotalText) usageTotalText.textContent = has ? totalCalls + ' 次' : '---';
+    if (usageTotalText) usageTotalText.textContent = usageTotalCost == null ? '---' : fmtCost(usageTotalCost);
     if (usageBalanceAmt) usageBalanceAmt.textContent = fmtBalance(officialBalance);
   }
   function renderUsageRecords(data){
-    usageRecords = (data && (data.models || data.items)) || [];
+    usageItems = (data && data.items) || [];
+    usageTotalCost = data && data.total_cost != null ? Number(data.total_cost) : null;
     renderUsageReport();
   }
   function loadUsage(){
-    usageRecords = [];
+    usageItems = [];
+    usageTotalCost = null;
     renderUsageReport();
-    api.listRecords({ range: USAGE_API_RANGE[usageRange] || '7d' }).then(renderUsageRecords)
+    api.getUsage(USAGE_API_RANGE[usageRange] || '7d').then(renderUsageRecords)
       .catch(function(err){
-        renderUsageRecords({ models:[] });
+        renderUsageRecords({ items:[] });
         setAcctFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
       });
   }
@@ -3577,17 +3763,7 @@
       mcpRiskBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   }
-  document.getElementById('mcpCodeBtn').addEventListener('click', function(){
-    var site = document.getElementById('mcpSiteInput');
-    var acct = document.getElementById('mcpAcctInput');
-    if (!site.value.trim()) { mcpFeedback.textContent = '先填写网站。'; site.focus(); return; }
-    if (!acct.value.trim()) { mcpFeedback.textContent = '先填写账号。'; acct.focus(); return; }
-    var btn = document.getElementById('mcpCodeBtn');
-    btn.disabled = true;
-    api.sendCode(acct.value.trim(), 'mcp').then(function(){ mcpFeedback.textContent = '验证码已发送。'; })
-      .catch(function(err){ mcpFeedback.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
-      .then(function(){ btn.disabled = false; });
-  });
+  /* C3 是一次性登录：验证码由用户自己填，App 不先发验证码 */
   document.getElementById('mcpLoginBtn').addEventListener('click', function(){
     var site = document.getElementById('mcpSiteInput');
     var acct = document.getElementById('mcpAcctInput');
@@ -3599,7 +3775,7 @@
     if (!code.value.trim()) { mcpFeedback.textContent = '先填写验证码。'; code.focus(); return; }
     var btn = document.getElementById('mcpLoginBtn');
     btn.disabled = true;
-    api.mcpLogin({ site_url:site.value.trim(), account:acct.value.trim(), password:pwd.value, sms_code:code.value.trim() }).then(function(){
+    api.mcpLogin({ site_url:site.value.trim(), account:acct.value.trim(), password:pwd.value, captcha_code:code.value.trim() }).then(function(){
       mcpFeedback.textContent = '';
       if (mcpPage) mcpPage.hidden = true;
     }).catch(function(err){ mcpFeedback.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
@@ -3644,7 +3820,7 @@
     gwLanIp = v;
     closeGwLanDialog();
     setGwMode('lan', false);
-    api.saveServerConfig({ custom_ip:v, server_mode:'lan' }).catch(function(err){
+    api.saveServerConfig({ custom_ip:v, server_mode:'custom' }).catch(function(err){
       gwLanFeedback.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试';
     });
   });
@@ -3764,6 +3940,7 @@
 
 
   renderCardBalance();
+  renderFamGroupId();
   renderQuestion();
   renderResult();
   renderAsk();
@@ -3772,16 +3949,23 @@
   render();
   applyVisibility();
   envText();
+  loadCardBalance();
   loadRecords();
-  api.configServer().then(function(data){
-    setServerChip(true);
-    var ip = data && (data.custom_ip || data.ip);
-    var mode = data && (data.server_mode || data.mode);
-    if (ip) {
-      gwLanIp = String(ip).replace(/^https?:\/\//, '').split('/')[0].replace(/:\d+$/, '');
-      setGwMode('lan', true);
-    } else if (mode === 'pub') setGwMode('pub', true);
-  }).catch(function(){ setServerChip(false); });
+  /* 待批申请每 30 秒拉一次（B2），消息条不再只靠本机点「发送申请」才出现；没登录时内部直接跳过 */
+  setInterval(loadApplications, 30000);
+  if (authToken || terminalToken) {
+    api.configServer().then(function(data){
+      setServerChip(true);
+      var ip = data && (data.custom_ip || data.ip);
+      var mode = data && (data.server_mode || data.mode);
+      if (ip) {
+        gwLanIp = String(ip).replace(/^https?:\/\//, '').split('/')[0].replace(/:\d+$/, '');
+        setGwMode('lan', true);
+      } else if (mode === 'official' || mode === 'pub') setGwMode('pub', true);
+    }).catch(function(){ setServerChip(false); });
+  } else {
+    setServerChip(false);
+  }
 })();
 </script>
 

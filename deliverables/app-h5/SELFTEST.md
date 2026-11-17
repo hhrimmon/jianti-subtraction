@@ -27,7 +27,7 @@
 |---|---|---|
 | 1 锁屏 | 温度 `---°C`、MEMO `---` | 原型是演示值；按 PRD 温度/MEMO 未查到不编数字 |
 | 2 home | 状态胶囊显示“服务器未连接” | 原型写死“已连接”；未连通时如实显示，连上后变“已连接” |
-| 13 卡管理 | 预支倍率 0 倍 = 5 张 | 按裁决预支倍率默认 0（原型 1 是演示值） |
+| 13 卡管理 | 余额/每日张数/公式显示 `---`，输入框留空 | 未拿到 A3 服务端数据；按裁决不显示 5/5 演示值 |
 
 截图目录：`_work/jianti-app-src/shots-1117/`（`proto-screen-*.png` 对照 `impl-screen-*.png`）。
 
@@ -39,7 +39,7 @@
 4. 接口无超时，DNS 挂起时界面状态一直不定——加 8 秒 AbortController 超时与统一提示。
 5. 注册接口路径/字段与接口文档不符（`/users/register`、`login_password`、`sms_code`）——改为 `/auth/register`、`password`、`code`。
 6. 预支倍率为 1（演示值）——按裁决改 0，且倍率为 0 时不本地拦截、交给服务端判定上限。
-7. 第 13 屏两个输入框仍是静态初值（倍率框显示 1，与算出来的 5 张矛盾）——`renderCardBalance()` 里把 `dailyInput` / `ratioInput` 同步为 `dailyTotal` / `advanceRatio`，正在输入时不覆盖；实测初值为 5 / 0，等号后 `5 张`。
+7. 第 13 屏两个输入框仍是静态初值（倍率框显示 1，与算出来的 5 张矛盾）——`renderCardBalance()` 里把 `dailyInput` / `ratioInput` 同步为 `dailyTotal` / `advanceRatio`，正在输入时不覆盖；本轮进一步改为未拿到 A3 时显示 `---`、输入框留空。
 8. 官方基地址缺端口（代码默认 `http://solve.mhq-ai.xyz`，文档写 `solve.mhq-ai.xyz:8000`）——`DEFAULT_BASE_URL` 改为 `http://solve.mhq-ai.xyz:8000`。
 9. 扫码绑定用写死演示码、按序号顺延编号、请求字段与 B5 不符（审查 H1）——改为 `getUserMedia` + `BarcodeDetector` 实读二维码，`api.bindScan({qr_payload})`；读不到载荷只提示、不编设备号，成功后按服务端列表重画。
 10. 两个 `renderUsage` 重名、后者覆盖前者（审查 H2）——拆为 `renderDailyUsage`（每日四项）与 `renderUsageReport`（用量页），调用点按参数依赖分别指向。
@@ -50,9 +50,28 @@
 15. 家庭组写死成员、本地假加入（M7）——进屏 `GET /family` 渲染，通过/拒绝/转让/删除都走接口后重拉；删除 `simulateInviteJoin`、`famJoinRequest` 与写死成员行；未接服务端或没有成员时显示 `---`，不拿演示手机号顶。
 16. 已绑定终端只有 5 个静态行、设备号写死——改为按服务端列表动态建行（多少台建多少行），解绑成功后重拉。
 17. 设置屏账号手机号静态写死 `13800138000`——未登录显示 `—`，登录成功后填真实号码。
-18. L1 端点表被整体删掉——按《简题平台接口文档》2026-11-16 版补回 `api.ENDPOINTS` 对照表（A1–A8、A10、A12、A13、B1–B19、B20 六子端点、C3；A9 停用、A11 作废不列），只作对照、不参与运行。
+18. L1 端点表被整体删掉——按《简题平台接口文档》2026-11-16 版补回 `api.ENDPOINTS` 对照表（A1–A8、A9、A10、A12、A13、B1–B19、B20 六子端点、C3；A11 作废不列），只作对照、不参与运行。
+19. 审批未按 B1 传 `grant_type`/`grant_value`（P0）——按张 `cards` 1–9、按倍 `times` 1–3；余额优先取服务端 `balance`/`granted_cards`，不本地硬加。
+20. 改密码/重置管理密码/验证码 purpose/MCP 字段与文档不符（P0）——改登录密码 `{type:'login',old_password,new_password,new_password_confirm}`、改管理密码 `{type:'admin',new_admin_password}`、重置 `{phone,code,new_admin_password}` + purpose `reset_admin_password`；MCP 登录字段 `captcha_code`，删掉无对应端点的“获取验证码”按钮。
+21. 服务器配置保存字段（P0）——改 `server_mode:'custom'`，读取兼容 `official`/`pub`。
+22. 拍题未先判绑定码（P0）——扫到 `JianTi-` + 16 位只调 `bindScan({qr_payload})` 绑定并刷新终端列表，本次不解题；没扫到才走 A1。
+23. 余额/每日张数/预支倍率/已预支/公式写死演示值（P1）——全部改为 A3 `cardsCheck` 返回值；未拿到时 `---`、输入框留空；总可用按 每日张数×(1+倍率)、预支上限按 每日张数×倍率。
+24. 设备号编造（P1）——`makeDeviceId()` 生成 16 位纯数字，首位类型码（1 嵌入式/2 安卓/3 苹果/4 鸿蒙/0 其他），后 15 位由本机种子稳定哈希；`localStorage` 只存种子，不存 token。
+25. 官方模型列表/选中态未接 B8/B9（P1）——按 `items[]` + `active_model_id` 渲染，点行调 `selectModel({model_id,line:'official'})` 成功才高亮。
+26. 待批申请只在本地出现（P1）——`loadApplications()` 拉 B2 `status=pending`，每 30 秒轮询，有单弹消息条；没登录不发请求。
+27. 卡规则未回显（P1）——`loadCardRules()` 读 B12 `daily_total`/`advance_ratio`；每日张数 1–9、倍率 0–3 夹紧。
+28. 用量/使用记录未按文档取数（P1）——用量改 A9 `GET /usage?range=7d|30d|90d`，五个官方模型名映射，合计取 `total_cost`；三组统计取 B11 `summary`，日志用服务端 `date`+`time`，来源默认“终端 1”。
+29. 家庭组 ID 写死 `12345678`（P1）——改为读 `GET /family` 的 `family_group_id`，拿不到显示 `---`。
+30. 家庭组管理员判定靠猜（P2）——优先 `data.role`，否则按“我的 `member_no` 对应行”的 role，两者都没有就不显示管理员入口。
+31. 手动绑定成功后终端列表不刷新（P2）——成功后调 `loadTerminals()`；扫绑定码路径同样刷新。
+32. 拍题上传缺 8MB 预检/413/429/40001 分支（P2）——超 8MB 不发；413 连续两次提示“照片太大，请靠近一点拍”；429 读 `Retry-After` 提示 N 秒后手动重试；`40001` 跳设置屏提示“设备未绑定，请先绑定终端”。
+33. 同一张照片重发换新幂等键（P2）——按照片内容哈希复用同一个 `Idempotency-Key`。
+34. 没选照片时拿 96×96 假图顶上去发网关（P2）——删除，改为提示“还没有照片，请先拍一张题目的照片。”
+35. 空白题文案与文档不一致（P2）——`no_question` 提示“这张里没有题目”，`recognition_failed` 仍提示“没看清题目，请重拍”。
+36. 终端 401 只给一句话（P2）——按码区分：`40101` 提示“登录已失效”，未绑定提示“设备未绑定”，都回设置屏并清终端 token。
+37. 启动时未登录也会发管理接口、可能被 401 顶回登录/设置屏（本轮顺带）——`loadRecords`/`loadCardBalance`/`configServer`/`loadApplications` 在无 token 时跳过，界面留 `---`。
 
-本轮复测（Playwright/Edge headless，1280×720）：16 屏 `pageerror` 0 条；13 屏输入框 5 / 0、等号后 `5 张`；官方余额 `¥--`、用量合计 `---`、五行用量均 `---`；家庭组显示 `---`（未接服务端不编成员）、点「邀请成员」9 秒后仅提示“服务暂时不可用，请稍后再试”、不生成邀请码；已绑定终端 0 行。
+本轮复测（Playwright/Edge headless，1280×720）：16 屏 `pageerror` 0 条；解题卡三处余额、每日张数、公式结果均为 `---`，13 屏两个输入框为空；三组统计 `---`；家庭组标题显示“家庭组ID ---”、成员行显示 `---`，点「邀请成员」真实发出 `POST /family/invite`（`file://` 下跨域失败并如实提示）、不生成邀请码；用量页五行官方模型均 `---`、合计 `---`；已绑定终端 0 行。
 
 ## 5. 未覆盖
 
