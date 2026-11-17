@@ -401,6 +401,7 @@
   .fam-list{display:flex;flex-direction:column;flex:1;min-height:0;justify-content:flex-start;overflow-y:auto;scrollbar-width:none;}
   .fam-list::-webkit-scrollbar{display:none;}
   .fam-row{display:flex;align-items:center;gap:1.6cqw;padding:.2cqw .2cqw;flex:0 1 6.2cqw;height:6.2cqw;min-height:0;border-bottom:.3cqw solid var(--line);}
+  .fam-empty-row{color:var(--ink-3);font-weight:700;font-size:3.3cqw;}
   .fam-phone{font-size:3.1cqw;font-weight:600;white-space:nowrap;}
   /* 「管理员」是职务标，紧跟在账号后边，不放行尾按钮旁边 */
   .fam-admin-tag{margin-left:0;}
@@ -1785,6 +1786,47 @@
   api.solveSkip = function(jobId, terminalId){
     return request('POST', '/solve/' + encodeURIComponent(jobId) + '/skip', { terminal:true, terminalId:terminalId });
   };
+  /* 端点总表：按《简题平台接口文档》2026-11-16 版核对，只作对照用，不参与运行。
+     A9（用量查询）、A11（记录上传）文档已停用/作废，不列。 */
+  api.ENDPOINTS = {
+    A1:'POST /solve',
+    A2:'GET /solve/{job_id}',
+    A3:'POST /cards/check',
+    A4:'POST /cards/deduct',
+    A5:'POST /cards/advance',
+    A6:'POST /applications',
+    A7:'POST /applications/{id}/withdraw',
+    A8:'GET /config/server',
+    A10:'GET /config/environment',
+    A12:'POST /solve/{job_id}/cancel',
+    A13:'POST /solve/{job_id}/skip',
+    B1:'POST /applications/{id}/approve',
+    B2:'GET /applications',
+    B3:'POST /applications/{id}/reject',
+    B4:'POST /terminals/bind',
+    B5:'POST /terminals/bind-scan',
+    B6:'DELETE /terminals/{device_id}',
+    B7:'GET /terminals',
+    B8:'GET /models',
+    B9:'POST /models/select',
+    B10:'POST /config/server',
+    B11:'GET /records',
+    B12:'POST /cards/rules',
+    B13:'GET /cards/rules',
+    B14:'POST /auth/send-code',
+    B15:'POST /auth/register',
+    B16:'POST /auth/login',
+    B17:'POST /auth/admin-password/verify',
+    B18:'POST /auth/admin-password/reset',
+    B19:'POST /auth/passwords',
+    B20_GET:'GET /family',
+    B20_INVITE:'POST /family/invite',
+    B20_APPROVE:'POST /family/members/{member_no}/approve',
+    B20_REJECT:'POST /family/members/{member_no}/reject',
+    B20_TRANSFER:'POST /family/transfer',
+    B20_DELETE:'DELETE /family/members/{member_no}',
+    C3:'POST /models/mcp/login'
+  };
   api.cardsCheck = function(questionId, terminalId){
     var body = {};
     if (questionId) body.question_id = questionId;
@@ -2897,6 +2939,15 @@
   function renderFamList(){
     if (!famList) return;
     famList.innerHTML = '';
+    /* 未连服务端／没有数据就显示 ---，不拿演示手机号顶（Nyx 04:51 定的） */
+    if (!famMembers.length) {
+      var emptyRow = document.createElement('div');
+      emptyRow.className = 'fam-row fam-empty-row';
+      emptyRow.textContent = '---';
+      famList.appendChild(emptyRow);
+      renderFamInvite(false);
+      return;
+    }
     /* 只有管理员能对其他成员操作：查看者不是管理员时，只列名单（管理员那行照样标「管理员」），
        「转让」「删除」按钮一个都不生成 */
     var canOperate = famViewerIsAdmin();
