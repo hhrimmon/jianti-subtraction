@@ -1771,10 +1771,12 @@
         if (timer) clearTimeout(timer);
         return resp.json().catch(function(){ return null; }).then(function(envelope){
           /* 服务端骨架返回两种信封：文档的 {code,message,data}，以及实际的
-             {error:{code,message}} / 成功时直接给数据对象。这里先归一成 code/message 再判 */
+             {error:{code,message}} / 成功时直接给数据对象。这里先归一成 code/message 再判。
+             注意：只有 HTTP 非 2xx 时顶层 error 才是错误信封；2xx 的 job 视图本身带
+             error 对象（失败任务），当成数据交给调用方按 status/failure_reason 分流 */
           var code = envelope && envelope.code;
           var message = envelope && envelope.message;
-          if (envelope && envelope.error && typeof envelope.error === 'object') {
+          if (!resp.ok && envelope && envelope.error && typeof envelope.error === 'object') {
             code = envelope.error.code;
             message = envelope.error.message;
           }

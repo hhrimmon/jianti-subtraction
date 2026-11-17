@@ -80,6 +80,7 @@
 45. A1 上传成功后卡在取景器、不进处理屏也不轮询（本轮冒烟发现）——`handleSolveBlob` 里残留一句 `resetSolve();`，全文没有这个函数，`.then` 里抛 `ReferenceError` 被 `.catch` 当接口错误吞掉。删掉该调用，改为直接 `goTo(3)` + `startWaiting()`。
 46. 取景器提示走 `alert`（本轮冒烟发现）——`showCaptureFeedback` 找 `#finderFeedback`，但第 3 屏没有这个元素，所有提示（没看清、设备未绑定、照片太大等）都落到 `window.alert`。补一个 `.pin-toast` 浮条 `#finderFeedback`，与其它屏一致，几秒自动消失、不占版面。
 47. 手动绑定终端没验证过（本轮补测）——屏 14「输入设备号」填 App 自己算出的 16 位设备号，B15 返回 201 并刷新列表；随后 A1 的 `X-Terminal-Id` 正是这台已绑终端。
+48. 信封归一误伤 2xx 的失败 job（abb 复审 P1）——`request()` 原先把“顶层带对象 error”一律当错误信封，而 v4 失败 job 的 200 轮询视图本身带 `error:{code:'no_question'|'model_not_connected'|...}`，于是被 THROW 成接口错误，`poll()` 里 `status:'failed'` + `failure_reason` 的分支永远走不到：空白题显示服务端长句而不是已定的「这张里没有题目」。改为**只有 `!resp.ok` 时**才把顶层 error 当错误信封，2xx 的 job 视图按数据交给调用方分流。复跑实测：`model_unavailable` 现在显示「判题服务暂时接不通」。
 
 本轮复测（Playwright/Edge headless，1280×720）：16 屏 `pageerror` 0 条；解题卡三处余额、每日张数、公式结果均为 `---`，13 屏两个输入框为空；三组统计 `---`；家庭组标题显示“家庭组ID ---”、成员行显示 `---`，点「邀请成员」真实发出 `POST /family/invite`（`file://` 下跨域失败并如实提示）、不生成邀请码；用量页五行官方模型均 `---`、合计 `---`；已绑定终端 0 行。
 
@@ -113,11 +114,11 @@
 | 卡管理 | `GET /cards/rules` | 200 同 A3 口径，13 屏每日张数 `5`、预支倍率 `0`、公式 `= 5 张` |
 | 卡管理 | `GET /applications?status=pending` | 200 `items:[]`，界面「暂无申请」 |
 | 卡管理 | `GET /records?range=7d` | 200 `summary` 全 0，使用记录三项 `0（次）/0（道）/0（张）` |
-| 账户管理 | `GET /family` | 200 `family_group_id:15380227`、`admin_member_no:1`、成员 1 为管理员，删除按钮可见 |
+| 账户管理 | `GET /family` | 200 `family_group_id:33417426`、`admin_member_no:1`、成员 1 为管理员，删除按钮可见 |
 | 终端管理 | `GET /terminals` | 200 `items:[]`，界面 0 行（空列表不编设备号） |
-| 手动绑定终端 | `POST /terminals/bind` | 201 `terminal_no:1`、`bind_method:"manual"`、设备号回显 `1173 6586 7843 7577`；浮条“设备 … 已绑定。”，列表随即刷新出 1 行 |
+| 手动绑定终端 | `POST /terminals/bind` | 201 `terminal_no:1`、`bind_method:"manual"`、设备号回显 `1188 7825 8423 7543`；浮条“设备 … 已绑定。”，列表随即刷新出 1 行 |
 | 拍题上传 A1 | `POST /solve`（真实 1×1 JPEG，`X-Terminal-Id` 为上面已绑设备） | 202 `job_id`、`stages.uploading/gateway=done`、`model=processing`，App 进第 4 屏并开始轮询 |
-| 拍题轮询 A2 | `GET /solve/{job_id}` | 200 `status:"failed"`、`model:"failed"`（本机未配 `QWEN_API_KEY`）；App 回第 3 屏并浮条显示服务端原因“模型未接通：未配置 QWEN_API_KEY，判题服务不可用，未生成任何答案。”，不伪造成功 |
+| 拍题轮询 A2 | `GET /solve/{job_id}` | 200 `status:"failed"`、`model:"failed"`、`failure_reason:"model_unavailable"`（本机未配 `QWEN_API_KEY`）；App 回第 3 屏并浮条显示已定文案「判题服务暂时接不通」，不伪造成功、不显示服务端长句（第 48 条修完复跑） |
 | 服务端管理 | — | 网关设置/模型管理正常渲染 |
 
 整条链路 `pageerror` 0 条；`console.error` 只有上述 503/401/403 三条，均为预期状态码，不是脚本异常。
