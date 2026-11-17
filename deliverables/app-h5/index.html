@@ -308,6 +308,10 @@
   .pin-hint{font-size:3.2cqw;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;}
   .pin-toast{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);z-index:20;background:#111;color:#f4f4f4;font-size:3.4cqw;font-weight:800;padding:1.5cqw 3.6cqw;border-radius:99px;white-space:nowrap;pointer-events:none;box-shadow:0 .8cqw 2.4cqw rgba(0,0,0,.3);}
   .pin-toast[hidden]{display:none;}
+  /* 476：注册/登录/重置反馈改顶部浮动提示，和 pin-toast 一样是 viewport 直属，
+     position:absolute 相对 16:9 舞台定位在顶部，软键盘弹起也盖不住 */
+  .form-toast{position:absolute;top:7cqw;left:50%;transform:translateX(-50%);z-index:35;max-width:88cqw;background:#111;color:#f4f4f4;font-size:3.1cqw;font-weight:800;line-height:1.35;padding:1.4cqw 3cqw;border-radius:2.4cqw;text-align:center;pointer-events:none;box-shadow:0 .8cqw 2.4cqw rgba(0,0,0,.3);}
+  .form-toast[hidden]{display:none;}
   .pin-actions{display:flex;gap:1.2cqw;width:60cqw;}
   .pin-actions .big-btn,.pin-actions .ghost-btn{flex:1;width:auto;}
   .reset-view{display:flex;flex-direction:column;gap:1.2cqw;}
@@ -795,6 +799,7 @@
 <div class="viewport" id="viewport" aria-label="简题 App 样机 · 16:9">
   <div class="pin-toast" id="pinToast" hidden>仅支持数字</div>
   <div class="pin-toast" id="finderFeedback" hidden></div>
+  <div class="form-toast" id="formToast" hidden></div>
   <div class="ask-push" id="askPush" hidden role="alert">
     <button class="ask-push-main" id="askPushMain" type="button">
       <span class="ask-push-dot" aria-hidden="true"></span>
@@ -2816,31 +2821,49 @@
   Array.prototype.forEach.call(document.querySelectorAll('.mgmt-entry'), function(b){
     b.addEventListener('click', function(){ goTo(loggedIn ? 10 : 8); });
   });
+  /* 476：注册/登录/重置反馈统一走 viewport 顶部的 form-toast，软键盘盖不住。
+     传空串立即收起；非空显示后 2.4s 自动消失，避免残留盖住界面。 */
+  var formToastTimer = null;
+  function showFormFeedback(text){
+    var t = document.getElementById('formToast');
+    if (!t) return;
+    if (formToastTimer) { clearTimeout(formToastTimer); formToastTimer = null; }
+    if (!text) { t.hidden = true; t.textContent = ''; return; }
+    t.textContent = text;
+    t.hidden = false;
+    formToastTimer = setTimeout(function(){ t.hidden = true; }, 2400);
+  }
+  /* 点「注册」「获取验证码」等提交动作时主动收起软键盘：焦点从输入框移开，
+     WebView 随即收键盘，顶部提示与后续界面不再被键盘遮挡。 */
+  function dismissKeyboard(){
+    var ae = document.activeElement;
+    if (ae && ae.blur && ae !== document.body) ae.blur();
+  }
   document.getElementById('loginBtn').addEventListener('click', function(){
     var phone = document.getElementById('loginPhone').value.trim();
     var pwd = document.getElementById('loginPwd').value;
-    var fb = document.getElementById('loginFeedback');
-    if (!phone || !pwd) { fb.textContent = '先填手机号和密码。'; return; }
+    dismissKeyboard();
+    if (!phone || !pwd) { showFormFeedback('先填手机号和密码。'); return; }
     document.getElementById('loginBtn').disabled = true;
     api.login(phone, pwd).then(function(data){
       loggedIn = true;
       setAuthIdentity(data);
       renderAcctPhone(phone);
-      fb.textContent = '';
+      showFormFeedback('');
       /* 登录后立刻按服务端刷新卡余额与待批申请，home 的「今日剩余」不再是 --- */
       loadCardBalance(); loadApplications();
       goTo(10);
-    }).catch(function(err){ fb.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
+    }).catch(function(err){ showFormFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); })
       .then(function(){ document.getElementById('loginBtn').disabled = false; });
   });
   document.getElementById('toRegister').addEventListener('click', function(){ goTo(9); });
   document.getElementById('regCodeBtn').addEventListener('click', function(){
     var phone = document.getElementById('regPhone').value.trim();
-    var fb = document.getElementById('regFeedback');
-    if (!/^1\d{10}$/.test(phone)) { fb.textContent = '先填正确的手机号。'; return; }
+    dismissKeyboard();
+    if (!/^1\d{10}$/.test(phone)) { showFormFeedback('先填正确的手机号。'); return; }
     document.getElementById('regCodeBtn').disabled = true;
-    api.sendCode(phone, 'register').then(function(){ fb.textContent = '验证码已发送。'; })
-      .catch(function(err){ fb.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
+    api.sendCode(phone, 'register').then(function(){ showFormFeedback('验证码已发送。'); })
+      .catch(function(err){ showFormFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); })
       .then(function(){ document.getElementById('regCodeBtn').disabled = false; });
   });
   document.getElementById('registerBtn').addEventListener('click', function(){
@@ -2848,17 +2871,17 @@
     var code = document.getElementById('regCode').value.trim();
     var pwd = document.getElementById('regPwd').value;
     var adminPwd = Array.prototype.map.call(document.querySelectorAll('#regAdminRow .pin-box'), function(b){ return b.value; }).join('');
-    var fb = document.getElementById('regFeedback');
-    if (!phone || !code || !pwd) { fb.textContent = '先填手机号、验证码和密码。'; return; }
-    if (!/^\d{6}$/.test(adminPwd)) { fb.textContent = '管理员密码还没输满。'; return; }
+    dismissKeyboard();
+    if (!phone || !code || !pwd) { showFormFeedback('先填手机号、验证码和密码。'); return; }
+    if (!/^\d{6}$/.test(adminPwd)) { showFormFeedback('管理员密码还没输满。'); return; }
     document.getElementById('registerBtn').disabled = true;
     api.register({ phone:phone, password:pwd, admin_password:adminPwd, code:code }).then(function(data){
-      fb.textContent = '';
+      showFormFeedback('');
       setAuthIdentity(data);
       /* 管理员密码随注册一并保存到服务端、与账号绑定；点「注册」后出「注册成功」提示 */
       document.getElementById('regMain').hidden = true;
       document.getElementById('regSuccessView').hidden = false;
-    }).catch(function(err){ fb.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
+    }).catch(function(err){ showFormFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); })
       .then(function(){ document.getElementById('registerBtn').disabled = false; });
   });
   document.getElementById('regSuccessNext').addEventListener('click', function(){
@@ -3011,7 +3034,7 @@
       mgmtPinVerified = true;
       enterMgmt();
     }).catch(function(err){
-      document.getElementById('resetFeedback').textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试';
+      showFormFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
     }).then(function(){
       mgmtPinChecking = false;
       btn.disabled = false;
@@ -3025,21 +3048,21 @@
   var rst = wirePin('rstRow', null);
   document.getElementById('resetCodeBtn').addEventListener('click', function(){
     var phone = document.getElementById('resetPhone').value.trim();
-    var fb = document.getElementById('resetFeedback');
-    if (!/^1\d{10}$/.test(phone)) { fb.textContent = '先填正确的手机号。'; return; }
+    dismissKeyboard();
+    if (!/^1\d{10}$/.test(phone)) { showFormFeedback('先填正确的手机号。'); return; }
     document.getElementById('resetCodeBtn').disabled = true;
-    api.sendCode(phone, 'reset_admin_password').then(function(){ fb.textContent = '验证码已发送。'; })
-      .catch(function(err){ fb.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
+    api.sendCode(phone, 'reset_admin_password').then(function(){ showFormFeedback('验证码已发送。'); })
+      .catch(function(err){ showFormFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); })
       .then(function(){ document.getElementById('resetCodeBtn').disabled = false; });
   });
   document.getElementById('resetBackBtn').addEventListener('click', function(){
-    document.getElementById('resetFeedback').textContent = '';
+    showFormFeedback('');
     showReset(false);
   });
   document.getElementById('resetSaveBtn').addEventListener('click', function(){
-    var fb = document.getElementById('resetFeedback');
-    if (!document.getElementById('resetPhone').value) { fb.textContent = '先输入手机号。'; return; }
-    if (!document.getElementById('resetCode').value) { fb.textContent = '先输入验证码。'; return; }
+    dismissKeyboard();
+    if (!document.getElementById('resetPhone').value) { showFormFeedback('先输入手机号。'); return; }
+    if (!document.getElementById('resetCode').value) { showFormFeedback('先输入验证码。'); return; }
     if (!/^\d{6}$/.test(rst.value())) { rst.focusFirstEmpty(); return; }
     document.getElementById('resetSaveBtn').disabled = true;
     api.resetAdminPassword({ phone:document.getElementById('resetPhone').value.trim(), code:document.getElementById('resetCode').value.trim(), new_admin_password:rst.value() }).then(function(){
@@ -3050,10 +3073,10 @@
       rst.clear();
       document.getElementById('resetPhone').value = '';
       document.getElementById('resetCode').value = '';
-      fb.textContent = '';
+      showFormFeedback('');
       showReset(false);
       goTo(8);
-    }).catch(function(err){ fb.textContent = err && err.message ? err.message : '服务暂时不可用，请稍后再试'; })
+    }).catch(function(err){ showFormFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); })
       .then(function(){ document.getElementById('resetSaveBtn').disabled = false; });
   });
 
