@@ -8,7 +8,7 @@
   - 管理密码 `123456`
 - 与正常版的差别只有两处：
   1. 登录、注册、重置密码、管理密码六位框进屏自动预填演示账号（演示时不用打字）；
-  2. APK 图标换成 `jianti-app-icon.png`，包名改为 `com.jianti.app.demo`、应用名「简题演示」，可与正常版同时安装。
+  2. APK 图标换成 `jianti-app-icon-shutter-check.png`（黑白快门钮＋白对号，9090 消息 526 定稿），包名改为 `com.jianti.app.demo`、应用名「简题演示」，可与正常版同时安装。
 - 业务逻辑与 `../app-h5/index.html`（commit fe47c777，SHA256 `5f72d065…`）完全一致；接口仍走服务器，不改服务端。
 - 网关测试模式需认这套演示账号（@abb 负责，App 侧不做任何账号特判）。
 
@@ -19,7 +19,7 @@
 | `index.html` | 演示版单文件 H5（正常版 + 演示预填） |
 | `jianti-demo-2.0.0-debug.apk` | 演示版 APK（包名 com.jianti.app.demo，debug 签名） |
 | `apk-shell/` | 打包壳源码（Manifest / build.ps1 / MainActivity.java / res 图标 / icon-src.png 图标原图） |
-| `manifest.sha256` | 本目录 9 个文件的 SHA256 |
+| `manifest.sha256` | 本目录 14 个文件的 SHA256 |
 | `SELFTEST.md` | 本轮构建与核对记录 |
 
 ## 构建

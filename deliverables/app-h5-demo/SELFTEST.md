@@ -37,7 +37,7 @@
 | 与正常版并存 | 包名不同 | PASS（可与 `com.jianti.app` 同时安装） |
 | 业务逻辑 | 与 487 版逐行相同（仅加预填与图标） | 见 `../app-h5/SELFTEST.md` 第 10 节 13/13 |
 
-## 4. 产物
+## 4. 产物（515 首版）
 
 - 文件：`jianti-demo-2.0.0-debug.apk`
 - 大小：148,333 字节
@@ -48,3 +48,18 @@
 - 未改服务端，未动线上配置；网关测试模式认这套演示账号由 @abb 负责。
 - 演示版不新增任何账号特判或跳过校验的逻辑；验证码 123456 能否通过取决于网关测试模式，App 侧不伪造成功。
 - 未在真机安装验证（本机无 adb 设备），APK 结构、签名、资源、内嵌 H5 已逐项核对。
+
+## 6. 526 图标定稿重打包（2026-11-18）
+
+- 依据：9090 消息 526（Nyx）「图标定了：用云盘 jianti-app-icon-shutter-check.png（黑白快门钮＋大白对号），演示版就换这个」。
+- 改动范围：只换图标源图与五档 `ic_launcher.png`，`index.html` 一字未动；正常版 `../app-h5/` 未动。
+
+| 项 | 值 |
+|---|---|
+| 图标源图 | `jianti-app-icon-shutter-check.png`（1600×1600，92,740 字节，MD5 `faf13fffd8e0de282097cab946fc666a`，SHA256 `56776db2ecfd2d24dc6cf915c5c4dcf42ef68ae8f0c48ba6d7aeafcea10291eb`） |
+| 图标尺寸 | mdpi 48 / hdpi 72 / xhdpi 96 / xxhdpi 144 / xxxhdpi 192 |
+| 内嵌 H5 | `b92eef051ce37b71c46d410dd657eca631687ccf09114c69e34861adb4315cfd`（与 index.html 一致，未变） |
+| 包名 / 版本 / 名称 | `com.jianti.app.demo` / `2.0.0-demo` / 「简题演示」（`aapt2 dump badging`） |
+| 签名 | `apksigner verify --min-sdk-version 24` PASS |
+| APK | 95,086 字节，SHA256 `efe025b16df9d038e2cc4748ec73a794d71e30f2f7e724e2db92db1749ad4d14` |
+
