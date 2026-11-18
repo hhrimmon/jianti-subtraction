@@ -1711,7 +1711,7 @@
   /* 本地演示模式：APK 内未部署服务端，所有接口在本地直接返回演示数据，不发任何网络请求。
      这样登录进管理页后不会被外网 401 顶回登录页，也不会连那个没部署的地址。
      将来要接真服务端时，把这里改成 false 即可。 */
-  var LOCAL_MODE = true;
+  var LOCAL_MODE = false;
   function localResponse(method, path){
     var p = String(path || '').split('?')[0];
     var table = {
