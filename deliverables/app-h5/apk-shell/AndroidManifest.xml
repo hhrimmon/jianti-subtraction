@@ -9,6 +9,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <application
         android:label="简题"
+        android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
         android:hardwareAccelerated="true">
         <activity

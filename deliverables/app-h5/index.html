@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
@@ -34,9 +34,9 @@
   /* ---------- 16:9 舞台：等比缩放，字号/间距全用 cqw，放大缩小不变形 ---------- */
   .viewport{
     position:relative;overflow:hidden;background:var(--screen);
-    aspect-ratio:16/9;
+    /* 2:1 铺满：高度吃满，宽随 WebView */
     /* 宽高都装进视口：宽屏（如 2.1:1 横屏）按高度定宽、左右留黑，不再把底部裁掉 */
-    width:min(100%,177.78dvh);max-height:100dvh;
+    width:100%;height:100dvh;max-height:100dvh;min-width:0;
     container-type:inline-size;flex:0 1 auto;min-width:0;
     touch-action:pan-y;user-select:none;-webkit-user-select:none;
   }
@@ -54,143 +54,143 @@
   @media (prefers-reduced-motion: reduce){.track{transition:none;}}
 
   .scr{background:var(--screen);color:var(--ink);}
-  .box{border:.55cqw solid var(--ink);border-radius:3.4cqw;background:var(--panel);}
-  .statusbar{display:flex;justify-content:space-between;align-items:center;flex:none;padding:1.4cqw 3.4cqw 0;font-size:3.4cqw;color:var(--ink-2);font-weight:600;}
-  .statusbar .right{display:flex;align-items:center;gap:1.8cqw;}
-  .gear-btn{border:none;background:transparent;color:var(--ink-2);width:5.4cqw;height:5.4cqw;min-height:0;padding:.6cqw;display:flex;align-items:center;justify-content:center;border-radius:50%;flex:none;}
+  .box{border:0.9778dvh solid var(--ink);border-radius:6.0444dvh;background:var(--panel);}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;flex:none;padding:2.4889dvh 6.0444dvh 0;font-size:6.0444dvh;color:var(--ink-2);font-weight:600;}
+  .statusbar .right{display:flex;align-items:center;gap:3.2dvh;}
+  .gear-btn{border:none;background:transparent;color:var(--ink-2);width:9.6dvh;height:9.6dvh;min-height:0;padding:1.0667dvh;display:flex;align-items:center;justify-content:center;border-radius:50%;flex:none;}
   .gear-btn svg{width:100%;height:100%;display:block;}
   .gear-btn:active{background:rgba(0,0,0,.08);}
 
   /* ---------- 第1屏 锁屏（desk o'clock 电子钟四框） ---------- */
-  .clock-main{padding:1cqw 3.4cqw 1.2cqw;display:grid;grid-template-rows:minmax(0,.95fr) minmax(0,1.05fr);gap:2.2cqw;flex:1;min-height:0;}
-  .time-row{display:grid;grid-template-columns:1.1fr 1.8fr;gap:2.4cqw;min-height:0;}
-  .clock-sub{display:grid;grid-template-columns:1.1fr 1.8fr;gap:2.4cqw;min-height:0;}
-  .brand-box{padding:.8cqw 3.2cqw;display:flex;flex-direction:column;justify-content:center;gap:.8cqw;}
-  .brand-word{font-size:9.6cqw;font-weight:800;line-height:1.1;display:flex;justify-content:space-between;}
-  .brand-sub{display:flex;justify-content:space-between;align-items:baseline;width:100%;font-size:2.55cqw;font-weight:600;color:#5b5b5b;line-height:1.3;white-space:nowrap;border-top:.35cqw solid var(--line);padding-top:1cqw;}
+  .clock-main{padding:1.7778dvh 6.0444dvh 2.1333dvh;display:grid;grid-template-rows:minmax(0,.95fr) minmax(0,1.05fr);gap:3.9111dvh;flex:1;min-height:0;}
+  .time-row{display:grid;grid-template-columns:1.1fr 1.8fr;gap:4.2667dvh;min-height:0;}
+  .clock-sub{display:grid;grid-template-columns:1.1fr 1.8fr;gap:4.2667dvh;min-height:0;}
+  .brand-box{padding:1.4222dvh 5.6889dvh;display:flex;flex-direction:column;justify-content:center;gap:1.4222dvh;}
+  .brand-word{font-size:17.0667dvh;font-weight:800;line-height:1.1;display:flex;justify-content:space-between;}
+  .brand-sub{display:flex;justify-content:space-between;align-items:baseline;width:100%;font-size:4.5333dvh;font-weight:600;color:#5b5b5b;line-height:1.3;white-space:nowrap;border-top:0.6222dvh solid var(--line);padding-top:1.7778dvh;}
   .brand-sub span{flex:none;text-align:center;}
   .brand-sub span:first-child{text-align:left;}
   .brand-sub span:last-child{text-align:right;}
-  .time-box{padding:.8cqw 3.2cqw 1.2cqw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
-  .time-big{font-size:12.6cqw;line-height:1.02;font-weight:800;letter-spacing:-.01em;}
-  .date-box{padding:1.2cqw 3.2cqw;display:flex;flex-direction:column;justify-content:center;gap:.8cqw;}
-  .date-md{font-size:5cqw;font-weight:800;line-height:1.05;white-space:nowrap;}
-  .date-week{font-size:3.3cqw;font-weight:700;color:var(--ink-2);line-height:1.25;}
-  .temp-line{display:flex;align-items:baseline;flex-wrap:wrap;gap:.2cqw 1.6cqw;border-top:.35cqw solid var(--line);padding-top:1cqw;}
-  .temp-label{font-size:3.1cqw;font-weight:700;letter-spacing:.3em;color:#696969;}
-  .temp-line .temp{font-size:4.4cqw;font-weight:800;color:#272727;white-space:nowrap;line-height:1.2;}
-  .memo-box{padding:1.2cqw 3.2cqw;display:flex;flex-direction:column;justify-content:center;gap:.8cqw;}
-  .memo-tag{font-size:3.1cqw;font-weight:700;letter-spacing:.3em;color:#696969;border-bottom:.35cqw solid var(--line);padding-bottom:.6cqw;line-height:1.25;}
-  .memo-text{font-size:4.3cqw;font-weight:700;line-height:1.35;}
+  .time-box{padding:1.4222dvh 5.6889dvh 2.1333dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+  .time-big{font-size:22.4dvh;line-height:1.02;font-weight:800;letter-spacing:-.01em;}
+  .date-box{padding:2.1333dvh 5.6889dvh;display:flex;flex-direction:column;justify-content:center;gap:1.4222dvh;}
+  .date-md{font-size:8.8889dvh;font-weight:800;line-height:1.05;white-space:nowrap;}
+  .date-week{font-size:5.8667dvh;font-weight:700;color:var(--ink-2);line-height:1.25;}
+  .temp-line{display:flex;align-items:baseline;flex-wrap:wrap;gap:0.3556dvh 2.8444dvh;border-top:0.6222dvh solid var(--line);padding-top:1.7778dvh;}
+  .temp-label{font-size:5.5111dvh;font-weight:700;letter-spacing:.3em;color:#696969;}
+  .temp-line .temp{font-size:7.8222dvh;font-weight:800;color:#272727;white-space:nowrap;line-height:1.2;}
+  .memo-box{padding:2.1333dvh 5.6889dvh;display:flex;flex-direction:column;justify-content:center;gap:1.4222dvh;}
+  .memo-tag{font-size:5.5111dvh;font-weight:700;letter-spacing:.3em;color:#696969;border-bottom:0.6222dvh solid var(--line);padding-bottom:1.0667dvh;line-height:1.25;}
+  .memo-text{font-size:7.6444dvh;font-weight:700;line-height:1.35;}
 
   /* ---------- 第2屏 home ---------- */
-  .shoot-main{padding:1cqw 3.4cqw 2.8cqw;flex:1;display:flex;flex-direction:column;min-height:0;}
-  .srv{font-size:3.1cqw;font-weight:700;border:.4cqw solid var(--ink);border-radius:99px;padding:.7cqw 2.2cqw;background:var(--panel);}
-  .srv i{display:inline-block;width:1.9cqw;height:1.9cqw;border-radius:50%;background:var(--ink);margin-right:1cqw;vertical-align:middle;}
-  .card-box{margin-top:.8cqw;padding:1.1cqw 3.4cqw;display:flex;justify-content:space-between;align-items:center;font-size:3.7cqw;font-weight:700;}
-  .card-box .n{font-size:5cqw;font-weight:800;}
-  .card-box .n small{font-size:3.3cqw;font-weight:700;}
-  .shoot-sub{font-size:4.3cqw;color:var(--ink-2);font-weight:600;margin-top:auto;line-height:1.35;text-align:center;}
-  .shoot-title{font-size:9.2cqw;font-weight:800;margin-top:.5cqw;line-height:1.1;display:flex;justify-content:center;gap:17.5cqw;align-items:baseline;}
-  .shoot-btn{margin-top:-4.4cqw;border:none;background:transparent;padding:.6cqw;align-self:center;display:flex;align-items:center;justify-content:center;min-height:0;}
-  .shoot-btn .cam{width:15.5cqw;height:15.5cqw;border-radius:50%;flex:none;background:radial-gradient(circle,#101010 0 4.6cqw,#f7f7f7 4.6cqw 5.5cqw,#101010 5.5cqw 7.75cqw);}
+  .shoot-main{padding:1.7778dvh 6.0444dvh 4.9778dvh;flex:1;display:flex;flex-direction:column;min-height:0;}
+  .srv{font-size:5.5111dvh;font-weight:700;border:0.7111dvh solid var(--ink);border-radius:99px;padding:1.2444dvh 3.9111dvh;background:var(--panel);}
+  .srv i{display:inline-block;width:3.3778dvh;height:3.3778dvh;border-radius:50%;background:var(--ink);margin-right:1.7778dvh;vertical-align:middle;}
+  .card-box{margin-top:1.4222dvh;padding:1.9556dvh 6.0444dvh;display:flex;justify-content:space-between;align-items:center;font-size:6.5778dvh;font-weight:700;}
+  .card-box .n{font-size:8.8889dvh;font-weight:800;}
+  .card-box .n small{font-size:5.8667dvh;font-weight:700;}
+  .shoot-sub{font-size:7.6444dvh;color:var(--ink-2);font-weight:600;margin-top:auto;line-height:1.35;text-align:center;}
+  .shoot-title{font-size:16.3556dvh;font-weight:800;margin-top:0.8889dvh;line-height:1.1;display:flex;justify-content:center;gap:31.1111dvh;align-items:baseline;}
+  .shoot-btn{margin-top:-7.8222dvh;border:none;background:transparent;padding:1.0667dvh;align-self:center;display:flex;align-items:center;justify-content:center;min-height:0;}
+  .shoot-btn .cam{width:27.5556dvh;height:27.5556dvh;border-radius:50%;flex:none;background:radial-gradient(circle,#101010 0 8.1778dvh,#f7f7f7 8.1778dvh 9.7778dvh,#101010 9.7778dvh 13.7778dvh);}
   .shoot-btn:active .cam{transform:scale(.93);}
 
   /* ---------- 第3屏 拍摄：板子原版取景器 ---------- */
   .finder{background:#000;color:#f2f2f2;}
-  .vf-view{flex:1;padding:1.4cqw 1.4cqw 1.2cqw;position:relative;display:flex;min-height:0;}
-  .paper{flex:1;background:#ececec;color:#232323;padding:2.2cqw 3.8cqw;position:relative;overflow:hidden;border-radius:2cqw;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 8cqw,rgba(0,0,0,.16) 8cqw,rgba(0,0,0,.16) 8.25cqw);}
-  .paper .q-tag{font-size:3.3cqw;font-weight:700;color:#6a6a6a;letter-spacing:.2em;}
-  .paper .q{font-size:5.4cqw;font-weight:800;line-height:1.5;margin-top:1.4cqw;}
-  .paper .hand{font-family:"Segoe Print","Bradley Hand","PingFang SC",cursive;font-size:4.9cqw;color:#232323;margin-top:1.6cqw;transform:rotate(-1.2deg);}
-  .vf-corner{position:absolute;width:5.6cqw;height:5.6cqw;pointer-events:none;z-index:3;}
-  .vf-corner.tl{top:1.5cqw;left:1.5cqw;border-top:1cqw solid #fff;border-left:1cqw solid #fff;}
-  .vf-corner.tr{top:1.5cqw;right:1.5cqw;border-top:1cqw solid #fff;border-right:1cqw solid #fff;}
-  .vf-corner.bl{bottom:1.5cqw;left:1.5cqw;border-bottom:1cqw solid #fff;border-left:1cqw solid #fff;}
-  .vf-corner.br{bottom:1.5cqw;right:1.5cqw;border-bottom:1cqw solid #fff;border-right:1cqw solid #fff;}
+  .vf-view{flex:1;padding:2.4889dvh 2.4889dvh 2.1333dvh;position:relative;display:flex;min-height:0;}
+  .paper{flex:1;background:#ececec;color:#232323;padding:3.9111dvh 6.7556dvh;position:relative;overflow:hidden;border-radius:3.5556dvh;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 14.2222dvh,rgba(0,0,0,.16) 14.2222dvh,rgba(0,0,0,.16) 14.6667dvh);}
+  .paper .q-tag{font-size:5.8667dvh;font-weight:700;color:#6a6a6a;letter-spacing:.2em;}
+  .paper .q{font-size:9.6dvh;font-weight:800;line-height:1.5;margin-top:2.4889dvh;}
+  .paper .hand{font-family:"Segoe Print","Bradley Hand","PingFang SC",cursive;font-size:8.7111dvh;color:#232323;margin-top:2.8444dvh;transform:rotate(-1.2deg);}
+  .vf-corner{position:absolute;width:9.9556dvh;height:9.9556dvh;pointer-events:none;z-index:3;}
+  .vf-corner.tl{top:2.6667dvh;left:2.6667dvh;border-top:1.7778dvh solid #fff;border-left:1.7778dvh solid #fff;}
+  .vf-corner.tr{top:2.6667dvh;right:2.6667dvh;border-top:1.7778dvh solid #fff;border-right:1.7778dvh solid #fff;}
+  .vf-corner.bl{bottom:2.6667dvh;left:2.6667dvh;border-bottom:1.7778dvh solid #fff;border-left:1.7778dvh solid #fff;}
+  .vf-corner.br{bottom:2.6667dvh;right:2.6667dvh;border-bottom:1.7778dvh solid #fff;border-right:1.7778dvh solid #fff;}
   /* 483：拍题取景器接真相机——实时画面铺满取景框，盖住静态纸（纸仅作兜底占位） */
   .finder-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:1;pointer-events:none;}
   .finder-video[hidden]{display:none;}
   .cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4;}
   .cam-flash.on{opacity:.85;transition:none;}
   .cam-flash{transition:opacity .45s ease;}
-  .vf-bar{display:flex;align-items:center;justify-content:space-between;padding:1.6cqw 6.5cqw 2.4cqw;flex:none;}
-  .vf-btn{width:13.2cqw;height:13.2cqw;min-height:0;border-radius:50%;border:none;background:#f7f7f7;color:#111;display:flex;align-items:center;justify-content:center;padding:0;flex:none;}
+  .vf-bar{display:flex;align-items:center;justify-content:space-between;padding:2.8444dvh 11.5556dvh 4.2667dvh;flex:none;}
+  .vf-btn{width:23.4667dvh;height:23.4667dvh;min-height:0;border-radius:50%;border:none;background:#f7f7f7;color:#111;display:flex;align-items:center;justify-content:center;padding:0;flex:none;}
   .vf-btn svg{width:52%;height:52%;display:block;}
   .vf-btn:active{transform:scale(.93);}
-  .vf-shutter i{width:9.8cqw;height:9.8cqw;border-radius:50%;border:.6cqw solid #111;display:block;}
+  .vf-shutter i{width:17.4222dvh;height:17.4222dvh;border-radius:50%;border:1.0667dvh solid #111;display:block;}
   .vf-shutter:active i{transform:scale(.9);}
 
   /* ---------- 第4屏 处理 ---------- */
-  .result-main{padding:.8cqw 3.4cqw 0;flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;position:relative;}
-  .wait-state{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2.6cqw;text-align:center;}
-  .wait-clock{font-size:11.8cqw;font-weight:800;line-height:1;letter-spacing:-.01em;}
-  .wait-big{font-size:7.2cqw;font-weight:800;}
-  .wait-bar{align-self:stretch;height:2.6cqw;border:.45cqw solid var(--ink);border-radius:99px;overflow:hidden;background:var(--panel);}
+  .result-main{padding:1.4222dvh 6.0444dvh 0;flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;position:relative;}
+  .wait-state{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4.6222dvh;text-align:center;}
+  .wait-clock{font-size:20.9778dvh;font-weight:800;line-height:1;letter-spacing:-.01em;}
+  .wait-big{font-size:12.8dvh;font-weight:800;}
+  .wait-bar{align-self:stretch;height:4.6222dvh;border:0.8dvh solid var(--ink);border-radius:99px;overflow:hidden;background:var(--panel);}
   .wait-fill{height:100%;width:0;background:var(--ink);transition:width .5s ease;}
-  .send-stages{display:flex;align-self:stretch;gap:1cqw;}
-  .send-stage{flex:1;display:flex;flex-direction:column;align-items:center;gap:1.1cqw;min-width:0;}
-  .stage-dot{width:6.4cqw;height:6.4cqw;border-radius:50%;border:.45cqw solid var(--line);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:3.3cqw;font-weight:800;background:transparent;}
-  .stage-label{font-size:3.4cqw;font-weight:700;color:var(--ink-3);white-space:nowrap;line-height:1.2;}
+  .send-stages{display:flex;align-self:stretch;gap:1.7778dvh;}
+  .send-stage{flex:1;display:flex;flex-direction:column;align-items:center;gap:1.9556dvh;min-width:0;}
+  .stage-dot{width:11.3778dvh;height:11.3778dvh;border-radius:50%;border:0.8dvh solid var(--line);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:5.8667dvh;font-weight:800;background:transparent;}
+  .stage-label{font-size:6.0444dvh;font-weight:700;color:var(--ink-3);white-space:nowrap;line-height:1.2;}
   .send-stage.active .stage-dot{border-color:var(--ink);color:var(--ink);animation:stagePulse 1s ease-in-out infinite;}
   .send-stage.active .stage-label{color:var(--ink);}
   .send-stage.done .stage-dot{background:var(--ink);border-color:var(--ink);color:#f4f4f4;animation:none;}
   .send-stage.done .stage-label{color:var(--ink-2);}
-  @keyframes stagePulse{0%,100%{box-shadow:0 0 0 0 rgba(17,18,17,.22);}50%{box-shadow:0 0 0 1.3cqw rgba(17,18,17,.10);}}
+  @keyframes stagePulse{0%,100%{box-shadow:0 0 0 0 rgba(17,18,17,.22);}50%{box-shadow:0 0 0 2.3111dvh rgba(17,18,17,.10);}}
   @media (prefers-reduced-motion: reduce){.send-stage.active .stage-dot{animation:none;}.chain-step.active .chain-dot{animation:none;}}
 
   /* ---------- 第5/6屏 思路 / 结果 ---------- */
   .done-state{display:flex;flex:1;flex-direction:column;min-height:0;overflow:hidden;}
-  .result-head{display:flex;align-items:center;justify-content:flex-start;gap:3cqw;padding:.4cqw .2cqw 0;}
-  .recognize-line{font-size:4.1cqw;font-weight:800;line-height:1.3;white-space:nowrap;}
-  .back-circle{width:10.5cqw;height:10.5cqw;min-height:0;border-radius:50%;border:none;background:#f2f2f2;color:#191919;display:flex;align-items:center;justify-content:center;padding:0;flex:none;}
+  .result-head{display:flex;align-items:center;justify-content:flex-start;gap:5.3333dvh;padding:0.7111dvh 0.3556dvh 0;}
+  .recognize-line{font-size:7.2889dvh;font-weight:800;line-height:1.3;white-space:nowrap;}
+  .back-circle{width:18.6667dvh;height:18.6667dvh;min-height:0;border-radius:50%;border:none;background:#f2f2f2;color:#191919;display:flex;align-items:center;justify-content:center;padding:0;flex:none;}
   .back-circle svg{width:56%;height:56%;display:block;}
   .back-circle:active{transform:scale(.93);}
-  .result-head .back-head{width:7.4cqw;height:7.4cqw;background:var(--panel);color:var(--ink);border:.45cqw solid var(--ink);}
+  .result-head .back-head{width:13.1556dvh;height:13.1556dvh;background:var(--panel);color:var(--ink);border:0.8dvh solid var(--ink);}
   .result-head .head-home svg,.result-head .head-claim-home svg{width:68%;height:68%;}
   .result-head .head-right{margin-left:auto;}
-  .card-action{display:flex;align-items:center;gap:1.8cqw;flex:none;margin-left:auto;}
-  .card-btn{border:none;background:var(--ink);color:#f4f4f4;border-radius:2.4cqw;font-size:3.4cqw;font-weight:800;padding:0 1.6cqw;min-height:0;white-space:nowrap;flex:none;height:6.2cqw;}
+  .card-action{display:flex;align-items:center;gap:3.2dvh;flex:none;margin-left:auto;}
+  .card-btn{border:none;background:var(--ink);color:#f4f4f4;border-radius:4.2667dvh;font-size:6.0444dvh;font-weight:800;padding:0 2.8444dvh;min-height:0;white-space:nowrap;flex:none;height:11.0222dvh;}
   .card-btn.used{opacity:.7;}
   .card-btn:active{transform:scale(.96);}
-  .idea-row{margin-top:.8cqw;margin-bottom:1cqw;padding:1cqw 3cqw;display:flex;flex-direction:row;align-items:stretch;gap:3cqw;flex:1;min-height:0;}
+  .idea-row{margin-top:1.4222dvh;margin-bottom:1.7778dvh;padding:1.7778dvh 5.3333dvh;display:flex;flex-direction:row;align-items:stretch;gap:5.3333dvh;flex:1;min-height:0;}
   .idea-main{flex:1;min-width:0;display:flex;flex-direction:column;}
-  .verdict-line{font-size:4.6cqw;font-weight:800;line-height:1.35;}
-  .idea-main ol{margin:1cqw 0 0;padding-left:0;font-size:3.4cqw;line-height:1.45;font-weight:600;list-style:none;}
-  .idea-steps li{position:relative;padding-left:4.4cqw;margin-bottom:1cqw;}
+  .verdict-line{font-size:8.1778dvh;font-weight:800;line-height:1.35;}
+  .idea-main ol{margin:1.7778dvh 0 0;padding-left:0;font-size:6.0444dvh;line-height:1.45;font-weight:600;list-style:none;}
+  .idea-steps li{position:relative;padding-left:7.8222dvh;margin-bottom:1.7778dvh;}
   .idea-steps li::before{content:"→";position:absolute;left:0;top:0;font-weight:800;}
-  .idea-main ol.process-chain{font-size:4.2cqw;line-height:1.5;margin-top:.6cqw;}
+  .idea-main ol.process-chain{font-size:7.4667dvh;line-height:1.5;margin-top:1.0667dvh;}
   .process-chain li{white-space:nowrap;font-weight:700;}
-  .q-answer{margin-top:0;font-size:4.2cqw;font-weight:800;line-height:1.5;}
-  .q-nav{margin-top:auto;display:flex;justify-content:space-between;gap:2cqw;padding:.8cqw 0 .4cqw;}
-  .q-nav button{border-radius:2.4cqw;font-size:3.4cqw;font-weight:800;padding:0 1.6cqw;height:6.2cqw;min-height:0;}
-  .q-nav .btn-ghost{background:var(--panel);border:.45cqw solid var(--ink);color:var(--ink);}
-  .q-nav .btn-solid{background:var(--ink);border:.45cqw solid var(--ink);color:#f4f4f4;}
+  .q-answer{margin-top:0;font-size:7.4667dvh;font-weight:800;line-height:1.5;}
+  .q-nav{margin-top:auto;display:flex;justify-content:space-between;gap:3.5556dvh;padding:1.4222dvh 0 0.7111dvh;}
+  .q-nav button{border-radius:4.2667dvh;font-size:6.0444dvh;font-weight:800;padding:0 2.8444dvh;height:11.0222dvh;min-height:0;}
+  .q-nav .btn-ghost{background:var(--panel);border:0.8dvh solid var(--ink);color:var(--ink);}
+  .q-nav .btn-solid{background:var(--ink);border:0.8dvh solid var(--ink);color:#f4f4f4;}
   .q-nav #qNextBtn{margin-left:auto;}
 
   /* ---------- 第7屏 设置 ---------- */
-  .settings-grid{margin-top:.6cqw;margin-bottom:2.2cqw;display:grid;grid-template-columns:1fr 1fr;gap:1.2cqw;flex:1;min-height:0;}
-  .set-box{padding:1cqw 2.2cqw;display:flex;flex-direction:column;gap:.7cqw;min-height:0;overflow:hidden;}
-  .set-title{font-size:3.9cqw;font-weight:800;line-height:1.15;}
-  .set-line{display:flex;justify-content:space-between;align-items:baseline;gap:2cqw;font-size:3.2cqw;font-weight:600;color:var(--ink-2);}
+  .settings-grid{margin-top:1.0667dvh;margin-bottom:3.9111dvh;display:grid;grid-template-columns:1fr 1fr;gap:2.1333dvh;flex:1;min-height:0;}
+  .set-box{padding:1.7778dvh 3.9111dvh;display:flex;flex-direction:column;gap:1.2444dvh;min-height:0;overflow:hidden;}
+  .set-title{font-size:6.9333dvh;font-weight:800;line-height:1.15;}
+  .set-line{display:flex;justify-content:space-between;align-items:baseline;gap:3.5556dvh;font-size:5.6889dvh;font-weight:600;color:var(--ink-2);}
   .set-line b{color:var(--ink);font-weight:800;text-align:right;}
-  .set-box>button{border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:2cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:5.2cqw;min-height:0;margin-top:auto;}
+  .set-box>button{border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.5556dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:9.2444dvh;min-height:0;margin-top:auto;}
   .set-box>button.config-wifi-btn{margin-top:0;}
   .set-box>button:active{transform:scale(.96);}
-  .srv-opts{display:flex;flex-direction:column;gap:.8cqw;}
-  .srv-opt{display:flex;align-items:center;gap:1.6cqw;width:100%;border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:2cqw;padding:.5cqw 1.4cqw;height:6.6cqw;min-height:0;text-align:left;cursor:pointer;}
-  .srv-opt .srv-name{display:flex;align-items:center;gap:1.2cqw;font-size:3.3cqw;font-weight:800;white-space:nowrap;}
-  .srv-dot{width:2cqw;height:2cqw;border-radius:50%;border:.4cqw solid var(--ink);flex:none;}
+  .srv-opts{display:flex;flex-direction:column;gap:1.4222dvh;}
+  .srv-opt{display:flex;align-items:center;gap:2.8444dvh;width:100%;border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.5556dvh;padding:0.8889dvh 2.4889dvh;height:11.7333dvh;min-height:0;text-align:left;cursor:pointer;}
+  .srv-opt .srv-name{display:flex;align-items:center;gap:2.1333dvh;font-size:5.8667dvh;font-weight:800;white-space:nowrap;}
+  .srv-dot{width:3.5556dvh;height:3.5556dvh;border-radius:50%;border:0.7111dvh solid var(--ink);flex:none;}
   .srv-opt.active{background:var(--ink);color:#f4f4f4;}
   .srv-opt.active .srv-dot{background:#f4f4f4;border-color:#f4f4f4;}
   .srv-opt:active{transform:scale(.98);}
-  .set-wide{grid-column:1 / -1;gap:.35cqw;padding-top:.55cqw;padding-bottom:.55cqw;}
-  .set-wide-row{display:flex;align-items:center;gap:2cqw;}
+  .set-wide{grid-column:1 / -1;gap:0.6222dvh;padding-top:0.9778dvh;padding-bottom:0.9778dvh;}
+  .set-wide-row{display:flex;align-items:center;gap:3.5556dvh;}
   .set-wide-row>*{flex:none;}
-  .chain-h{display:flex;align-items:flex-start;gap:1.7cqw;}
-  .chain-h .chain-step{display:flex;flex-direction:column;align-items:center;gap:.6cqw;flex:none;position:relative;}
-  .chain-dot{width:3.3cqw;height:3.3cqw;border-radius:50%;border:.45cqw solid var(--line);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:2.4cqw;font-weight:800;background:transparent;flex:none;}
-  .chain-label{font-size:2.7cqw;font-weight:700;color:var(--ink-3);line-height:1.15;}
+  .chain-h{display:flex;align-items:flex-start;gap:3.0222dvh;}
+  .chain-h .chain-step{display:flex;flex-direction:column;align-items:center;gap:1.0667dvh;flex:none;position:relative;}
+  .chain-dot{width:5.8667dvh;height:5.8667dvh;border-radius:50%;border:0.8dvh solid var(--line);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:4.2667dvh;font-weight:800;background:transparent;flex:none;}
+  .chain-label{font-size:4.8dvh;font-weight:700;color:var(--ink-3);line-height:1.15;}
   .chain-step.active .chain-dot{border-color:var(--ink);color:var(--ink);animation:stagePulse 1s ease-in-out infinite;}
   .chain-step.active .chain-label{color:var(--ink);}
   /* 走通＝黑点白勾；不通＝白点黑叉，链停在那一步（黑白稿不用红绿） */
@@ -198,229 +198,229 @@
   .chain-step.done .chain-label{color:var(--ink);}
   .chain-step.fail .chain-dot{background:var(--panel);border-color:var(--ink);color:var(--ink);animation:none;font-weight:800;}
   .chain-step.fail .chain-label{color:var(--ink);font-weight:800;}
-  .chain-arrow{font-size:3.4cqw;font-weight:800;color:var(--ink-3);line-height:3.3cqw;flex:none;display:inline-block;transform:scaleX(1.4);}
+  .chain-arrow{font-size:6.0444dvh;font-weight:800;color:var(--ink-3);line-height:5.8667dvh;flex:none;display:inline-block;transform:scaleX(1.4);}
   .chain-arrow.done{color:var(--ink);transform:none;}
-  .chain-result{font-size:2.9cqw;font-weight:800;line-height:1.3;flex:1;text-align:center;min-width:0;}
+  .chain-result{font-size:5.1556dvh;font-weight:800;line-height:1.3;flex:1;text-align:center;min-width:0;}
   .set-wide-row .chain-result{flex:1;}
-  .chain-btn{border:.45cqw solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:2cqw;font-size:3.2cqw;font-weight:800;padding:0 2.2cqw;height:5.6cqw;min-height:0;white-space:nowrap;flex:none;}
+  .chain-btn{border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:3.5556dvh;font-size:5.6889dvh;font-weight:800;padding:0 3.9111dvh;height:9.9556dvh;min-height:0;white-space:nowrap;flex:none;}
   .chain-btn:active{transform:scale(.96);}
-  .set-id-row{display:flex;align-items:baseline;gap:1.6cqw;border-top:.35cqw solid var(--line);padding-top:.4cqw;font-size:3.4cqw;font-weight:700;color:var(--ink-2);}
-  .set-id-num{font-size:3.6cqw;font-weight:800;white-space:nowrap;line-height:1.25;color:var(--ink);}
-  .set-ver-row{display:flex;align-items:baseline;gap:1.6cqw;font-size:3.2cqw;font-weight:700;color:var(--ink-2);line-height:1.25;}
+  .set-id-row{display:flex;align-items:baseline;gap:2.8444dvh;border-top:0.6222dvh solid var(--line);padding-top:0.7111dvh;font-size:6.0444dvh;font-weight:700;color:var(--ink-2);}
+  .set-id-num{font-size:6.4dvh;font-weight:800;white-space:nowrap;line-height:1.25;color:var(--ink);}
+  .set-ver-row{display:flex;align-items:baseline;gap:2.8444dvh;font-size:5.6889dvh;font-weight:700;color:var(--ink-2);line-height:1.25;}
   .set-ver-row b{font-weight:800;color:var(--ink);}
-  .softap-page{position:absolute;inset:0;z-index:5;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw;text-align:center;padding:3cqw 5cqw;}
+  .softap-page{position:absolute;inset:0;z-index:5;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.5556dvh;text-align:center;padding:5.3333dvh 8.8889dvh;}
   .softap-page[hidden]{display:none;}
-  .softap-title{font-size:6.4cqw;font-weight:800;line-height:1.15;}
-  .softap-name{border:.55cqw solid var(--ink);border-radius:2.4cqw;background:var(--panel);padding:1.6cqw 3.4cqw;font-size:5.2cqw;font-weight:800;white-space:nowrap;}
-  .softap-note{font-size:3.4cqw;font-weight:600;color:var(--ink-2);line-height:1.55;margin:0;}
-  .softap-page button{border:.45cqw solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:2.4cqw;font-size:3.6cqw;font-weight:800;padding:0 3cqw;height:6.4cqw;min-height:0;}
+  .softap-title{font-size:11.3778dvh;font-weight:800;line-height:1.15;}
+  .softap-name{border:0.9778dvh solid var(--ink);border-radius:4.2667dvh;background:var(--panel);padding:2.8444dvh 6.0444dvh;font-size:9.2444dvh;font-weight:800;white-space:nowrap;}
+  .softap-note{font-size:6.0444dvh;font-weight:600;color:var(--ink-2);line-height:1.55;margin:0;}
+  .softap-page button{border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:4.2667dvh;font-size:6.4dvh;font-weight:800;padding:0 5.3333dvh;height:11.3778dvh;min-height:0;}
   .softap-page button:active{transform:scale(.96);}
   /* 设备ID 行后边空位放「显示设备二维码」按钮：与本屏其他按钮同一规格，靠右排在该行空处 */
-  .set-id-row .qr-btn{margin-left:auto;align-self:center;border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:2cqw;font-size:3.1cqw;font-weight:800;padding:0 1.8cqw;height:5.2cqw;min-height:0;white-space:nowrap;flex:none;}
+  .set-id-row .qr-btn{margin-left:auto;align-self:center;border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.5556dvh;font-size:5.5111dvh;font-weight:800;padding:0 3.2dvh;height:9.2444dvh;min-height:0;white-space:nowrap;flex:none;}
   .set-id-row .qr-btn:active{transform:scale(.96);}
   /* 设备ID二维码整屏页：与 soft AP 页同一套整屏弹出做法；码内容＝JianTi-2864190752386419（JianTi- 前缀＋16 位设备 ID；第1位类型码＋后15位设备号；类型码：1嵌入式、2安卓、3苹果、4鸿蒙，0为其他／未知，5–9预留；能探知型号／类型／系统就带上类型码，探不到按 App 类型兜底：APK＝安卓、苹果＝iOS、其他＝嵌入式及其他；全探不到类型码记 0），手机扫它绑定终端；码下不再重复显示设备ID数字 */
-  .device-qr-page{position:absolute;inset:0;z-index:5;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw;text-align:center;padding:3cqw 5cqw;}
+  .device-qr-page{position:absolute;inset:0;z-index:5;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.5556dvh;text-align:center;padding:5.3333dvh 8.8889dvh;}
   .device-qr-page[hidden]{display:none;}
-  .device-qr-code{width:34cqw;height:34cqw;flex:none;background:#fff;border:.55cqw solid var(--ink);border-radius:2.4cqw;padding:1.8cqw;}
+  .device-qr-code{width:60.4444dvh;height:60.4444dvh;flex:none;background:#fff;border:0.9778dvh solid var(--ink);border-radius:4.2667dvh;padding:3.2dvh;}
   .device-qr-code svg{width:100%;height:100%;display:block;}
-  .device-qr-page button{border:.45cqw solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:2.4cqw;font-size:3.6cqw;font-weight:800;padding:0 3cqw;height:6.4cqw;min-height:0;}
+  .device-qr-page button{border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:4.2667dvh;font-size:6.4dvh;font-weight:800;padding:0 5.3333dvh;height:11.3778dvh;min-height:0;}
   .device-qr-page button:active{transform:scale(.96);}
 
   /* ---------- 第8屏 领取 ---------- */
-  .claim-status{margin-top:.6cqw;padding:1cqw 2.6cqw;display:flex;justify-content:space-between;align-items:center;gap:2cqw;}
-  .claim-status .big{font-size:4.1cqw;font-weight:800;}
-  .claim-status .big .n{font-size:5.4cqw;}
-  .claim-status .small{font-size:3cqw;font-weight:600;color:var(--ink-2);text-align:right;line-height:1.4;}
-  .claim-grid{margin-top:1.2cqw;display:grid;grid-template-columns:1fr 1fr;gap:1.2cqw;flex:1;min-height:0;}
-  .claim-box{padding:1.2cqw 2.2cqw;display:flex;flex-direction:column;gap:.8cqw;min-height:0;overflow:hidden;}
-  .claim-box h4{margin:0;font-size:4.3cqw;font-weight:800;}
-  .claim-box button{border:.45cqw solid var(--ink);border-radius:2cqw;font-size:3.3cqw;font-weight:800;padding:0 1.6cqw;height:5.4cqw;min-height:0;background:var(--ink);color:#f4f4f4;flex:none;margin-top:auto;}
+  .claim-status{margin-top:1.0667dvh;padding:1.7778dvh 4.6222dvh;display:flex;justify-content:space-between;align-items:center;gap:3.5556dvh;}
+  .claim-status .big{font-size:7.2889dvh;font-weight:800;}
+  .claim-status .big .n{font-size:9.6dvh;}
+  .claim-status .small{font-size:5.3333dvh;font-weight:600;color:var(--ink-2);text-align:right;line-height:1.4;}
+  .claim-grid{margin-top:2.1333dvh;display:grid;grid-template-columns:1fr 1fr;gap:2.1333dvh;flex:1;min-height:0;}
+  .claim-box{padding:2.1333dvh 3.9111dvh;display:flex;flex-direction:column;gap:1.4222dvh;min-height:0;overflow:hidden;}
+  .claim-box h4{margin:0;font-size:7.6444dvh;font-weight:800;}
+  .claim-box button{border:0.8dvh solid var(--ink);border-radius:3.5556dvh;font-size:5.8667dvh;font-weight:800;padding:0 2.8444dvh;height:9.6dvh;min-height:0;background:var(--ink);color:#f4f4f4;flex:none;margin-top:auto;}
   .claim-box button.ghost{background:var(--panel);color:var(--ink);}
   .claim-box button:active{transform:scale(.96);}
   .claim-box button[hidden]{display:none;}
-  .claim-feedback{margin-top:.7cqw;font-size:3.2cqw;font-weight:800;line-height:1.3;min-height:3.6cqw;}
+  .claim-feedback{margin-top:1.2444dvh;font-size:5.6889dvh;font-weight:800;line-height:1.3;min-height:6.4dvh;}
 
   /* ---------- 第9–14屏 登录 / 注册 / 管理：同一套黑框分栏 ---------- */
-  .form-wrap{margin-top:1cqw;display:flex;flex-direction:column;gap:1.2cqw;flex:1;min-height:0;}
-  .form-box{padding:1.6cqw 3cqw;display:flex;flex-direction:column;gap:1.1cqw;}
-  .field{display:flex;align-items:center;gap:2cqw;}
-  .field label{font-size:3.4cqw;font-weight:800;flex:none;width:11cqw;}
-  .field input{flex:1;min-width:0;border:.4cqw solid var(--ink);border-radius:1.8cqw;background:#fff;color:var(--ink);font-size:3.6cqw;font-weight:600;padding:0 2cqw;height:6.8cqw;font-family:inherit;}
+  .form-wrap{margin-top:1.7778dvh;display:flex;flex-direction:column;gap:2.1333dvh;flex:1;min-height:0;}
+  .form-box{padding:2.8444dvh 5.3333dvh;display:flex;flex-direction:column;gap:1.9556dvh;}
+  .field{display:flex;align-items:center;gap:3.5556dvh;}
+  .field label{font-size:6.0444dvh;font-weight:800;flex:none;width:19.5556dvh;}
+  .field input{flex:1;min-width:0;border:0.7111dvh solid var(--ink);border-radius:3.2dvh;background:#fff;color:var(--ink);font-size:6.4dvh;font-weight:600;padding:0 3.5556dvh;height:12.0889dvh;font-family:inherit;}
   .field input::placeholder{color:var(--ink-3);}
-  .field .mini-btn{flex:none;border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:6.8cqw;min-height:0;}
+  .field .mini-btn{flex:none;border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:12.0889dvh;min-height:0;}
   .field .mini-btn:active{transform:scale(.96);}
-  .big-btn{border:.45cqw solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:2.4cqw;font-size:4cqw;font-weight:800;height:7.6cqw;min-height:0;width:100%;}
+  .big-btn{border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:4.2667dvh;font-size:7.1111dvh;font-weight:800;height:13.5111dvh;min-height:0;width:100%;}
   .big-btn:active{transform:scale(.98);}
-  .ghost-btn{border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:2.4cqw;font-size:3.6cqw;font-weight:800;height:6.8cqw;min-height:0;width:100%;}
+  .ghost-btn{border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:4.2667dvh;font-size:6.4dvh;font-weight:800;height:12.0889dvh;min-height:0;width:100%;}
   .ghost-btn:active{transform:scale(.98);}
-  .form-feedback{font-size:3.2cqw;font-weight:800;line-height:1.3;min-height:3.6cqw;}
-  .acct-box{margin-top:.8cqw;padding:.5cqw 2.6cqw .2cqw;display:flex;justify-content:flex-start;align-items:center;gap:0;flex-wrap:nowrap;flex:none;min-height:6.2cqw;}
+  .form-feedback{font-size:5.6889dvh;font-weight:800;line-height:1.3;min-height:6.4dvh;}
+  .acct-box{margin-top:1.4222dvh;padding:0.8889dvh 4.6222dvh 0.3556dvh;display:flex;justify-content:flex-start;align-items:center;gap:0;flex-wrap:nowrap;flex:none;min-height:11.0222dvh;}
   /* 退出登录是按钮：单独留出一段间距，不显示登录状态（能进管理必然已登录） */
-  .acct-box button{border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:5.6cqw;min-height:0;flex:none;white-space:nowrap;margin-left:0;width:16.8cqw;text-align:center;}
+  .acct-box button{border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:9.9556dvh;min-height:0;flex:none;white-space:nowrap;margin-left:0;width:29.8667dvh;text-align:center;}
   .acct-box button:active{transform:scale(.96);}
   /* 左组定宽：账号固定 11 位、角色（管理员／成员）最多 3 个字，按 11 位数字＋3 个汉字把宽度定死，字号放大后也不忽宽忽窄；右组紧跟其后，两组之间只留一小段间距，不再顶到两端把中间空出一大截（管理员和状态仍隔着这段间距，不挨着） */
-  .acct-spacer{flex:0 0 3.2cqw;min-width:0;}
+  .acct-spacer{flex:0 0 5.6889dvh;min-width:0;}
   /* 右组只放退出登录按钮，不显示登录状态 */
-  .acct-right{display:flex;align-items:center;gap:2.2cqw;flex:none;}
-  .acct-info{display:flex;align-items:center;gap:1.4cqw;flex-wrap:nowrap;flex:none;}
-  .acct-label{font-size:3.7cqw;font-weight:800;flex:none;white-space:nowrap;}
-  .acct-id{font-size:3.1cqw;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;width:11ch;}
-  .acct-role{font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;width:3em;}
-  .seg-row{display:flex;gap:1cqw;flex-wrap:nowrap;}
-  .seg-row button{flex:1;border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;height:5.6cqw;min-height:0;padding:0 1.6cqw;white-space:nowrap;}
+  .acct-right{display:flex;align-items:center;gap:3.9111dvh;flex:none;}
+  .acct-info{display:flex;align-items:center;gap:2.4889dvh;flex-wrap:nowrap;flex:none;}
+  .acct-label{font-size:6.5778dvh;font-weight:800;flex:none;white-space:nowrap;}
+  .acct-id{font-size:5.5111dvh;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;width:11ch;}
+  .acct-role{font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;width:3em;}
+  .seg-row{display:flex;gap:1.7778dvh;flex-wrap:nowrap;}
+  .seg-row button{flex:1;border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;height:9.9556dvh;min-height:0;padding:0 2.8444dvh;white-space:nowrap;}
   .seg-row button.active{background:var(--ink);color:#f4f4f4;}
   .seg-row button:active{transform:scale(.96);}
-  .record-empty{font-size:2.8cqw;font-weight:600;color:var(--ink-3);padding:1.4cqw .2cqw;}
+  .record-empty{font-size:4.9778dvh;font-weight:600;color:var(--ink-3);padding:2.4889dvh 0.3556dvh;}
   /* 第13屏 日志页：日志列表外层保留一个大框；框内全是纯文字——每条一行，来源不做框/标签/药丸；日期与时间都补零（月、日、时、分均为两位数），来源用数字写终端1／终端2、写 成员1／成员2／成员3（编号与第14屏家庭组里该成员的编号对应）；四列竖着对齐——时间一列、来源一列、一句小话说明一列、多少张固定在最后一列右对齐；字号比业务界面小、行距收紧，一屏多显示几条 */
-  .log-page{gap:1cqw;}
-  .log-sub{font-size:2.8cqw;font-weight:700;color:var(--ink-2);}
-  .log-box{flex:1;min-height:0;padding:.5cqw 2.6cqw .2cqw;display:flex;flex-direction:column;overflow:hidden;}
+  .log-page{gap:1.7778dvh;}
+  .log-sub{font-size:4.9778dvh;font-weight:700;color:var(--ink-2);}
+  .log-box{flex:1;min-height:0;padding:0.8889dvh 4.6222dvh 0.3556dvh;display:flex;flex-direction:column;overflow:hidden;}
   .log-list{display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:none;min-height:0;}
   .log-list::-webkit-scrollbar{display:none;}
-  .log-row{display:flex;align-items:baseline;gap:1.8cqw;padding:.5cqw .2cqw;font-size:2.8cqw;font-weight:600;color:var(--ink-2);line-height:1.35;white-space:nowrap;}
-  .log-col-time{flex:0 0 22cqw;}
-  .log-col-source{flex:0 0 9cqw;}
+  .log-row{display:flex;align-items:baseline;gap:3.2dvh;padding:0.8889dvh 0.3556dvh;font-size:4.9778dvh;font-weight:600;color:var(--ink-2);line-height:1.35;white-space:nowrap;}
+  .log-col-time{flex:0 0 39.1111dvh;}
+  .log-col-source{flex:0 0 16dvh;}
   .log-col-text{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;}
-  .log-col-delta{flex:0 0 8cqw;text-align:right;color:var(--ink);font-weight:800;}
-  .status-word{font-size:2.8cqw;font-weight:800;border:.4cqw solid var(--ink);border-radius:99px;padding:0 1.8cqw;height:4.6cqw;display:inline-flex;align-items:center;justify-content:center;flex:none;}
+  .log-col-delta{flex:0 0 14.2222dvh;text-align:right;color:var(--ink);font-weight:800;}
+  .status-word{font-size:4.9778dvh;font-weight:800;border:0.7111dvh solid var(--ink);border-radius:99px;padding:0 3.2dvh;height:8.1778dvh;display:inline-flex;align-items:center;justify-content:center;flex:none;}
   .status-word.done{background:var(--ink);color:#f4f4f4;}
 
   /* ---------- 解题卡申请消息事件：孩子一发申请，任何一屏顶部先弹出，点开直接批 ---------- */
-  .ask-push{position:absolute;top:2cqw;left:3.4cqw;right:3.4cqw;z-index:30;display:flex;align-items:center;gap:1.6cqw;background:#111;color:#f4f4f4;border-radius:2.4cqw;padding:1.4cqw 2.2cqw;box-shadow:0 1cqw 3cqw rgba(0,0,0,.35);}
+  .ask-push{position:absolute;top:3.5556dvh;left:6.0444dvh;right:6.0444dvh;z-index:30;display:flex;align-items:center;gap:2.8444dvh;background:#111;color:#f4f4f4;border-radius:4.2667dvh;padding:2.4889dvh 3.9111dvh;box-shadow:0 1.7778dvh 5.3333dvh rgba(0,0,0,.35);}
   .ask-push[hidden]{display:none;}
-  .ask-push-main{flex:1;min-width:0;display:flex;align-items:center;gap:1.8cqw;background:none;border:none;color:inherit;text-align:left;padding:0;min-height:0;font-family:inherit;cursor:pointer;}
-  .ask-push-dot{width:2.2cqw;height:2.2cqw;border-radius:50%;background:#f4f4f4;flex:none;}
-  .ask-push-text{display:flex;flex-direction:column;gap:.2cqw;min-width:0;}
-  .ask-push-text b{font-size:3.7cqw;font-weight:800;line-height:1.25;}
-  .ask-push-text span{font-size:2.8cqw;font-weight:600;color:#cfcfcf;line-height:1.3;}
-  .ask-push-ok{flex:none;border:none;background:#f4f4f4;color:#111;border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:5.6cqw;min-height:0;}
+  .ask-push-main{flex:1;min-width:0;display:flex;align-items:center;gap:3.2dvh;background:none;border:none;color:inherit;text-align:left;padding:0;min-height:0;font-family:inherit;cursor:pointer;}
+  .ask-push-dot{width:3.9111dvh;height:3.9111dvh;border-radius:50%;background:#f4f4f4;flex:none;}
+  .ask-push-text{display:flex;flex-direction:column;gap:0.3556dvh;min-width:0;}
+  .ask-push-text b{font-size:6.5778dvh;font-weight:800;line-height:1.25;}
+  .ask-push-text span{font-size:4.9778dvh;font-weight:600;color:#cfcfcf;line-height:1.3;}
+  .ask-push-ok{flex:none;border:none;background:#f4f4f4;color:#111;border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:9.9556dvh;min-height:0;}
   .ask-push-ok:active{transform:scale(.96);}
-  .ask-push-x{flex:none;border:none;background:none;color:#cfcfcf;font-size:4.2cqw;font-weight:700;line-height:1;padding:.4cqw;min-height:0;}
+  .ask-push-x{flex:none;border:none;background:none;color:#cfcfcf;font-size:7.4667dvh;font-weight:700;line-height:1;padding:0.7111dvh;min-height:0;}
 
   /* ---------- 管理：密码门 / 四大类 / 一行设置 ---------- */
-  .mini-btn{border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:5.6cqw;min-height:0;flex:none;white-space:nowrap;}
+  .mini-btn{border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:9.9556dvh;min-height:0;flex:none;white-space:nowrap;}
   .mini-btn:active{transform:scale(.96);}
-  .gate-note{font-size:2.8cqw;font-weight:600;color:var(--ink-2);line-height:1.5;}
+  .gate-note{font-size:4.9778dvh;font-weight:600;color:var(--ink-2);line-height:1.5;}
   /* ---------- 第11屏 输入管理员密码：六个小方格 + 进入 / 重置 ---------- */
-  .pin-view{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.6cqw;min-height:0;}
+  .pin-view{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4.6222dvh;min-height:0;}
   .pin-view[hidden]{display:none;}
-  .pin-prompt{font-size:4.2cqw;font-weight:800;white-space:nowrap;}
-  .pin-row{display:flex;gap:1.6cqw;justify-content:center;}
-  .pin-box{width:7.5cqw;height:7.5cqw;flex:none;border:.45cqw solid var(--ink);border-radius:1.8cqw;background:#fff;color:var(--ink);font-size:4.6cqw;font-weight:800;text-align:center;font-family:inherit;padding:0;min-height:0;}
-  .pin-box:focus{outline:.4cqw solid var(--ink-3);outline-offset:.2cqw;}
-  .pin-hint{font-size:3.2cqw;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;}
-  .pin-toast{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);z-index:20;background:#111;color:#f4f4f4;font-size:3.4cqw;font-weight:800;padding:1.5cqw 3.6cqw;border-radius:99px;white-space:nowrap;pointer-events:none;box-shadow:0 .8cqw 2.4cqw rgba(0,0,0,.3);}
+  .pin-prompt{font-size:7.4667dvh;font-weight:800;white-space:nowrap;}
+  .pin-row{display:flex;gap:2.8444dvh;justify-content:center;}
+  .pin-box{width:13.3333dvh;height:13.3333dvh;flex:none;border:0.8dvh solid var(--ink);border-radius:3.2dvh;background:#fff;color:var(--ink);font-size:8.1778dvh;font-weight:800;text-align:center;font-family:inherit;padding:0;min-height:0;}
+  .pin-box:focus{outline:0.7111dvh solid var(--ink-3);outline-offset:0.3556dvh;}
+  .pin-hint{font-size:5.6889dvh;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;}
+  .pin-toast{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);z-index:20;background:#111;color:#f4f4f4;font-size:6.0444dvh;font-weight:800;padding:2.6667dvh 6.4dvh;border-radius:99px;white-space:nowrap;pointer-events:none;box-shadow:0 1.4222dvh 4.2667dvh rgba(0,0,0,.3);}
   .pin-toast[hidden]{display:none;}
   /* 476：注册/登录/重置反馈改顶部浮动提示，和 pin-toast 一样是 viewport 直属，
      position:absolute 相对 16:9 舞台定位在顶部，软键盘弹起也盖不住 */
-  .form-toast{position:absolute;top:7cqw;left:50%;transform:translateX(-50%);z-index:35;max-width:88cqw;background:#111;color:#f4f4f4;font-size:3.1cqw;font-weight:800;line-height:1.35;padding:1.4cqw 3cqw;border-radius:2.4cqw;text-align:center;pointer-events:none;box-shadow:0 .8cqw 2.4cqw rgba(0,0,0,.3);}
+  .form-toast{position:absolute;top:12.4444dvh;left:50%;transform:translateX(-50%);z-index:35;max-width:156.444dvh;background:#111;color:#f4f4f4;font-size:5.5111dvh;font-weight:800;line-height:1.35;padding:2.4889dvh 5.3333dvh;border-radius:4.2667dvh;text-align:center;pointer-events:none;box-shadow:0 1.4222dvh 4.2667dvh rgba(0,0,0,.3);}
   .form-toast[hidden]{display:none;}
-  .pin-actions{display:flex;gap:1.2cqw;width:60cqw;}
+  .pin-actions{display:flex;gap:2.1333dvh;width:106.667dvh;}
   .pin-actions .big-btn,.pin-actions .ghost-btn{flex:1;width:auto;}
-  .reset-view{display:flex;flex-direction:column;gap:1.2cqw;}
+  .reset-view{display:flex;flex-direction:column;gap:2.1333dvh;}
   .reset-view[hidden]{display:none;}
   .reset-view .pin-actions{width:100%;}
-  .pin-set-label{font-size:3.4cqw;font-weight:800;}
-  .reg-ok{width:11cqw;height:11cqw;border-radius:50%;border:.55cqw solid var(--ink);background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:6cqw;font-weight:800;flex:none;}
-  .reg-ok-text{font-size:5.6cqw;font-weight:800;}
-  .reg-main{display:flex;flex-direction:column;gap:1.2cqw;}
+  .pin-set-label{font-size:6.0444dvh;font-weight:800;}
+  .reg-ok{width:19.5556dvh;height:19.5556dvh;border-radius:50%;border:0.9778dvh solid var(--ink);background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:10.6667dvh;font-weight:800;flex:none;}
+  .reg-ok-text{font-size:9.9556dvh;font-weight:800;}
+  .reg-main{display:flex;flex-direction:column;gap:2.1333dvh;}
   .reg-main[hidden]{display:none;}
   /* 第12屏：一屏就是一屏——账号条与四行大类同一高度（按内容定高、min-height 6.2），分类行不均分拉伸，上下间距统一为同一个值，整屏排完，不滚动、不出屏 */
-  .cat-list{margin-top:.8cqw;margin-bottom:1.6cqw;display:flex;flex-direction:column;gap:.8cqw;flex:1;min-height:0;overflow:hidden;}
-  .cat-row{display:flex;align-items:center;gap:2.2cqw;width:100%;text-align:left;padding:.5cqw 2.6cqw .2cqw;font-family:inherit;color:var(--ink);flex:none;min-height:6.2cqw;flex-wrap:nowrap;}
-  .cat-row h4{margin:0;font-size:3.7cqw;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
-  .cat-row p{margin:0;font-size:2.8cqw;font-weight:600;color:var(--ink-2);line-height:1.2;white-space:nowrap;flex:none;}
-  .cat-row .go{margin-left:auto;font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;}
+  .cat-list{margin-top:1.4222dvh;margin-bottom:2.8444dvh;display:flex;flex-direction:column;gap:1.4222dvh;flex:1;min-height:0;overflow:hidden;}
+  .cat-row{display:flex;align-items:center;gap:3.9111dvh;width:100%;text-align:left;padding:0.8889dvh 4.6222dvh 0.3556dvh;font-family:inherit;color:var(--ink);flex:none;min-height:11.0222dvh;flex-wrap:nowrap;}
+  .cat-row h4{margin:0;font-size:6.5778dvh;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
+  .cat-row p{margin:0;font-size:4.9778dvh;font-weight:600;color:var(--ink-2);line-height:1.2;white-space:nowrap;flex:none;}
+  .cat-row .go{margin-left:auto;font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;}
   .cat-row:active{transform:scale(.98);}
-  .line-set{padding:.5cqw 2.6cqw .2cqw;display:flex;flex-direction:column;gap:.7cqw;}
-  .line-row{display:flex;align-items:center;gap:2cqw;}
-  .line-row .lab{font-size:3.7cqw;font-weight:800;flex:none;width:15cqw;}
-  .line-row .hint{margin-left:auto;font-size:2.8cqw;font-weight:700;color:var(--ink-2);white-space:nowrap;}
+  .line-set{padding:0.8889dvh 4.6222dvh 0.3556dvh;display:flex;flex-direction:column;gap:1.2444dvh;}
+  .line-row{display:flex;align-items:center;gap:3.5556dvh;}
+  .line-row .lab{font-size:6.5778dvh;font-weight:800;flex:none;width:26.6667dvh;}
+  .line-row .hint{margin-left:auto;font-size:4.9778dvh;font-weight:700;color:var(--ink-2);white-space:nowrap;}
   /* 第13屏：每日张数与预支倍率横着排同一行，后边直接跟等号，等号后直接写算出的张数 */
-  .card-formula-row{gap:1.5cqw;flex-wrap:nowrap;white-space:nowrap;}
+  .card-formula-row{gap:2.6667dvh;flex-wrap:nowrap;white-space:nowrap;}
   .card-formula-row .lab{width:auto;}
-  .card-formula-row .unit{font-size:3.1cqw;font-weight:700;flex:none;}
-  .card-formula-row .eq{font-size:4.2cqw;font-weight:800;flex:none;}
-  .card-formula-row .total{font-size:4.2cqw;font-weight:800;flex:none;}
-  .card-formula-row .num-input{width:5.6cqw;}
-  .seg-row.sm{flex:none;width:48cqw;}
-  .seg-row.sm button{height:5.6cqw;font-size:3.1cqw;white-space:nowrap;padding:0 1.6cqw;flex:1;}
+  .card-formula-row .unit{font-size:5.5111dvh;font-weight:700;flex:none;}
+  .card-formula-row .eq{font-size:7.4667dvh;font-weight:800;flex:none;}
+  .card-formula-row .total{font-size:7.4667dvh;font-weight:800;flex:none;}
+  .card-formula-row .num-input{width:9.9556dvh;}
+  .seg-row.sm{flex:none;width:85.3333dvh;}
+  .seg-row.sm button{height:9.9556dvh;font-size:5.5111dvh;white-space:nowrap;padding:0 2.8444dvh;flex:1;}
   .info-list{display:flex;flex-direction:column;}
-  .info-row{display:flex;justify-content:space-between;align-items:center;gap:2cqw;padding:1.1cqw .2cqw;border-bottom:.3cqw solid var(--line);font-size:3.1cqw;font-weight:600;color:var(--ink-2);}
+  .info-row{display:flex;justify-content:space-between;align-items:center;gap:3.5556dvh;padding:1.9556dvh 0.3556dvh;border-bottom:0.5333dvh solid var(--line);font-size:5.5111dvh;font-weight:600;color:var(--ink-2);}
   .info-row b{color:var(--ink);font-weight:800;text-align:right;}
   .info-row:last-child{border-bottom:none;}
-  .row-actions{display:flex;gap:1.2cqw;}
-  .row-actions button{flex:1;border:.45cqw solid var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;height:5.6cqw;min-height:0;padding:0 1.6cqw;background:var(--ink);color:#f4f4f4;}
+  .row-actions{display:flex;gap:2.1333dvh;}
+  .row-actions button{flex:1;border:0.8dvh solid var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;height:9.9556dvh;min-height:0;padding:0 2.8444dvh;background:var(--ink);color:#f4f4f4;}
   .row-actions button.ghost{background:var(--panel);color:var(--ink);}
   .row-actions button:active{transform:scale(.96);}
-  .num-input{width:10cqw;flex:none;border:.45cqw solid var(--ink);border-radius:1.8cqw;background:#fff;color:var(--ink);font-size:4.2cqw;font-weight:800;text-align:center;height:5.6cqw;font-family:inherit;padding:0;}
-  .num-input:focus{outline:.4cqw solid var(--ink-3);outline-offset:.2cqw;}
-  .ask-row{display:flex;align-items:center;gap:2cqw;width:100%;min-height:0;}
-  .ask-row .lab{font-size:3.7cqw;font-weight:800;flex:none;}
+  .num-input{width:17.7778dvh;flex:none;border:0.8dvh solid var(--ink);border-radius:3.2dvh;background:#fff;color:var(--ink);font-size:7.4667dvh;font-weight:800;text-align:center;height:9.9556dvh;font-family:inherit;padding:0;}
+  .num-input:focus{outline:0.7111dvh solid var(--ink-3);outline-offset:0.3556dvh;}
+  .ask-row{display:flex;align-items:center;gap:3.5556dvh;width:100%;min-height:0;}
+  .ask-row .lab{font-size:6.5778dvh;font-weight:800;flex:none;}
   /* 状态紧跟在「解题卡申请」后边；行尾对号／叉两个图标钮常驻显示，不随申请状态出现或消失（无申请时点它们没反应） */
-  .ask-decide{margin-left:auto;display:flex;gap:1.4cqw;flex:none;}
-  .ask-icon{width:5.6cqw;height:5.6cqw;min-height:0;border-radius:50%;border:.45cqw solid var(--ink);display:flex;align-items:center;justify-content:center;padding:0;flex:none;}
+  .ask-decide{margin-left:auto;display:flex;gap:2.4889dvh;flex:none;}
+  .ask-icon{width:9.9556dvh;height:9.9556dvh;min-height:0;border-radius:50%;border:0.8dvh solid var(--ink);display:flex;align-items:center;justify-content:center;padding:0;flex:none;}
   .ask-icon svg{width:58%;height:58%;display:block;}
   .ask-icon.ok{background:var(--ink);color:#f4f4f4;}
   .ask-icon.no{background:var(--panel);color:var(--ink);}
   .ask-icon:active{transform:scale(.93);}
   .ask-icon[hidden]{display:none;}
   /* 审批条件：紧跟状态后边——先选按张／按倍，再填数字，点行尾对号按选好的条件批 */
-  .ask-cond{display:flex;align-items:center;gap:1.2cqw;flex:none;}
-  .ask-cond .seg-row{width:22cqw;flex:none;}
-  .ask-cond .seg-row button{flex:1;height:5.6cqw;font-size:3.1cqw;padding:0 1.6cqw;}
-  .ask-cond .num-input{width:7.2cqw;height:5.6cqw;}
-  .ask-cond .unit{font-size:3.1cqw;font-weight:700;flex:none;}
-  .ask-msg{font-size:3.1cqw;font-weight:700;line-height:1.45;padding-top:.6cqw;}
+  .ask-cond{display:flex;align-items:center;gap:2.1333dvh;flex:none;}
+  .ask-cond .seg-row{width:39.1111dvh;flex:none;}
+  .ask-cond .seg-row button{flex:1;height:9.9556dvh;font-size:5.5111dvh;padding:0 2.8444dvh;}
+  .ask-cond .num-input{width:12.8dvh;height:9.9556dvh;}
+  .ask-cond .unit{font-size:5.5111dvh;font-weight:700;flex:none;}
+  .ask-msg{font-size:5.5111dvh;font-weight:700;line-height:1.45;padding-top:1.0667dvh;}
   /* 第13屏收紧：三框间距与内边距压小，使用记录框占满剩余高度，三行数据在框内均分，
      整页一屏排完——不滚动、底边不出屏；点「暂无申请」时不展开任何东西，外框纹丝不动 */
-  .s13 .result-main{padding-bottom:1.6cqw;}
-  .s13 .form-wrap{gap:.8cqw;margin-top:.8cqw;overflow:hidden;}
-  .s13 .line-set{padding:.5cqw 2.6cqw .2cqw;gap:.45cqw;}
+  .s13 .result-main{padding-bottom:2.8444dvh;}
+  .s13 .form-wrap{gap:1.4222dvh;margin-top:1.4222dvh;overflow:hidden;}
+  .s13 .line-set{padding:0.8889dvh 4.6222dvh 0.3556dvh;gap:0.8dvh;}
   .s13 .info-list{flex:1;min-height:0;}
-  .s13 .info-row{flex:1;padding:.35cqw .2cqw;}
-  .s13 .num-input{height:5.6cqw;}
+  .s13 .info-row{flex:1;padding:0.6222dvh 0.3556dvh;}
+  .s13 .num-input{height:9.9556dvh;}
   /* 第14屏收紧：整框往里压，底边黑框完整留在屏内——不滚动、不出屏 */
-  .s14 .result-main{padding-bottom:1.6cqw;}
+  .s14 .result-main{padding-bottom:2.8444dvh;}
   .s14 .info-list{flex:1;min-height:0;display:flex;flex-direction:column;}
-  .s14 .info-row{flex:1;padding:.3cqw .2cqw;}
+  .s14 .info-row{flex:1;padding:0.5333dvh 0.3556dvh;}
   /* 第14屏按钮统一规格：邀请成员／转让／删除／通过／拒绝／修改全部用同一套——与全稿通用 mini-btn 同边框、同圆角、同字号，高度统一为全稿小按钮基准 5.6（原 4.8 已提到 5.6），与第 15 屏行尾「解绑」按钮同高；行尾按钮宽度按字数走：两个字用两字宽 10.4、三个字用三字宽 13.6（见 .fam-actions 两列定宽），不许一个大一个小 */
-  .s14 .mini-btn{height:5.6cqw;font-size:3.1cqw;border-radius:1.8cqw;width:10.4cqw;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
+  .s14 .mini-btn{height:9.9556dvh;font-size:5.5111dvh;border-radius:3.2dvh;width:18.4889dvh;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
   /* 第14屏 家庭组管理中心：一个框里从上到下——顶栏、成员行、成员管理区、设备行、密码两行，一屏排完不滚动 */
   .form-wrap.scrollable{overflow-y:auto;scrollbar-width:none;}
   .form-wrap.scrollable::-webkit-scrollbar{display:none;}
 
   /* 第14屏主屏简化：只留家庭组／密码管理两个入口行，细节一律收进弹出页 */
-  .sub-page{position:absolute;inset:0;z-index:6;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;padding:.8cqw 3.4cqw 1.6cqw;}
+  .sub-page{position:absolute;inset:0;z-index:6;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;padding:1.4222dvh 6.0444dvh 2.8444dvh;}
   .sub-page[hidden]{display:none;}
   .sub-page .form-wrap{flex:1;}
 
   /* 第14屏（本轮重定）：两大部分一屏放完——上边一排两个密码，下边家庭组管理列表，不再分弹出页 */
-  .s14 .form-wrap{gap:.8cqw;margin-top:.6cqw;overflow:hidden;}
-  .s14 .pwd-strip{flex:none;display:flex;align-items:center;gap:2.4cqw;padding:.5cqw 2.6cqw .2cqw;}
-  .pwd-group{display:flex;align-items:center;gap:2cqw;flex:1;min-width:0;}
-  .pwd-lab{font-size:3.7cqw;font-weight:800;white-space:nowrap;}
+  .s14 .form-wrap{gap:1.4222dvh;margin-top:1.0667dvh;overflow:hidden;}
+  .s14 .pwd-strip{flex:none;display:flex;align-items:center;gap:4.2667dvh;padding:0.8889dvh 4.6222dvh 0.3556dvh;}
+  .pwd-group{display:flex;align-items:center;gap:3.5556dvh;flex:1;min-width:0;}
+  .pwd-lab{font-size:6.5778dvh;font-weight:800;white-space:nowrap;}
   .pwd-group .mini-btn{margin-left:auto;}
-  .pwd-sep{width:.35cqw;align-self:stretch;background:var(--line);flex:none;}
-  .s14 .fam-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:.5cqw 2.6cqw .2cqw;overflow:hidden;}
-  .fam-title-row{display:flex;align-items:center;gap:2cqw;padding-bottom:.35cqw;border-bottom:.3cqw solid var(--line);flex:none;}
-  .fam-title{font-size:3.7cqw;font-weight:800;flex:none;white-space:nowrap;}
-  .fam-id{font-size:3.1cqw;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;letter-spacing:.02em;}
-  .fam-title-actions{margin-left:auto;display:flex;align-items:center;gap:1.6cqw;flex:none;}
-  .fam-title-actions .mini-btn{width:16.8cqw;}
+  .pwd-sep{width:0.6222dvh;align-self:stretch;background:var(--line);flex:none;}
+  .s14 .fam-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:0.8889dvh 4.6222dvh 0.3556dvh;overflow:hidden;}
+  .fam-title-row{display:flex;align-items:center;gap:3.5556dvh;padding-bottom:0.6222dvh;border-bottom:0.5333dvh solid var(--line);flex:none;}
+  .fam-title{font-size:6.5778dvh;font-weight:800;flex:none;white-space:nowrap;}
+  .fam-id{font-size:5.5111dvh;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;letter-spacing:.02em;}
+  .fam-title-actions{margin-left:auto;display:flex;align-items:center;gap:2.8444dvh;flex:none;}
+  .fam-title-actions .mini-btn{width:29.8667dvh;}
 
   /* 家庭组列表一屏正好放下 5 行：一排定高 6.2、行距按 5 行排满列表区（5×6.2＝31，列表区正好容下），5 行以内不滚屏；行高可微缩防挤压，成员超过 5 个时才在列表内上下滚动（手机触摸滚动），滚动条不显示 */
   .fam-list{display:flex;flex-direction:column;flex:1;min-height:0;justify-content:flex-start;overflow-y:auto;scrollbar-width:none;}
   .fam-list::-webkit-scrollbar{display:none;}
-  .fam-row{display:flex;align-items:center;gap:1.6cqw;padding:.2cqw .2cqw;flex:0 1 6.2cqw;height:6.2cqw;min-height:0;border-bottom:.3cqw solid var(--line);}
-  .fam-empty-row{color:var(--ink-3);font-weight:700;font-size:3.3cqw;}
-  .fam-phone{font-size:3.1cqw;font-weight:600;white-space:nowrap;}
+  .fam-row{display:flex;align-items:center;gap:2.8444dvh;padding:0.3556dvh 0.3556dvh;flex:0 1 11.0222dvh;height:11.0222dvh;min-height:0;border-bottom:0.5333dvh solid var(--line);}
+  .fam-empty-row{color:var(--ink-3);font-weight:700;font-size:5.8667dvh;}
+  .fam-phone{font-size:5.5111dvh;font-weight:600;white-space:nowrap;}
   /* 「管理员」是职务标，紧跟在账号后边，不放行尾按钮旁边 */
   .fam-admin-tag{margin-left:0;}
   /* 行尾按钮固定两列：整个按钮区定宽、按两列排，每列同宽，列与列上下对齐——
      第一列「转让／通过」、第二列「删除／拒绝」，哪一行都落在同一列上，不许错位；
      管理员行只有「删除」一个按钮时，它直接落到第二列（见 .is-admin 规则），与下行的「删除」上下对齐 */
-  .fam-actions{margin-left:auto;display:grid;grid-template-columns:repeat(2,10.4cqw);gap:1.6cqw;flex:none;align-items:center;}
+  .fam-actions{margin-left:auto;display:grid;grid-template-columns:repeat(2,18.4889dvh);gap:2.8444dvh;flex:none;align-items:center;}
   .fam-actions .mini-btn{width:100%;}
   .fam-row.is-admin .fam-actions .fam-kick{grid-column:2;}
   /* 角色标统一宽度（全稿通则）：「管理员」「成员」「待审批」一律同一个宽度——按装下三个字定宽，
@@ -428,8 +428,8 @@
      首字左端、尾字右端与三字标的文字两端对齐（.spread 用两端对齐排布，内侧留白与三字标居中时的边距一致） */
   /* 角色标与 成员编号框共用同一套尺寸（本轮改定，两列完全一样大）：宽 12.6、高 4.6、字号 2.8、字重 800、字距 .02em、边框 .4、圆角 99、内边距 0、行高 1.15——全部写在同一条共用规则里，不许各自再单独定尺寸；左右两列在同一行内同高、同基线，上下各行对齐。
      唯一允许的差别只有填充：管理员角色标照旧黑底白字（.status-word.done），其余为空心；尺寸一律不动。「成员」两字用 .spread 在框内两端排开，只是框内文字排法，外框宽高不变。 */
-  .fam-row>.fam-admin-tag,.fam-row>.fam-app-tag{width:12.6cqw;height:4.6cqw;flex:0 0 12.6cqw;font-size:2.8cqw;font-weight:800;letter-spacing:.02em;border:.4cqw solid var(--ink);border-radius:99px;padding:0;margin:0;display:inline-flex;align-items:center;justify-content:center;line-height:1.15;white-space:nowrap;color:var(--ink);}
-  .fam-row>.fam-admin-tag.spread{justify-content:center;gap:1.6cqw;padding-left:0;padding-right:0;}
+  .fam-row>.fam-admin-tag,.fam-row>.fam-app-tag{width:22.4dvh;height:8.1778dvh;flex:0 0 22.4dvh;font-size:4.9778dvh;font-weight:800;letter-spacing:.02em;border:0.7111dvh solid var(--ink);border-radius:99px;padding:0;margin:0;display:inline-flex;align-items:center;justify-content:center;line-height:1.15;white-space:nowrap;color:var(--ink);}
+  .fam-row>.fam-admin-tag.spread{justify-content:center;gap:2.8444dvh;padding-left:0;padding-right:0;}
   /* 管理员黑底白字填充照旧不动（只填充、尺寸仍走共用规则）：须压过共用规则里的默认字色 */
   .fam-row>.fam-admin-tag.done{background:var(--ink);color:#f4f4f4;}
   /* 成员编号：移到每行最左边当编号用，账号、角色标、按钮依次往后排——管理员 成员1、往下依次 成员2、成员3……，与第13屏日志里的 成员编号一一对应；只在第14屏家庭组里圈框，第13屏日志里的 成员编号仍是纯文字、不框。编号框尺寸走上面那条与角色标共用的规则，只在这里补它自己的底色 */
@@ -438,118 +438,118 @@
      宽度按字数定（本轮改定）：「苹果」「安卓」只有两个字，就只占两个字的宽度——定宽 9.4，不许拉伸撑满三字宽；
      角色标（管理员／成员／待审批）仍按三字宽 12.6 不动，成员编号框也仍 12.6 不动。
      除宽度外其余与角色标同一套圈：高 4.6、字号 2.8、字重 800、字距 .02em、边框 .4、圆角 99、内边距 0、行高 1.15、底色 var(--panel)，不许有的套圈有的不套 */
-  .fam-term-tag{width:9.4cqw;height:4.6cqw;flex:0 0 9.4cqw;font-size:2.8cqw;font-weight:800;letter-spacing:.02em;border:.4cqw solid var(--ink);border-radius:99px;padding:0;margin:0;display:inline-flex;align-items:center;justify-content:center;line-height:1.15;white-space:nowrap;color:var(--ink);background:var(--panel);}
+  .fam-term-tag{width:16.7111dvh;height:8.1778dvh;flex:0 0 16.7111dvh;font-size:4.9778dvh;font-weight:800;letter-spacing:.02em;border:0.7111dvh solid var(--ink);border-radius:99px;padding:0;margin:0;display:inline-flex;align-items:center;justify-content:center;line-height:1.15;white-space:nowrap;color:var(--ink);background:var(--panel);}
   .fam-row .fam-transfer{margin-left:0;}
   .fam-row .fam-kick[disabled]{opacity:.38;cursor:not-allowed;}
   /* 邀请成员：按钮放在「家庭组管理」标题行右侧、和标题同一排，点它生成 6 位邀请码显示在标题行右侧原地，不在成员列表里、不占成员行 */
-  .fam-invite-code{font-size:3.1cqw;font-weight:800;letter-spacing:.14em;white-space:nowrap;}
+  .fam-invite-code{font-size:5.5111dvh;font-weight:800;letter-spacing:.14em;white-space:nowrap;}
   /* 邀请话（预留）：点「邀请成员」后在标题行下方展开——整段话带占位下载地址＋当次生成的 6 位邀请码，
      「复制」「分享」一键把整段话发出去；展开时成员列表区相应变矮、列表内照常滚动，关掉即恢复五排 */
-  .fam-invite-panel{flex:none;display:flex;flex-direction:column;gap:.7cqw;padding:.7cqw 0 .8cqw;border-bottom:.3cqw solid var(--line);}
+  .fam-invite-panel{flex:none;display:flex;flex-direction:column;gap:1.2444dvh;padding:1.2444dvh 0 1.4222dvh;border-bottom:0.5333dvh solid var(--line);}
   .fam-invite-panel[hidden]{display:none;}
-  .fam-invite-text{font-size:2.8cqw;font-weight:600;line-height:1.5;color:var(--ink-2);background:#fff;border:.35cqw solid var(--line);border-radius:1.8cqw;padding:.9cqw 1.6cqw;word-break:break-all;}
+  .fam-invite-text{font-size:4.9778dvh;font-weight:600;line-height:1.5;color:var(--ink-2);background:#fff;border:0.6222dvh solid var(--line);border-radius:3.2dvh;padding:1.6dvh 2.8444dvh;word-break:break-all;}
   .fam-invite-text b{color:var(--ink);font-weight:800;}
-  .fam-invite-actions{display:flex;align-items:center;gap:1.4cqw;}
+  .fam-invite-actions{display:flex;align-items:center;gap:2.4889dvh;}
   .fam-invite-actions .fam-invite-close{margin-left:auto;}
-  .fam-join-row{display:flex;align-items:center;gap:1.6cqw;padding:.1cqw .2cqw;flex:none;}
-  .fam-join-row .jr-phone{font-size:3.1cqw;font-weight:800;white-space:nowrap;}
-  .fam-join-row .jr-lab{font-size:2.8cqw;font-weight:600;color:var(--ink-2);white-space:nowrap;}
+  .fam-join-row{display:flex;align-items:center;gap:2.8444dvh;padding:0.1778dvh 0.3556dvh;flex:none;}
+  .fam-join-row .jr-phone{font-size:5.5111dvh;font-weight:800;white-space:nowrap;}
+  .fam-join-row .jr-lab{font-size:4.9778dvh;font-weight:600;color:var(--ink-2);white-space:nowrap;}
   .fam-join-row .fam-actions{margin-left:auto;}
   .mini-btn.solid{background:var(--ink);color:#f4f4f4;}
   /* 删除确认：点「删除」先弹确认，确认后才移除成员 */
-  .fam-confirm{position:absolute;inset:0;z-index:8;background:rgba(233,233,233,.85);display:flex;align-items:center;justify-content:center;padding:4cqw;}
+  .fam-confirm{position:absolute;inset:0;z-index:8;background:rgba(233,233,233,.85);display:flex;align-items:center;justify-content:center;padding:7.1111dvh;}
   .fam-confirm[hidden]{display:none;}
-  .fam-confirm-card{width:72cqw;max-width:100%;padding:2.6cqw 3.4cqw;display:flex;flex-direction:column;gap:1.6cqw;text-align:center;}
-  .fam-confirm-title{font-size:3.7cqw;font-weight:800;line-height:1.25;}
-  .fam-confirm-text{font-size:3.1cqw;font-weight:600;color:var(--ink-2);line-height:1.5;}
+  .fam-confirm-card{width:128dvh;max-width:100%;padding:4.6222dvh 6.0444dvh;display:flex;flex-direction:column;gap:2.8444dvh;text-align:center;}
+  .fam-confirm-title{font-size:6.5778dvh;font-weight:800;line-height:1.25;}
+  .fam-confirm-text{font-size:5.5111dvh;font-weight:600;color:var(--ink-2);line-height:1.5;}
   .s14 .form-feedback{flex:none;}
   /* 第14屏 改密码弹窗：与删除／转让确认同一套遮罩与卡片（.fam-confirm），卡片内改成表单排法；按钮走卡片自带的 .row-actions（取消／确认），与全屏其他弹窗同一规格 */
-  .pwd-dialog-card{text-align:left;width:78cqw;}
+  .pwd-dialog-card{text-align:left;width:138.667dvh;}
   .pwd-dialog-card .fam-confirm-title{text-align:center;}
-  .pwd-fields{display:flex;flex-direction:column;gap:1.2cqw;}
-  .pwd-field{display:flex;align-items:center;gap:2cqw;}
-  .pwd-field label{font-size:3.1cqw;font-weight:800;flex:none;width:16cqw;white-space:nowrap;}
-  .pwd-field input{flex:1;min-width:0;border:.45cqw solid var(--ink);border-radius:1.8cqw;background:#fff;color:var(--ink);font-size:3.1cqw;font-weight:600;padding:0 1.6cqw;height:5.6cqw;font-family:inherit;}
-  .pwd-field input:focus{outline:.4cqw solid var(--ink-3);outline-offset:.2cqw;}
-  .pwd-dialog-feedback{font-size:3.1cqw;font-weight:800;line-height:1.3;min-height:3.6cqw;color:var(--ink);}
+  .pwd-fields{display:flex;flex-direction:column;gap:2.1333dvh;}
+  .pwd-field{display:flex;align-items:center;gap:3.5556dvh;}
+  .pwd-field label{font-size:5.5111dvh;font-weight:800;flex:none;width:28.4444dvh;white-space:nowrap;}
+  .pwd-field input{flex:1;min-width:0;border:0.8dvh solid var(--ink);border-radius:3.2dvh;background:#fff;color:var(--ink);font-size:5.5111dvh;font-weight:600;padding:0 2.8444dvh;height:9.9556dvh;font-family:inherit;}
+  .pwd-field input:focus{outline:0.7111dvh solid var(--ink-3);outline-offset:0.3556dvh;}
+  .pwd-dialog-feedback{font-size:5.5111dvh;font-weight:800;line-height:1.3;min-height:6.4dvh;color:var(--ink);}
   .pwd-dialog-card .pin-row{justify-content:center;}
-  .pwd-dialog-prompt{font-size:3.1cqw;font-weight:700;color:var(--ink-2);text-align:center;line-height:1.4;}
+  .pwd-dialog-prompt{font-size:5.5111dvh;font-weight:700;color:var(--ink-2);text-align:center;line-height:1.4;}
 
   /* 第15屏 终端管理：绑定新终端在上、已绑定信息在下；绑定按钮做小、放在绑定框上边与标题同一排 */
   /* 第15屏版面与第14屏对齐：同样的底边留白与框间距，下边已绑定终端框照第14屏家庭组大框（.fam-box）做，框顶有标题「已绑定终端ID」 */
-  .s15 .result-main{padding-bottom:1.6cqw;}
-  .s15 .form-wrap{gap:.8cqw;margin-top:.6cqw;overflow:hidden;}
+  .s15 .result-main{padding-bottom:2.8444dvh;}
+  .s15 .form-wrap{gap:1.4222dvh;margin-top:1.0667dvh;overflow:hidden;}
   .s15 .form-feedback{min-height:0;flex:none;}
-  .s15 .bind-head{display:flex;align-items:center;gap:2cqw;}
-  .s15 .bind-actions{margin-left:auto;display:flex;gap:1.2cqw;flex:none;}
+  .s15 .bind-head{display:flex;align-items:center;gap:3.5556dvh;}
+  .s15 .bind-actions{margin-left:auto;display:flex;gap:2.1333dvh;flex:none;}
   /* 绑定按钮三个一律同宽同高（定宽 20.0＝五字宽、高 5.6、字号 3.1、边框 .45、圆角 1.8、内边距左右 1.6）：框比字宽就拉开撑满、不居中——「输入设备号」正好五字、整词排满五字框；「绑定指引」「扫码绑定」只有四字，逐字拆开（.spread）两端对齐、平均拉开撑满整个五字框，三个按钮一个排法 */
-  .s15 .bind-actions button{border:.45cqw solid var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:5.6cqw;min-height:0;white-space:nowrap;flex:none;width:20cqw;display:flex;align-items:center;justify-content:center;text-align:center;}
+  .s15 .bind-actions button{border:0.8dvh solid var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:9.9556dvh;min-height:0;white-space:nowrap;flex:none;width:35.5556dvh;display:flex;align-items:center;justify-content:center;text-align:center;}
   .s15 .bind-actions button.spread{justify-content:space-between;}
   /* 绑定指引页：整屏盖住第15屏（与第14屏弹出页同一套做法），不堆文字——两块图加箭头指示：
      左图＝第 2 屏顶栏原样，右上角齿轮圈出来、箭头指着它；右图＝第 7 屏设置页最下边长框的截块，
      箭头分别指设备ID数字和「显示设备二维码」按钮，下边只挂「设备ID」「二维码」两个短签 */
-  .bind-guide-page{position:absolute;inset:0;z-index:6;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;padding:.8cqw 3.4cqw 1.6cqw;}
+  .bind-guide-page{position:absolute;inset:0;z-index:6;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;padding:1.4222dvh 6.0444dvh 2.8444dvh;}
   .bind-guide-page[hidden]{display:none;}
-  .guide-flow{margin-top:1cqw;display:flex;align-items:stretch;gap:1.6cqw;flex:1;min-height:0;}
-  .guide-panel{min-width:0;padding:1.4cqw 2cqw;display:flex;flex-direction:column;gap:1.2cqw;}
+  .guide-flow{margin-top:1.7778dvh;display:flex;align-items:stretch;gap:2.8444dvh;flex:1;min-height:0;}
+  .guide-panel{min-width:0;padding:2.4889dvh 3.5556dvh;display:flex;flex-direction:column;gap:2.1333dvh;}
   .guide-panel.p1{flex:1.05;}
   .guide-panel.p2{flex:1.2;}
-  .guide-panel-head{display:flex;align-items:center;gap:1.6cqw;flex:none;}
-  .guide-num{width:5.8cqw;height:5.8cqw;border-radius:50%;background:var(--ink);color:#f4f4f4;display:flex;align-items:center;justify-content:center;font-size:4.2cqw;font-weight:800;flex:none;}
-  .guide-flow-arrow{align-self:center;font-size:6cqw;font-weight:800;line-height:1;flex:none;}
-  .guide-mock{border:.45cqw solid var(--ink);border-radius:2cqw;background:var(--panel);padding:1.2cqw 1.6cqw;display:flex;flex-direction:column;gap:1.1cqw;flex:none;}
-  .guide-topbar{display:flex;align-items:center;justify-content:space-between;gap:2cqw;}
-  .guide-topbar .g-left{width:4.2cqw;height:4.2cqw;color:var(--ink-2);flex:none;}
+  .guide-panel-head{display:flex;align-items:center;gap:2.8444dvh;flex:none;}
+  .guide-num{width:10.3111dvh;height:10.3111dvh;border-radius:50%;background:var(--ink);color:#f4f4f4;display:flex;align-items:center;justify-content:center;font-size:7.4667dvh;font-weight:800;flex:none;}
+  .guide-flow-arrow{align-self:center;font-size:10.6667dvh;font-weight:800;line-height:1;flex:none;}
+  .guide-mock{border:0.8dvh solid var(--ink);border-radius:3.5556dvh;background:var(--panel);padding:2.1333dvh 2.8444dvh;display:flex;flex-direction:column;gap:1.9556dvh;flex:none;}
+  .guide-topbar{display:flex;align-items:center;justify-content:space-between;gap:3.5556dvh;}
+  .guide-topbar .g-left{width:7.4667dvh;height:7.4667dvh;color:var(--ink-2);flex:none;}
   .guide-topbar .g-left svg{width:100%;height:100%;display:block;}
-  .guide-topbar .g-right{display:flex;align-items:center;gap:1.4cqw;flex:none;}
-  .guide-srv{font-size:2.8cqw;font-weight:700;border:.35cqw solid var(--ink);border-radius:99px;padding:.5cqw 1.4cqw;color:var(--ink-2);white-space:nowrap;}
-  .guide-srv i{display:inline-block;width:1.4cqw;height:1.4cqw;border-radius:50%;background:var(--ink);margin-right:.7cqw;vertical-align:middle;}
-  .guide-gear{width:6.6cqw;height:6.6cqw;border-radius:50%;border:.6cqw solid var(--ink);background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
+  .guide-topbar .g-right{display:flex;align-items:center;gap:2.4889dvh;flex:none;}
+  .guide-srv{font-size:4.9778dvh;font-weight:700;border:0.6222dvh solid var(--ink);border-radius:99px;padding:0.8889dvh 2.4889dvh;color:var(--ink-2);white-space:nowrap;}
+  .guide-srv i{display:inline-block;width:2.4889dvh;height:2.4889dvh;border-radius:50%;background:var(--ink);margin-right:1.2444dvh;vertical-align:middle;}
+  .guide-gear{width:11.7333dvh;height:11.7333dvh;border-radius:50%;border:1.0667dvh solid var(--ink);background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
   .guide-gear svg{width:74%;height:74%;display:block;}
-  .guide-pointrow{display:flex;justify-content:flex-end;padding-right:1.5cqw;font-size:3.8cqw;font-weight:800;line-height:1;color:var(--ink);}
+  .guide-pointrow{display:flex;justify-content:flex-end;padding-right:2.6667dvh;font-size:6.7556dvh;font-weight:800;line-height:1;color:var(--ink);}
   /* 左图顶栏下边不再放解题卡剩余框，换成第 2 屏下边那块拍题区：小字「拍到几道是几道」＋大字「简单／拍题」＋拍照圆钮，那块才是重要的；解题卡剩余几张不放 */
-  .guide-shootsub{font-size:2.8cqw;font-weight:600;color:var(--ink-2);text-align:center;line-height:1.35;}
-  .guide-shoottitle{font-size:4.2cqw;font-weight:800;line-height:1.1;display:flex;justify-content:center;gap:8.5cqw;align-items:baseline;color:var(--ink);}
+  .guide-shootsub{font-size:4.9778dvh;font-weight:600;color:var(--ink-2);text-align:center;line-height:1.35;}
+  .guide-shoottitle{font-size:7.4667dvh;font-weight:800;line-height:1.1;display:flex;justify-content:center;gap:15.1111dvh;align-items:baseline;color:var(--ink);}
   /* 外边第一个框大小不动，只把框里边那张图（截图一那张）稍微压扁一点：内图上下内边距和行间距收紧、圆钮略小，内图高度变矮、更扁 */
-  .guide-panel.p1 .guide-mock{padding:.7cqw 1.6cqw;gap:.7cqw;}
-  .guide-cam{width:7.5cqw;height:7.5cqw;border-radius:50%;border:.5cqw solid var(--line);align-self:center;display:flex;align-items:center;justify-content:center;}
-  .guide-cam i{width:3.6cqw;height:3.6cqw;border-radius:50%;background:var(--line);display:block;}
+  .guide-panel.p1 .guide-mock{padding:1.2444dvh 2.8444dvh;gap:1.2444dvh;}
+  .guide-cam{width:13.3333dvh;height:13.3333dvh;border-radius:50%;border:0.8889dvh solid var(--line);align-self:center;display:flex;align-items:center;justify-content:center;}
+  .guide-cam i{width:6.4dvh;height:6.4dvh;border-radius:50%;background:var(--line);display:block;}
   /* 右图截块：第 7 屏最下边长框按原尺寸（86 宽）画好，再整体缩小到面板宽，就是一张截图 */
-  .guide-cropwrap{border:.45cqw solid var(--ink);border-radius:2cqw;background:var(--panel);height:10.4cqw;flex:none;overflow:hidden;position:relative;}
-  .guide-crop{position:absolute;top:0;left:0;width:86cqw;transform:scale(.46);transform-origin:top left;padding:1.2cqw 1.8cqw;display:flex;flex-direction:column;gap:1.1cqw;}
-  .guide-setrow{display:flex;align-items:center;gap:1.4cqw;}
-  .guide-chain{display:flex;align-items:center;gap:1.1cqw;flex:none;}
-  .guide-chain .gc-dot{width:3.3cqw;height:3.3cqw;border-radius:50%;border:.4cqw solid var(--line);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:2.8cqw;font-weight:800;}
-  .guide-chain .gc-lab{font-size:2.8cqw;font-weight:700;color:var(--ink-3);white-space:nowrap;}
-  .guide-chain .gc-arr{font-size:2.8cqw;font-weight:800;color:var(--ink-3);line-height:1;}
-  .guide-chain-btn{margin-left:auto;border:.45cqw solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:2cqw;font-size:3.1cqw;font-weight:800;padding:.9cqw 2.2cqw;white-space:nowrap;flex:none;}
-  .guide-idrow{display:flex;align-items:center;gap:1.6cqw;border-top:.35cqw solid var(--line);padding-top:1cqw;}
+  .guide-cropwrap{border:0.8dvh solid var(--ink);border-radius:3.5556dvh;background:var(--panel);height:18.4889dvh;flex:none;overflow:hidden;position:relative;}
+  .guide-crop{position:absolute;top:0;left:0;width:152.889dvh;transform:scale(.46);transform-origin:top left;padding:2.1333dvh 3.2dvh;display:flex;flex-direction:column;gap:1.9556dvh;}
+  .guide-setrow{display:flex;align-items:center;gap:2.4889dvh;}
+  .guide-chain{display:flex;align-items:center;gap:1.9556dvh;flex:none;}
+  .guide-chain .gc-dot{width:5.8667dvh;height:5.8667dvh;border-radius:50%;border:0.7111dvh solid var(--line);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:4.9778dvh;font-weight:800;}
+  .guide-chain .gc-lab{font-size:4.9778dvh;font-weight:700;color:var(--ink-3);white-space:nowrap;}
+  .guide-chain .gc-arr{font-size:4.9778dvh;font-weight:800;color:var(--ink-3);line-height:1;}
+  .guide-chain-btn{margin-left:auto;border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:3.5556dvh;font-size:5.5111dvh;font-weight:800;padding:1.6dvh 3.9111dvh;white-space:nowrap;flex:none;}
+  .guide-idrow{display:flex;align-items:center;gap:2.8444dvh;border-top:0.6222dvh solid var(--line);padding-top:1.7778dvh;}
   /* 设备ID 与数字连排成一个整体：冒号紧挨数字（组间只留一个空格、4-4-4-4 分组），中间不许再隔空 */
   .guide-idfull{display:flex;align-items:center;gap:0;flex:none;}
-  .guide-idlab{font-size:3.1cqw;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;}
-  .guide-idnum{font-size:3.1cqw;font-weight:800;white-space:nowrap;background:#fff;padding:.3cqw 1cqw;outline:.45cqw solid var(--ink);outline-offset:.3cqw;border-radius:.6cqw;}
-  .guide-qrbtn{margin-left:auto;border:.45cqw solid var(--ink);background:#fff;color:var(--ink);border-radius:2cqw;font-size:3.1cqw;font-weight:800;padding:.8cqw 1.6cqw;white-space:nowrap;flex:none;outline:.45cqw solid var(--ink);outline-offset:.3cqw;}
-  .guide-verrow{display:flex;align-items:baseline;gap:1.6cqw;font-size:2.8cqw;font-weight:700;color:var(--ink-3);}
-  .guide-notes{position:relative;height:10.5cqw;flex:none;}
-  .guide-note{position:absolute;top:0;display:flex;flex-direction:column;align-items:center;gap:.5cqw;}
-  .guide-note .gn-arrow{font-size:4.6cqw;font-weight:800;line-height:1;}
-  .guide-note .gn-tag{display:inline-flex;align-items:center;gap:1cqw;font-size:3.1cqw;font-weight:800;border:.4cqw solid var(--ink);border-radius:99px;background:var(--panel);padding:.5cqw 1.6cqw;white-space:nowrap;}
-  .guide-note .gn-tag svg{width:3.4cqw;height:3.4cqw;display:block;}
+  .guide-idlab{font-size:5.5111dvh;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;}
+  .guide-idnum{font-size:5.5111dvh;font-weight:800;white-space:nowrap;background:#fff;padding:0.5333dvh 1.7778dvh;outline:0.8dvh solid var(--ink);outline-offset:0.5333dvh;border-radius:1.0667dvh;}
+  .guide-qrbtn{margin-left:auto;border:0.8dvh solid var(--ink);background:#fff;color:var(--ink);border-radius:3.5556dvh;font-size:5.5111dvh;font-weight:800;padding:1.4222dvh 2.8444dvh;white-space:nowrap;flex:none;outline:0.8dvh solid var(--ink);outline-offset:0.5333dvh;}
+  .guide-verrow{display:flex;align-items:baseline;gap:2.8444dvh;font-size:4.9778dvh;font-weight:700;color:var(--ink-3);}
+  .guide-notes{position:relative;height:18.6667dvh;flex:none;}
+  .guide-note{position:absolute;top:0;display:flex;flex-direction:column;align-items:center;gap:0.8889dvh;}
+  .guide-note .gn-arrow{font-size:8.1778dvh;font-weight:800;line-height:1;}
+  .guide-note .gn-tag{display:inline-flex;align-items:center;gap:1.7778dvh;font-size:5.5111dvh;font-weight:800;border:0.7111dvh solid var(--ink);border-radius:99px;background:var(--panel);padding:0.8889dvh 2.8444dvh;white-space:nowrap;}
+  .guide-note .gn-tag svg{width:6.0444dvh;height:6.0444dvh;display:block;}
   /* 两个短签稍微拉开：设备ID签往左移、二维码签贴到最右，中间留出一段空隙，不再贴到一块；
      两个箭头仍落在各自所指的范围内（左箭头在设备ID数字框内、右箭头在二维码按钮内） */
   .guide-note.note-id{left:15%;}
   .guide-note.note-qr{right:0;}
-  .guide-back-row{margin-top:1.2cqw;display:flex;justify-content:center;}
-  .guide-back-row button{border:.45cqw solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 3.4cqw;height:5.6cqw;min-height:0;}
+  .guide-back-row{margin-top:2.1333dvh;display:flex;justify-content:center;}
+  .guide-back-row button{border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 6.0444dvh;height:9.9556dvh;min-height:0;}
   .guide-back-row button:active{transform:scale(.96);}
   /* 已绑定终端一行连排：终端号（数字）当编号移到每行最左边，16 位码、设备类型、解绑按钮依次往后排，左起顺排；每行不再写「设备ID」四字，只留 16 位码；框顶有标题，标题写「已绑定终端ID」（.bound-title）；「解绑」靠 margin-left:auto 推到行尾最右边，四行的解绑在最右边对齐。
      终端编号框与第14屏编号框／角色标同一规格：定死宽 12.6、高 4.6、字号 2.8、边框 .4、药丸框，不许一个大一个小。本屏设备类型标注（成员1／成员2／嵌入式）与第 14 屏同一套圈（边框／圆角／高／字号一致），宽仍 12.6；第 14 屏的苹果／安卓标注是两字宽 9.4，是按字数定的例外。
      各行统一口径：全部是 16 位纯数字——第1位类型码（1嵌入式、2安卓、3苹果、4鸿蒙，0为其他／未知，5–9预留）＋后15位设备号，按 4-4-4-4 分组显示。嵌入式后15位由 Wi-Fi MAC 地址转换来（48位MAC转十进制即15位）；苹果、安卓、鸿蒙拿不到 MAC，就拿各自系统唯一标识（串号）在本地做一次稳定哈希转成15位纯数字，同一台机每次一样、不同机不一样，原始串号不上传，只传转出来的15位；两边格式统一成 16 位。苹果、安卓两行数值与嵌入式两行拉开大差距、不连号。四行顺序（编号跟位置走）：终端1 成员1、终端2 成员2、终端3 嵌入式、终端4 嵌入式；第 14 屏成员3 点「通过」进组后，这里自动多一行终端5 成员3（成员3 那台手机终端，16 位设备码 0582 9016 4739 0528）——成员通过审批、终端自动跟着加，不用手动再绑；已绑定终端列表一屏正好放下 5 行（行高 6.2、5 行以内不滚屏）；前两行不写苹果／安卓、改写对应的 成员编号，与第 14 屏 成员1／成员2 一一对应、一眼能对上绑定关系；嵌入式两行没有成员一说、照旧写嵌入式；每行的 16 位码与标注跟着设备走、不变 */
-  .s15 .device-row{justify-content:flex-start;gap:1.8cqw;}
+  .s15 .device-row{justify-content:flex-start;gap:3.2dvh;}
   .s15 .device-row b{text-align:left;white-space:nowrap;}
-  .s15 .device-row .term-name{color:var(--ink);font-weight:800;white-space:nowrap;flex:0 0 12.6cqw;letter-spacing:.02em;border:.4cqw solid var(--ink);border-radius:99px;background:var(--panel);padding:0;margin:0;width:12.6cqw;height:4.6cqw;display:inline-flex;align-items:center;justify-content:center;font-size:2.8cqw;line-height:1.15;}
-  .s15 .device-row .term-type{color:var(--ink);font-weight:800;white-space:nowrap;flex:0 0 12.6cqw;letter-spacing:.02em;border:.4cqw solid var(--ink);border-radius:99px;background:var(--panel);padding:0;margin:0;width:12.6cqw;height:4.6cqw;display:inline-flex;align-items:center;justify-content:center;font-size:2.8cqw;line-height:1.15;}
-  .s15 .device-row .mini-btn{margin-left:auto;flex:none;width:10.4cqw;display:flex;align-items:center;justify-content:center;}
+  .s15 .device-row .term-name{color:var(--ink);font-weight:800;white-space:nowrap;flex:0 0 22.4dvh;letter-spacing:.02em;border:0.7111dvh solid var(--ink);border-radius:99px;background:var(--panel);padding:0;margin:0;width:22.4dvh;height:8.1778dvh;display:inline-flex;align-items:center;justify-content:center;font-size:4.9778dvh;line-height:1.15;}
+  .s15 .device-row .term-type{color:var(--ink);font-weight:800;white-space:nowrap;flex:0 0 22.4dvh;letter-spacing:.02em;border:0.7111dvh solid var(--ink);border-radius:99px;background:var(--panel);padding:0;margin:0;width:22.4dvh;height:8.1778dvh;display:inline-flex;align-items:center;justify-content:center;font-size:4.9778dvh;line-height:1.15;}
+  .s15 .device-row .mini-btn{margin-left:auto;flex:none;width:18.4889dvh;display:flex;align-items:center;justify-content:center;}
   /* 「解绑」与第 14 屏行尾按钮（转让／删除／通过／拒绝）同一套尺寸：高度同为全稿小按钮基准 5.6、不再单独压小；宽度按字数走——「解绑」两个字用两字宽 10.4，与第 14 屏两字按钮同宽，三个字则用三字宽 13.6，不许一个大一个小 */
   .s15 .bind-actions button.solid{background:var(--ink);color:#f4f4f4;}
   .s15 .bind-actions button.ghost{background:var(--panel);color:var(--ink);}
@@ -558,51 +558,51 @@
   .bind-scan-page{position:absolute;inset:0;z-index:7;background:#000;color:#f2f2f2;display:flex;flex-direction:column;}
   .bind-scan-page[hidden]{display:none;}
   .bind-scan-page .scan-view{align-items:center;justify-content:center;}
-  .scan-qr{width:36cqw;height:36cqw;background:#fff;border-radius:2cqw;padding:3cqw;flex:none;}
+  .scan-qr{width:64dvh;height:64dvh;background:#fff;border-radius:3.5556dvh;padding:5.3333dvh;flex:none;}
   /* 摄像头实读画面：盖满取景区；拿不到摄像头时保持隐藏，露出占位二维码 */
   .scan-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:1;}
   .scan-video[hidden]{display:none;}
   .scan-qr svg{width:100%;height:100%;display:block;}
   /* 输入设备号弹窗：点「输入设备号」只弹出这一个窗——一条长输入条，输 16 位设备号（四位一组、共四组），下边取消／绑定；与第 14 屏弹窗同一套遮罩与卡片（.fam-confirm），本屏下边不留任何提醒行 */
-  .bind-num-card{width:84cqw;text-align:left;}
+  .bind-num-card{width:149.333dvh;text-align:left;}
   .bind-num-card .fam-confirm-title{text-align:center;}
-  .bind-num-input{width:100%;border:.45cqw solid var(--ink);border-radius:1.8cqw;background:#fff;color:var(--ink);font-size:4.2cqw;font-weight:800;letter-spacing:.06em;text-align:center;height:7.6cqw;padding:0 2cqw;font-family:inherit;}
-  .bind-num-input:focus{outline:.4cqw solid var(--ink-3);outline-offset:.2cqw;}
+  .bind-num-input{width:100%;border:0.8dvh solid var(--ink);border-radius:3.2dvh;background:#fff;color:var(--ink);font-size:7.4667dvh;font-weight:800;letter-spacing:.06em;text-align:center;height:13.5111dvh;padding:0 3.5556dvh;font-family:inherit;}
+  .bind-num-input:focus{outline:0.7111dvh solid var(--ink-3);outline-offset:0.3556dvh;}
   .bind-num-input::placeholder{color:var(--ink-3);}
   /* 【14、15屏统一规格】（本轮定死，以第14屏家庭组管理框 .fam-box 那套为准，14、15 两屏上下所有大框全用同一套，不再各改各的）：
      大框内边距 .5/2.6/.2、标题字号 3.7、标题与内容行高 1.15、内容行高 6.2、行内边距 .2、行内 gap 1.6、屏底边留白 1.6（.result-main padding-bottom）、上下框间距 .8（.form-wrap gap）、框顶距 .6（.form-wrap margin-top）。
      第14屏 .fam-box 与第15屏 .bind-box／.bound-box 数值逐项一致（密码条 .pwd-strip 左右内边距同为 2.6）；下框占满剩余高度（flex:1）、上框按内容定高（flex:none）只是高矮随内容，规格本身不许变。
      第14屏 成员编号框（成员1–成员3）也归这套管：全部定死同宽 12.6、同高 4.6、同字号 2.8、同边框 .4，不许一个大一个小。
      第16屏及以后所有管理类屏面，一律按这套统一规格做，不再另定一套。 */
-  .s15 .bind-box,.s15 .bound-box{display:flex;flex-direction:column;padding:.5cqw 2.6cqw .2cqw;overflow:hidden;gap:0;min-height:0;}
+  .s15 .bind-box,.s15 .bound-box{display:flex;flex-direction:column;padding:0.8889dvh 4.6222dvh 0.3556dvh;overflow:hidden;gap:0;min-height:0;}
   .s15 .bind-box{flex:none;}
   .s15 .bound-box{flex:1;}
-  .s15 .bind-title{font-size:3.7cqw;font-weight:800;line-height:1.15;}
-  .s15 .bind-box .bind-head{height:6.2cqw;flex:none;}
-  .s15 .bound-title{font-size:3.7cqw;font-weight:800;line-height:1.15;padding-bottom:.35cqw;border-bottom:.3cqw solid var(--line);flex:none;}
+  .s15 .bind-title{font-size:6.5778dvh;font-weight:800;line-height:1.15;}
+  .s15 .bind-box .bind-head{height:11.0222dvh;flex:none;}
+  .s15 .bound-title{font-size:6.5778dvh;font-weight:800;line-height:1.15;padding-bottom:0.6222dvh;border-bottom:0.5333dvh solid var(--line);flex:none;}
   /* 已绑定终端列表一屏正好放下 5 行：行高 6.2、5 行连标题正好排满下框，5 行以内不滚屏；行高可微缩，框被提示文字挤压时整行压一点也不裁掉第 5 行 */
   .s15 .bound-box .info-list{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;}
-  .s15 .bound-box .device-row{height:6.2cqw;padding:.2cqw .2cqw;gap:1.6cqw;align-items:center;line-height:1.15;flex:0 1 6.2cqw;min-height:0;border-bottom:.3cqw solid var(--line);}
+  .s15 .bound-box .device-row{height:11.0222dvh;padding:0.3556dvh 0.3556dvh;gap:2.8444dvh;align-items:center;line-height:1.15;flex:0 1 11.0222dvh;min-height:0;border-bottom:0.5333dvh solid var(--line);}
 
   /* ---------- 12–16 屏统一规格（四档字号版）：字号只留四档——T1 4.2（屏标题／大数字）、T2 3.7（类名、一级标签）、T3 3.1（正文、账号、按钮字）、T4 2.8（介绍、标签框字）；
      小按钮只留一套——高 5.6、字 3.1、边框 .45、圆角 1.8、内边距左右各 1.6，宽度按字数：2 字 10.4／3 字 13.6／4 字 16.8／5 字 20.0；框与字一样宽时整词居中，普通框比字宽时逐字拉开撑满（四字进五字框、两字进三字框），整排特殊处（角色标）只稍微拉开、平均放；
      标签框与状态框（药丸）：4 字 15.8×4.6／3 字 12.6×4.6／2 字 9.4×4.6，字 2.8、字重 800、边框 .4、圆角 99；
      分段按钮（时间段、按张／按倍等）全稿等宽 flex:1、高 5.6；同行控件同高；行高 6.2、分隔线 .3 细灰线、大框内边距 .5/2.6/.2 ---------- */
-  .s13 .mini-btn{width:10.4cqw;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
+  .s13 .mini-btn{width:18.4889dvh;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
   .s15 .mini-btn{display:inline-flex;align-items:center;justify-content:center;text-align:center;}
-  .s16 .form-box{padding:.5cqw 2.6cqw .2cqw;}
-  .s16 .info-row{height:6.2cqw;padding:0 .2cqw;flex:none;}
-  .ask-row .status-word{width:15.8cqw;}
-  .s13 .form-feedback,.s14 .form-feedback,.s15 .form-feedback,.s16 .form-feedback{font-size:3.1cqw;}
+  .s16 .form-box{padding:0.8889dvh 4.6222dvh 0.3556dvh;}
+  .s16 .info-row{height:11.0222dvh;padding:0 0.3556dvh;flex:none;}
+  .ask-row .status-word{width:28.0889dvh;}
+  .s13 .form-feedback,.s14 .form-feedback,.s15 .form-feedback,.s16 .form-feedback{font-size:5.5111dvh;}
 
   /* ---------- 12–16 屏四档字号收口：T1 4.2（屏标题／数字输入框／公式大数字）、T2 3.7（类名／框标题）、T3 3.1（正文／按钮／设备码）、T4 2.8（介绍／标签框），
      残留旧字号（4.1／3.9／3.4／3.3／3.2／3.0 等）一律清掉；邀请成员按钮在家庭组管理标题行右侧，定宽 16.8（四字宽）、高 5.6，
      不许被 .s14 .mini-btn 的两字宽 10.4 压小；第 15 屏四行 16 位设备码用 .dev-code 定死 T3 3.1、不缩不换行，保证显示 ---------- */
-  .s12 .recognize-line,.s13 .recognize-line,.s14 .recognize-line,.s15 .recognize-line,.s16 .recognize-line{font-size:4.2cqw;}
-  .s14 .pin-toast{font-size:3.1cqw;}
-  .s14 .pwd-dialog-card .pin-box{font-size:4.2cqw;}
-  .s14 .fam-title-actions .mini-btn{width:16.8cqw;height:5.6cqw;flex:none;}
-  .s15 .device-row .dev-code{font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;}
+  .s12 .recognize-line,.s13 .recognize-line,.s14 .recognize-line,.s15 .recognize-line,.s16 .recognize-line{font-size:7.4667dvh;}
+  .s14 .pin-toast{font-size:5.5111dvh;}
+  .s14 .pwd-dialog-card .pin-box{font-size:7.4667dvh;}
+  .s14 .fam-title-actions .mini-btn{width:29.8667dvh;height:9.9556dvh;flex:none;}
+  .s15 .device-row .dev-code{font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;}
   /* ---------- 12–16 屏四档字号与统一外框（本轮定死，收口）：字号只留四档——T1 4.2（屏标题／大数字／数字输入框）、
      T2 3.7（一级标签：类名、框标题、行标签）、T3 3.1（正文／按钮字／账号／设备码）、T4 2.8（辅助小字：介绍、药丸字、日志）；
      按钮只留一套——高 5.6、字 3.1、边框 .45、圆角 1.8、内边距左右各 1.6，宽度按字数定死：两字 10.4、三字 13.6、四字 16.8、五字 20.0；
@@ -618,19 +618,19 @@
      五框同容器 flex:1 1 0、间距由容器统一 gap .8 给，五框高度严格相等；
      退出登录仍紧贴最右边不动：右侧组 margin-left:auto、中间隔片 flex:1 把它顶到框的右内边距处 */
   .s12 .result-head{flex:none;}
-  .s12 .acct-box{width:100%;min-height:0;padding:.5cqw 2.6cqw .2cqw;margin:0;flex:1 1 0;}
+  .s12 .acct-box{width:100%;min-height:0;padding:0.8889dvh 4.6222dvh 0.3556dvh;margin:0;flex:1 1 0;}
   .s12 .acct-spacer{flex:1 1 auto;}
   .s12 .acct-right{margin-left:auto;flex:none;}
-  .s12 .cat-list{width:100%;margin-top:.8cqw;margin-bottom:1.6cqw;gap:.8cqw;flex:1 1 0;min-height:0;display:flex;flex-direction:column;}
-  .s12 .cat-row{width:100%;padding:.5cqw 2.6cqw .2cqw;margin:0;flex:1 1 0;min-height:0;}
+  .s12 .cat-list{width:100%;margin-top:1.4222dvh;margin-bottom:2.8444dvh;gap:1.4222dvh;flex:1 1 0;min-height:0;display:flex;flex-direction:column;}
+  .s12 .cat-row{width:100%;padding:0.8889dvh 4.6222dvh 0.3556dvh;margin:0;flex:1 1 0;min-height:0;}
   /* 第13屏分段钮逐字拉开撑满（本轮定死）：使用记录三个时间药丸等宽 flex:1 1 0，字逐字拆成 span、按钮内 space-between 平均拉开撑满整个框，不挤在中间；
      同屏审批条件「按张／按倍」同法——两字拆开两端平均拉开撑满各自的框 */
-  .s13 #rangeSeg button{flex:1 1 0;display:flex;align-items:center;justify-content:space-between;padding:0 1.6cqw;}
-  .s13 .ask-cond .seg-row button{flex:1 1 0;display:flex;align-items:center;justify-content:space-between;padding:0 1.6cqw;}
-  .s13 .line-set,.s13 .log-box{width:100%;padding:.5cqw 2.6cqw .2cqw;}
-  .s14 .pwd-strip,.s14 .fam-box{width:100%;padding:.5cqw 2.6cqw .2cqw;}
-  .s15 .bind-box,.s15 .bound-box{width:100%;padding:.5cqw 2.6cqw .2cqw;}
-  .s16 .form-box{width:100%;padding:.5cqw 2.6cqw .2cqw;}
+  .s13 #rangeSeg button{flex:1 1 0;display:flex;align-items:center;justify-content:space-between;padding:0 2.8444dvh;}
+  .s13 .ask-cond .seg-row button{flex:1 1 0;display:flex;align-items:center;justify-content:space-between;padding:0 2.8444dvh;}
+  .s13 .line-set,.s13 .log-box{width:100%;padding:0.8889dvh 4.6222dvh 0.3556dvh;}
+  .s14 .pwd-strip,.s14 .fam-box{width:100%;padding:0.8889dvh 4.6222dvh 0.3556dvh;}
+  .s15 .bind-box,.s15 .bound-box{width:100%;padding:0.8889dvh 4.6222dvh 0.3556dvh;}
+  .s16 .form-box{width:100%;padding:0.8889dvh 4.6222dvh 0.3556dvh;}
   .s16 .mini-btn{display:inline-flex;align-items:center;justify-content:center;text-align:center;}
   /* 第16屏（本轮重定）：网关设置提到最上边做一横条——与 12–15 屏同一套横条规格（大框内边距 .5/2.6/.2、行高 6.2）：
      条内左边只写「网关设置」，右边只放两个入口，名字定死「官方服务器」「自有服务器」（与第 7 屏服务器连接一字不差，别写别的），
@@ -647,34 +647,34 @@
      登录 MCP 进去登录个人 AI 账号、填四项（网站、账号、密码、验证码；不选服务商——由用户自己输入要去的那个网站地址，
      再填该网站的账号、密码，验证码经反向接口由用户填写）；
      原来那堆 API 配置状态、Token、远程登录按钮全部删掉。屏上不再留「已保存，立即生效」这类反馈字；风险说明收在登录 MCP 页「登录」按钮下边一个小一点的「风险提示」按钮里，点开显示两条。 */
-  .s16 .result-main{padding-bottom:1.6cqw;}
-  .s16 .form-wrap{gap:.8cqw;margin-top:.6cqw;overflow:hidden;}
-  .s16 .gw-strip{flex:none;flex-direction:row;align-items:center;gap:2cqw;min-height:6.2cqw;}
-  .gw-strip-title{font-size:3.7cqw;font-weight:800;white-space:nowrap;flex:none;line-height:1.15;}
-  .gw-opts{margin-left:auto;display:flex;gap:1.2cqw;flex:none;}
-  .gw-opts button{border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:5.6cqw;min-height:0;white-space:nowrap;flex:none;width:20cqw;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
+  .s16 .result-main{padding-bottom:2.8444dvh;}
+  .s16 .form-wrap{gap:1.4222dvh;margin-top:1.0667dvh;overflow:hidden;}
+  .s16 .gw-strip{flex:none;flex-direction:row;align-items:center;gap:3.5556dvh;min-height:11.0222dvh;}
+  .gw-strip-title{font-size:6.5778dvh;font-weight:800;white-space:nowrap;flex:none;line-height:1.15;}
+  .gw-opts{margin-left:auto;display:flex;gap:2.1333dvh;flex:none;}
+  .gw-opts button{border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:9.9556dvh;min-height:0;white-space:nowrap;flex:none;width:35.5556dvh;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
   .gw-opts button.active{background:var(--ink);color:#f4f4f4;}
   .gw-opts button:active{transform:scale(.96);}
   /* 模型管理：照第 14、15 屏下边大框的样子——三种方式全收进下边一个大框里，不再并排两个小框；
      大框规格与 14、15 屏同一套（内边距 .5/2.6/.2、标题 3.7、行高 6.2、行间分隔线）；框内从上到下三行，一行一种，顺序定死：
      1 官方模型、2 登录 MCP、3 我的模型；
      前两行点行只选中（左侧圆点填黑）、不跳转，点行尾「进入 →」才进各自的二次页；第三行我的模型 暂未开通——不给「进入」，「暂未开通」放在行尾最右边 */
-  .s16 .model-area{flex:1;min-height:0;display:flex;flex-direction:column;padding:.5cqw 2.6cqw .2cqw;overflow:hidden;}
-  .model-area-title{font-size:3.7cqw;font-weight:800;line-height:1.15;flex:none;padding-bottom:.35cqw;border-bottom:.3cqw solid var(--line);}
+  .s16 .model-area{flex:1;min-height:0;display:flex;flex-direction:column;padding:0.8889dvh 4.6222dvh 0.3556dvh;overflow:hidden;}
+  .model-area-title{font-size:6.5778dvh;font-weight:800;line-height:1.15;flex:none;padding-bottom:0.6222dvh;border-bottom:0.5333dvh solid var(--line);}
   .model-list{flex:1;min-height:0;display:flex;flex-direction:column;}
-  .model-row{flex:1 1 0;display:flex;align-items:center;gap:1.6cqw;width:100%;border:none;border-bottom:.3cqw solid var(--line);background:transparent;color:var(--ink);font-family:inherit;text-align:left;padding:.2cqw .2cqw;min-height:0;cursor:pointer;}
+  .model-row{flex:1 1 0;display:flex;align-items:center;gap:2.8444dvh;width:100%;border:none;border-bottom:0.5333dvh solid var(--line);background:transparent;color:var(--ink);font-family:inherit;text-align:left;padding:0.3556dvh 0.3556dvh;min-height:0;cursor:pointer;}
   .model-list .model-row.last{border-bottom:none;}
   .model-row:active{transform:scale(.99);}
-  .model-dot{width:2cqw;height:2cqw;border-radius:50%;border:.4cqw solid var(--ink);flex:none;}
+  .model-dot{width:3.5556dvh;height:3.5556dvh;border-radius:50%;border:0.7111dvh solid var(--ink);flex:none;}
   .model-row.active .model-dot{background:var(--ink);}
-  .model-row-name{font-size:3.7cqw;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
-  .model-row-desc{font-size:2.8cqw;font-weight:600;color:var(--ink-2);white-space:nowrap;line-height:1.2;}
+  .model-row-name{font-size:6.5778dvh;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
+  .model-row-desc{font-size:4.9778dvh;font-weight:600;color:var(--ink-2);white-space:nowrap;line-height:1.2;}
   /* 类名下边一行写介绍：类名与介绍上下排在同一个主列里，介绍一行写完不折行 */
-  .model-row-main{display:flex;flex-direction:column;gap:.3cqw;min-width:0;flex:none;}
+  .model-row-main{display:flex;flex-direction:column;gap:0.5333dvh;min-width:0;flex:none;}
   /* 「暂未开通」放行尾最右边：我的模型 用它，不给「进入」 */
-  .model-row-soon{margin-left:auto;font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;color:var(--ink-3);}
+  .model-row-soon{margin-left:auto;font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;color:var(--ink-3);}
   /* 行尾「进入」是单独的钮：点行只选中（圆点填黑）、不跳转；点「进入」才进该项的二次选择／二次配置页，且点「进入」不改选中项——启动服务的是前面点选的那一项 */
-  .model-row .go-btn{margin-left:auto;border:none;background:transparent;color:var(--ink);font-family:inherit;font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;padding:0 0 0 2cqw;height:5.6cqw;min-height:0;cursor:pointer;}
+  .model-row .go-btn{margin-left:auto;border:none;background:transparent;color:var(--ink);font-family:inherit;font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;padding:0 0 0 3.5556dvh;height:9.9556dvh;min-height:0;cursor:pointer;}
   .model-row .go-btn:active{transform:scale(.96);}
   /* 暂未开通行灰掉：整行灰掉、点不了——圆点不填、名字与说明都用灰字，不给「进入」 */
   .model-row.disabled{color:var(--ink-3);cursor:default;}
@@ -682,117 +682,117 @@
   .model-row.disabled .model-dot{border-color:var(--line);}
   .model-row.disabled .model-row-name,.model-row.disabled .model-row-desc{color:var(--ink-3);}
   /* 官方模型 改成进入式（照第 12 屏大类行）：行内不放圆点、不放说明，只留类名＋右端「进入 →」，点它进官方模型选择页 */
-  .model-row.official-entry .go{margin-left:auto;font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
+  .model-row.official-entry .go{margin-left:auto;font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
   /* 官方模型选择页：整屏盖住第 16 屏（与第 13 屏日志页、第 15 屏绑定指引页同一套 .sub-page 做法）；
      页内只有一个大框，框里五行官方模型单选——JT Lite 2.0（默认选中）、DeepSeek-V4.1-Flash、千问 Qwen 3.8、豆包 Seed-2.1-Turbo、Kimi-K3.1-Pro，选中行圆点填黑；框底一条余额＋用量查询＋充值，点充值弹充值弹窗（查余额＋四档金额＋确认充值），点用量查询进查询页 */
-  .s16 .official-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:.5cqw 2.6cqw .2cqw;overflow:hidden;margin-top:1cqw;}
+  .s16 .official-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:0.8889dvh 4.6222dvh 0.3556dvh;overflow:hidden;margin-top:1.7778dvh;}
   .official-list{flex:1;min-height:0;display:flex;flex-direction:column;}
-  .official-row{flex:1 1 0;display:flex;align-items:center;gap:1.6cqw;width:100%;border:none;border-bottom:.3cqw solid var(--line);background:transparent;color:var(--ink);font-family:inherit;text-align:left;padding:.2cqw .2cqw;min-height:0;cursor:pointer;}
+  .official-row{flex:1 1 0;display:flex;align-items:center;gap:2.8444dvh;width:100%;border:none;border-bottom:0.5333dvh solid var(--line);background:transparent;color:var(--ink);font-family:inherit;text-align:left;padding:0.3556dvh 0.3556dvh;min-height:0;cursor:pointer;}
   .official-row.last{border-bottom:none;}
   .official-row:active{transform:scale(.99);}
-  .official-row .model-dot{width:2cqw;height:2cqw;border-radius:50%;border:.4cqw solid var(--ink);flex:none;}
+  .official-row .model-dot{width:3.5556dvh;height:3.5556dvh;border-radius:50%;border:0.7111dvh solid var(--ink);flex:none;}
   .official-row.active .model-dot{background:var(--ink);}
-  .official-default{margin-left:auto;font-size:2.8cqw;font-weight:700;color:var(--ink-3);white-space:nowrap;flex:none;}
+  .official-default{margin-left:auto;font-size:4.9778dvh;font-weight:700;color:var(--ink-3);white-space:nowrap;flex:none;}
   /* 官方页框底余额条：左边余额（金额与充值弹窗、查余额共用同一个变量），右边「充值」按钮点开充值弹窗 */
-  .official-foot{flex:none;display:flex;align-items:center;gap:2cqw;border-top:.3cqw solid var(--line);padding:.8cqw .2cqw .6cqw;min-height:6.2cqw;}
-  .official-foot .bal-lab{font-size:3.4cqw;font-weight:800;flex:none;}
-  .official-foot .bal-amt{font-size:4.2cqw;font-weight:800;flex:none;}
-  .official-foot .mini-btn{width:13.6cqw;flex:none;}
+  .official-foot{flex:none;display:flex;align-items:center;gap:3.5556dvh;border-top:0.5333dvh solid var(--line);padding:1.4222dvh 0.3556dvh 1.0667dvh;min-height:11.0222dvh;}
+  .official-foot .bal-lab{font-size:6.0444dvh;font-weight:800;flex:none;}
+  .official-foot .bal-amt{font-size:7.4667dvh;font-weight:800;flex:none;}
+  .official-foot .mini-btn{width:24.1778dvh;flex:none;}
   /* 余额条右边两个入口并排：「用量查询」（五字宽 20.0、白底）＋「充值」（黑底），用量查询顶到右边、充值跟其后 */
-  .official-foot .usage-btn{margin-left:auto;width:20cqw;background:var(--panel);color:var(--ink);}
+  .official-foot .usage-btn{margin-left:auto;width:35.5556dvh;background:var(--panel);color:var(--ink);}
   /* 用量查询页：整屏盖住官方模型选择页（同一套 .sub-page 做法，排在官方页之后、层级在其上）；
      页内只有一个大框：上边时间范围三选一（7日内／30日内／3个月内，与第 13 屏使用记录同一套分段钮），
      中边分模型列使用量——一行一个模型，左边模型名、中边调用次数、右边费用，五模型行均分框高；
      框底一条合计（调用次数＋费用）＋余额＋「充值」，余额与官方页、充值弹窗共用同一个变量，点「充值」关本页、打开充值弹窗 */
-  .s16 .usage-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:.5cqw 2.6cqw .2cqw;overflow:hidden;margin-top:1cqw;gap:.8cqw;}
+  .s16 .usage-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:0.8889dvh 4.6222dvh 0.3556dvh;overflow:hidden;margin-top:1.7778dvh;gap:1.4222dvh;}
   .usage-box .seg-row{flex:none;}
   .usage-list{flex:1;min-height:0;display:flex;flex-direction:column;}
-  .usage-row{flex:1 1 0;display:flex;align-items:center;gap:1.6cqw;border-bottom:.3cqw solid var(--line);padding:.2cqw .2cqw;min-height:0;}
+  .usage-row{flex:1 1 0;display:flex;align-items:center;gap:2.8444dvh;border-bottom:0.5333dvh solid var(--line);padding:0.3556dvh 0.3556dvh;min-height:0;}
   .usage-row.last{border-bottom:none;}
-  .usage-model{font-size:3.7cqw;font-weight:800;white-space:nowrap;line-height:1.2;flex:1 1 auto;min-width:0;}
-  .usage-calls{font-size:3.1cqw;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;line-height:1.2;}
-  .usage-cost{font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;width:16cqw;text-align:right;line-height:1.2;}
-  .usage-foot{flex:none;display:flex;align-items:center;gap:2cqw;border-top:.3cqw solid var(--line);padding:.8cqw .2cqw .6cqw;min-height:6.2cqw;}
-  .usage-foot .total-lab{font-size:3.4cqw;font-weight:800;flex:none;}
-  .usage-foot .total-val{font-size:3.4cqw;font-weight:800;flex:none;white-space:nowrap;}
-  .usage-foot .bal-lab{font-size:3.4cqw;font-weight:800;flex:none;margin-left:auto;}
-  .usage-foot .bal-amt{font-size:4.2cqw;font-weight:800;flex:none;}
-  .usage-foot .mini-btn{width:13.6cqw;flex:none;}
+  .usage-model{font-size:6.5778dvh;font-weight:800;white-space:nowrap;line-height:1.2;flex:1 1 auto;min-width:0;}
+  .usage-calls{font-size:5.5111dvh;font-weight:700;color:var(--ink-2);white-space:nowrap;flex:none;line-height:1.2;}
+  .usage-cost{font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;width:28.4444dvh;text-align:right;line-height:1.2;}
+  .usage-foot{flex:none;display:flex;align-items:center;gap:3.5556dvh;border-top:0.5333dvh solid var(--line);padding:1.4222dvh 0.3556dvh 1.0667dvh;min-height:11.0222dvh;}
+  .usage-foot .total-lab{font-size:6.0444dvh;font-weight:800;flex:none;}
+  .usage-foot .total-val{font-size:6.0444dvh;font-weight:800;flex:none;white-space:nowrap;}
+  .usage-foot .bal-lab{font-size:6.0444dvh;font-weight:800;flex:none;margin-left:auto;}
+  .usage-foot .bal-amt{font-size:7.4667dvh;font-weight:800;flex:none;}
+  .usage-foot .mini-btn{width:24.1778dvh;flex:none;}
   /* 充值弹窗：与网关弹窗同一套遮罩与卡片；弹窗里能查余额——上边一行当前余额＋「查余额」，中边四档金额单选，下边取消／确认充值 */
-  .recharge-card{text-align:left;width:78cqw;}
+  .recharge-card{text-align:left;width:138.667dvh;}
   .recharge-card .fam-confirm-title{text-align:center;}
-  .recharge-bal-row{display:flex;align-items:center;gap:2cqw;}
-  .recharge-bal-row .bal-lab{font-size:3.4cqw;font-weight:800;flex:none;}
-  .recharge-bal-row .bal-amt{font-size:4.6cqw;font-weight:800;flex:none;}
-  .recharge-bal-row .mini-btn{margin-left:auto;width:13.6cqw;}
-  .recharge-amts{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2cqw;}
-  .recharge-amts button{border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:3.4cqw;font-weight:800;height:6.2cqw;min-height:0;padding:0 1cqw;white-space:nowrap;}
+  .recharge-bal-row{display:flex;align-items:center;gap:3.5556dvh;}
+  .recharge-bal-row .bal-lab{font-size:6.0444dvh;font-weight:800;flex:none;}
+  .recharge-bal-row .bal-amt{font-size:8.1778dvh;font-weight:800;flex:none;}
+  .recharge-bal-row .mini-btn{margin-left:auto;width:24.1778dvh;}
+  .recharge-amts{display:grid;grid-template-columns:repeat(4,1fr);gap:2.1333dvh;}
+  .recharge-amts button{border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:6.0444dvh;font-weight:800;height:11.0222dvh;min-height:0;padding:0 1.7778dvh;white-space:nowrap;}
   .recharge-amts button.active{background:var(--ink);color:#f4f4f4;}
   .recharge-amts button:active{transform:scale(.96);}
-  .recharge-feedback{font-size:3.1cqw;font-weight:800;line-height:1.3;min-height:3.6cqw;color:var(--ink);}
+  .recharge-feedback{font-size:5.5111dvh;font-weight:800;line-height:1.3;min-height:6.4dvh;color:var(--ink);}
   /* 我的模型 跳转页表单：整屏盖住第 16 屏（与官方模型选择页同一套 .sub-page 做法）；
      页内上边四项填写——①API 类型（三选一：OpenAI Chat／OpenAI Responses／Anthropic）②接口地址（IP）③Key ④模型名称，后三项自由填写；
      下边模型列表：已添加的 API 一行一个，最多 4 个，每行可删除，列表满 4 个后不能再添加 */
-  .model-row.entry-row .go{margin-left:auto;font-size:3.1cqw;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
-  .s16 .myapi-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:.5cqw 2.6cqw .2cqw;overflow:hidden;margin-top:1cqw;}
-  .myapi-form{flex:none;display:flex;flex-direction:column;gap:.7cqw;padding:.7cqw .2cqw .9cqw;border-bottom:.3cqw solid var(--line);}
-  .myapi-addrow{display:flex;align-items:center;gap:2cqw;min-height:5.6cqw;}
-  .myapi-feedback{font-size:3.1cqw;font-weight:800;line-height:1.3;color:var(--ink);}
-  .myapi-addrow .mini-btn{margin-left:auto;width:10.4cqw;}
-  .myapi-listhead{display:flex;align-items:center;gap:2cqw;flex:none;padding:.7cqw .2cqw .35cqw;font-size:3.7cqw;font-weight:800;line-height:1.15;}
-  .myapi-count{margin-left:auto;font-size:3.1cqw;font-weight:800;color:var(--ink-2);}
+  .model-row.entry-row .go{margin-left:auto;font-size:5.5111dvh;font-weight:800;white-space:nowrap;flex:none;line-height:1.2;}
+  .s16 .myapi-box{flex:1;min-height:0;display:flex;flex-direction:column;padding:0.8889dvh 4.6222dvh 0.3556dvh;overflow:hidden;margin-top:1.7778dvh;}
+  .myapi-form{flex:none;display:flex;flex-direction:column;gap:1.2444dvh;padding:1.2444dvh 0.3556dvh 1.6dvh;border-bottom:0.5333dvh solid var(--line);}
+  .myapi-addrow{display:flex;align-items:center;gap:3.5556dvh;min-height:9.9556dvh;}
+  .myapi-feedback{font-size:5.5111dvh;font-weight:800;line-height:1.3;color:var(--ink);}
+  .myapi-addrow .mini-btn{margin-left:auto;width:18.4889dvh;}
+  .myapi-listhead{display:flex;align-items:center;gap:3.5556dvh;flex:none;padding:1.2444dvh 0.3556dvh 0.6222dvh;font-size:6.5778dvh;font-weight:800;line-height:1.15;}
+  .myapi-count{margin-left:auto;font-size:5.5111dvh;font-weight:800;color:var(--ink-2);}
   .myapi-list{flex:1;min-height:0;display:flex;flex-direction:column;}
-  .myapi-empty{font-size:2.8cqw;font-weight:600;color:var(--ink-3);padding:1.2cqw .2cqw;}
-  .myapi-item{flex:1 1 0;display:flex;align-items:center;gap:1.6cqw;border-bottom:.3cqw solid var(--line);padding:.2cqw .2cqw;min-height:0;cursor:pointer;}
+  .myapi-empty{font-size:4.9778dvh;font-weight:600;color:var(--ink-3);padding:2.1333dvh 0.3556dvh;}
+  .myapi-item{flex:1 1 0;display:flex;align-items:center;gap:2.8444dvh;border-bottom:0.5333dvh solid var(--line);padding:0.3556dvh 0.3556dvh;min-height:0;cursor:pointer;}
   .myapi-item.last{border-bottom:none;}
-  .myapi-item .model-dot{width:2cqw;height:2cqw;border-radius:50%;border:.4cqw solid var(--ink);flex:none;}
+  .myapi-item .model-dot{width:3.5556dvh;height:3.5556dvh;border-radius:50%;border:0.7111dvh solid var(--ink);flex:none;}
   .myapi-item.active .model-dot{background:var(--ink);}
-  .myapi-item-name{font-size:3.7cqw;font-weight:800;white-space:nowrap;line-height:1.2;}
-  .myapi-item-type{font-size:2.8cqw;font-weight:600;color:var(--ink-2);white-space:nowrap;line-height:1.2;}
-  .myapi-del{margin-left:auto;border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:3.1cqw;font-weight:800;padding:0 1.6cqw;height:4.8cqw;min-height:0;white-space:nowrap;flex:none;width:10.4cqw;display:inline-flex;align-items:center;justify-content:center;}
+  .myapi-item-name{font-size:6.5778dvh;font-weight:800;white-space:nowrap;line-height:1.2;}
+  .myapi-item-type{font-size:4.9778dvh;font-weight:600;color:var(--ink-2);white-space:nowrap;line-height:1.2;}
+  .myapi-del{margin-left:auto;border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:5.5111dvh;font-weight:800;padding:0 2.8444dvh;height:8.5333dvh;min-height:0;white-space:nowrap;flex:none;width:18.4889dvh;display:inline-flex;align-items:center;justify-content:center;}
   .myapi-del:active{transform:scale(.96);}
   /* 登录 MCP 跳转页：整屏盖住第 16 屏；页内四项填写——网站（用户自己输入要去的网站地址，不选服务商）、账号、密码、验证码，下边一个「登录」按钮；
      排版不另起一套，一律套 12–16 屏统一规格（见上方统一规格段）：大框走 .official-box 同一套（内边距 .5/2.6/.2、框间距 .8），
      标签与正文用 T3 3.1、输入框与按钮同高 5.6（边框 .45、圆角 1.8、内边距左右 1.6），按钮宽度按字数走（「获取验证码」五字宽 20.0），
      不再沿用第 9／10 屏 .field／.big-btn 那套旧尺寸（标签 3.4、输入框高 6.8、登录钮高 7.6） */
-  .s16 .mcp-box{gap:.8cqw;}
-  .mcp-fields{display:flex;flex-direction:column;gap:.8cqw;flex:none;}
-  .mcp-fields .field label{font-size:3.1cqw;width:11cqw;}
-  .mcp-fields .field input{border:.45cqw solid var(--ink);font-size:3.1cqw;padding:0 1.6cqw;height:5.6cqw;}
-  .mcp-fields .field .mini-btn{height:5.6cqw;width:20cqw;}
-  .mcp-feedback{font-size:3.1cqw;font-weight:800;line-height:1.3;min-height:1cqw;color:var(--ink);}
-  .s16 .mcp-box .big-btn{flex:none;height:5.6cqw;font-size:3.1cqw;border-radius:1.8cqw;padding:0 1.6cqw;}
+  .s16 .mcp-box{gap:1.4222dvh;}
+  .mcp-fields{display:flex;flex-direction:column;gap:1.4222dvh;flex:none;}
+  .mcp-fields .field label{font-size:5.5111dvh;width:19.5556dvh;}
+  .mcp-fields .field input{border:0.8dvh solid var(--ink);font-size:5.5111dvh;padding:0 2.8444dvh;height:9.9556dvh;}
+  .mcp-fields .field .mini-btn{height:9.9556dvh;width:35.5556dvh;}
+  .mcp-feedback{font-size:5.5111dvh;font-weight:800;line-height:1.3;min-height:1.7778dvh;color:var(--ink);}
+  .s16 .mcp-box .big-btn{flex:none;height:9.9556dvh;font-size:5.5111dvh;border-radius:3.2dvh;padding:0 2.8444dvh;}
   /* 风险提示排法（本轮纠正）：「登录」按钮下边先放小一点的「风险提示」按钮，第一条、第二条都排在按钮下边，各占一行、整行。字小、排紧，两条都完整显示、不许被框裁掉（反馈行空高收掉给这两条让位） */
-  .mcp-risk-wrap{display:flex;flex-direction:column;gap:.4cqw;align-items:flex-start;flex:none;width:100%;min-width:0;}
-  .mcp-risk-btn{width:14cqw;height:4.2cqw;min-height:0;border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:2.2cqw;font-weight:800;padding:0 1.2cqw;display:inline-flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;flex:none;}
+  .mcp-risk-wrap{display:flex;flex-direction:column;gap:0.7111dvh;align-items:flex-start;flex:none;width:100%;min-width:0;}
+  .mcp-risk-btn{width:24.8889dvh;height:7.4667dvh;min-height:0;border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:3.9111dvh;font-weight:800;padding:0 2.1333dvh;display:inline-flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;flex:none;}
   .mcp-risk-btn:active{transform:scale(.96);}
-  .mcp-risk-p{margin:0;font-size:1.7cqw;font-weight:600;color:var(--ink-2);line-height:1.25;min-width:0;white-space:nowrap;width:100%;}
+  .mcp-risk-p{margin:0;font-size:3.0222dvh;font-weight:600;color:var(--ink-2);line-height:1.25;min-width:0;white-space:nowrap;width:100%;}
   .mcp-risk-p[hidden]{display:none;}
-  .free-line{display:flex;align-items:center;gap:1.4cqw;min-width:0;}
-  .free-lab{font-size:3.1cqw;font-weight:800;flex:none;width:11cqw;white-space:nowrap;line-height:1.2;}
-  .free-types{display:flex;gap:1cqw;flex:1;min-width:0;}
-  .free-types button{flex:1;border:.45cqw solid var(--ink);background:var(--panel);color:var(--ink);border-radius:1.8cqw;font-size:2.8cqw;font-weight:800;padding:0 1cqw;height:5cqw;min-height:0;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;}
+  .free-line{display:flex;align-items:center;gap:2.4889dvh;min-width:0;}
+  .free-lab{font-size:5.5111dvh;font-weight:800;flex:none;width:19.5556dvh;white-space:nowrap;line-height:1.2;}
+  .free-types{display:flex;gap:1.7778dvh;flex:1;min-width:0;}
+  .free-types button{flex:1;border:0.8dvh solid var(--ink);background:var(--panel);color:var(--ink);border-radius:3.2dvh;font-size:4.9778dvh;font-weight:800;padding:0 1.7778dvh;height:8.8889dvh;min-height:0;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;}
   .free-types button.active{background:var(--ink);color:#f4f4f4;}
   .free-types button:active{transform:scale(.97);}
-  .free-fields{display:flex;gap:1.4cqw;min-width:0;}
-  .free-field{display:flex;align-items:center;gap:1cqw;flex:1;min-width:0;}
+  .free-fields{display:flex;gap:2.4889dvh;min-width:0;}
+  .free-field{display:flex;align-items:center;gap:1.7778dvh;flex:1;min-width:0;}
   .free-field.wide{flex:1.25;}
-  .free-field label{font-size:3.1cqw;font-weight:800;flex:none;white-space:nowrap;}
-  .free-field input{flex:1;min-width:0;border:.45cqw solid var(--ink);border-radius:1.8cqw;background:#fff;color:var(--ink);font-size:3.1cqw;font-weight:600;padding:0 1.4cqw;height:5cqw;font-family:inherit;}
+  .free-field label{font-size:5.5111dvh;font-weight:800;flex:none;white-space:nowrap;}
+  .free-field input{flex:1;min-width:0;border:0.8dvh solid var(--ink);border-radius:3.2dvh;background:#fff;color:var(--ink);font-size:5.5111dvh;font-weight:600;padding:0 2.4889dvh;height:8.8889dvh;font-family:inherit;}
   .free-field input::placeholder{color:var(--ink-3);}
-  .free-field input:focus{outline:.4cqw solid var(--ink-3);outline-offset:.2cqw;}
+  .free-field input:focus{outline:0.7111dvh solid var(--ink-3);outline-offset:0.3556dvh;}
   /* 网关弹窗：只有自有服务器用，与第 14 屏改密码弹窗同一套遮罩与卡片（.fam-confirm／.fam-confirm-card），卡片内是表单排法（手输服务器 IP） */
-  .gw-dialog-card{text-align:left;width:78cqw;}
+  .gw-dialog-card{text-align:left;width:138.667dvh;}
   .gw-dialog-card .fam-confirm-title{text-align:center;}
-  .gw-ip-field{display:flex;align-items:center;gap:2cqw;}
-  .gw-ip-field label{font-size:3.1cqw;font-weight:800;flex:none;width:16cqw;white-space:nowrap;}
-  .gw-ip-field input{flex:1;min-width:0;border:.45cqw solid var(--ink);border-radius:1.8cqw;background:#fff;color:var(--ink);font-size:3.1cqw;font-weight:600;padding:0 1.6cqw;height:5.6cqw;font-family:inherit;}
+  .gw-ip-field{display:flex;align-items:center;gap:3.5556dvh;}
+  .gw-ip-field label{font-size:5.5111dvh;font-weight:800;flex:none;width:28.4444dvh;white-space:nowrap;}
+  .gw-ip-field input{flex:1;min-width:0;border:0.8dvh solid var(--ink);border-radius:3.2dvh;background:#fff;color:var(--ink);font-size:5.5111dvh;font-weight:600;padding:0 2.8444dvh;height:9.9556dvh;font-family:inherit;}
   .gw-ip-field input::placeholder{color:var(--ink-3);}
-  .gw-ip-field input:focus{outline:.4cqw solid var(--ink-3);outline-offset:.2cqw;}
-  .gw-dialog-feedback{font-size:3.1cqw;font-weight:800;line-height:1.3;min-height:3.6cqw;color:var(--ink);}
-  .s13 .info-row,.s14 .info-row,.s15 .info-row{border-bottom-width:.3cqw;}
-  .s14 .fam-row{height:6.2cqw;border-bottom-width:.3cqw;}
-  .s15 .bound-box .device-row{height:6.2cqw;border-bottom-width:.3cqw;}
+  .gw-ip-field input:focus{outline:0.7111dvh solid var(--ink-3);outline-offset:0.3556dvh;}
+  .gw-dialog-feedback{font-size:5.5111dvh;font-weight:800;line-height:1.3;min-height:6.4dvh;color:var(--ink);}
+  .s13 .info-row,.s14 .info-row,.s15 .info-row{border-bottom-width:0.5333dvh;}
+  .s14 .fam-row{height:11.0222dvh;border-bottom-width:0.5333dvh;}
+  .s15 .bound-box .device-row{height:11.0222dvh;border-bottom-width:0.5333dvh;}
 
 </style>
 </head>
@@ -1063,8 +1063,8 @@
           </div>
           <div class="form-wrap">
             <div class="box form-box">
-              <div class="field"><label for="loginPhone">手机号</label><input id="loginPhone" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="输入手机号"></div>
-              <div class="field"><label for="loginPwd">密码</label><input id="loginPwd" type="password" autocomplete="current-password" placeholder="输入密码"></div>
+              <div class="field"><label for="loginPhone">手机号</label><input id="loginPhone" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" value="18601109233" placeholder="输入手机号"></div>
+              <div class="field"><label for="loginPwd">密码</label><input id="loginPwd" type="password" autocomplete="current-password" value="1" placeholder="输入密码"></div>
             </div>
             <button class="big-btn" id="loginBtn" type="button">登录</button>
             <button class="ghost-btn" id="toRegister" type="button">还没有账号 · 注册</button>
@@ -1130,12 +1130,12 @@
             <div class="pin-view" id="pinView">
               <div class="pin-prompt">请输入六位管理密码</div>
               <div class="pin-row" id="pinRow">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 1 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 2 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 3 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 4 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 5 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 6 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 1 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 2 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 3 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 4 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 5 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 6 位">
               </div>
               <div class="pin-actions">
                 <button class="big-btn" id="pinEnterBtn" type="button">进入</button>
@@ -1706,6 +1706,71 @@
   /* --- 真实接口适配层：官方地址写死不显示；自有 IP 由第16屏设置填入后才切换 --- */
   var DEFAULT_BASE_URL = 'http://solve.mhq-ai.xyz:8000';
   var baseURL = DEFAULT_BASE_URL;
+  /* 本地直登账号（服务端未部署时直接用这组凭据进 App，不走网络） */
+  var LOCAL_ACCOUNT = { phone:'18601109233', password:'1', adminPassword:'111111' };
+  /* 本地演示模式：APK 内未部署服务端，所有接口在本地直接返回演示数据，不发任何网络请求。
+     这样登录进管理页后不会被外网 401 顶回登录页，也不会连那个没部署的地址。
+     将来要接真服务端时，把这里改成 false 即可。 */
+  var LOCAL_MODE = true;
+  function localResponse(method, path){
+    var p = String(path || '').split('?')[0];
+    var table = {
+      '/config/environment': { temperature:'26°C', memo:'今日事今日毕', ssid:'JT-DEMO', wifi_ssid:'JT-DEMO', signal:'-52 dBm' },
+      '/config/server': { custom_ip:'', ip:'', server_mode:'local', mode:'local' },
+      '/auth/login': { token:'local-demo-token', role:'admin', member_no:1 },
+      '/auth/admin-password/verify': { ok:true },
+      '/cards/check': { balance:5, daily_total:5, advance_ratio:1, advanced:0, advance_limit:5 },
+      '/cards/rules': { daily_total:5, advance_ratio:1 },
+      '/records': {
+        items:[
+          { date:'2026-11-18', time:'09:12:33', source:'终端 1', description:'拍题识别成功', count:1 },
+          { date:'2026-11-18', time:'08:40:10', source:'成员 1', description:'解题卡预支领取', count:1 },
+          { date:'2026-11-17', time:'21:05:47', source:'终端 1', description:'拍题识别成功', count:2 }
+        ],
+        summary:{ photo_success:12, thinking_count:8, cards_used:20 }
+      },
+      '/applications': { items:[] },
+      '/family': {
+        family_group_id:'10086', admin_member_no:1,
+        members:[ { phone:'18601109233', member_no:1, role:'admin', status:'管理员', type:'2' } ]
+      },
+      '/terminals': { terminals:[ { device_id:'2000000000000001', name:'本机终端', type:'2' } ] },
+      '/models': {
+        active_model_id:'lite',
+        items:[
+          { model_id:'lite', model_name:'JT Lite 2.0', is_default:true, selected:true },
+          { model_id:'deepseek', model_name:'DeepSeek-V4.1-Flash' },
+          { model_id:'qwen', model_name:'千问 Qwen 3.8' },
+          { model_id:'doubao', model_name:'豆包 Seed-2.1-Turbo' },
+          { model_id:'kimi', model_name:'Kimi-K3.1-Pro' }
+        ]
+      },
+      '/usage': {
+        total_cost:12.50,
+        items:[
+          { model:'JT Lite 2.0', calls:12, cost:1.20 },
+          { model:'DeepSeek-V4.1-Flash', calls:8, cost:4.80 },
+          { model:'千问 Qwen 3.8', calls:5, cost:2.50 },
+          { model:'豆包 Seed-2.1-Turbo', calls:3, cost:2.10 },
+          { model:'Kimi-K3.1-Pro', calls:1, cost:1.90 }
+        ]
+      }
+    };
+    var data = {};
+    if (p === '/solve') data = { job_id:'local-job' };
+    else if (p.indexOf('/solve/') === 0) data = {
+      job_id:'local-job', status:'done', stage_index:5,
+      questions:[
+        { question_id:'L1', question_index:0, correct:false, thinking:['先把括号算清楚','(−3)+5×(−2)−(−4)','= −3 −10 +4 = −9'], process:['乘法优先：5×(−2)=−10','减去负数等于加正数：−(−4)=+4'], unlocked:true, answer:'−9' },
+        { question_id:'L2', question_index:1, correct:true, thinking:['通分后合并同类项'], process:['分母相同直接相加'], unlocked:true, answer:'1' },
+        { question_id:'L3', question_index:2, correct:false, thinking:['先移项再求解'], process:['两边同减常数项'], unlocked:true, answer:'x=3' },
+        { question_id:'L4', question_index:3, correct:true, thinking:['代入公式计算'], process:['按运算符优先级'], unlocked:true, answer:'12' },
+        { question_id:'L5', question_index:4, correct:false, thinking:['画图辅助理解'], process:['找出已知条件'], unlocked:true, answer:'45°' }
+      ]
+    };
+    else if (table[p]) data = table[p];
+    return JSON.parse(JSON.stringify(data));
+  }
   var authToken = '';
   var terminalToken = '';
   /* 登录（B16）返回的 role / member_no 缓存一份：GET /family 顶层不给这两项，
@@ -1762,6 +1827,10 @@
   }
   function request(method, path, opts){
     opts = opts || {};
+    /* 本地演示模式：所有接口在本地直接返回数据，不发网络请求、不触发 401 踢回登录页 */
+    if (LOCAL_MODE) {
+      return Promise.resolve(localResponse(method, path));
+    }
     var headers = {};
     var body;
     if (opts.rawBody) {
@@ -2186,9 +2255,11 @@
     if (i < 0 || i > total - 1) return;
     if (i === current) return;                        // 同屏不重复 render / 重复拉接口
     current = i;
+    /* 本地直登：进入管理密码屏时预填内置管理密码，点「进入」即可 */
+    if (current === 10 && pin) pin.set(LOCAL_ACCOUNT.adminPassword);
     render();
     /* 483：第3屏取景器（索引2）接真相机——进屏开后置实时流，离屏一律停流 */
-    if (current === 2) startFinderCamera(); else stopFinderCamera();
+    if (current === 2) startFinderCamera(); else { stopFinderCamera(); if (typeof pendingCapture !== 'undefined') pendingCapture = null; }
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
     if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; loadCardRules(); loadApplications(); loadRecords(); }
     if (current !== 12) { var lp = document.getElementById('logPage'); if (lp) lp.hidden = true; }
@@ -2365,8 +2436,11 @@
     for (var i = 0; i < arr.length; i += chunk) s += String.fromCharCode.apply(null, arr.subarray(i, i + chunk));
     return 'data:image/jpeg;base64,' + btoa(s);
   }
-  /* 抓真实帧（canvas）→ JPEG 字节 → 复用绑定码识别 + 发网关链路 */
-  function captureFromFinder(){
+  /* 抓真实帧（canvas）→ JPEG 字节（只抓取，不发送）。
+     拆出这一步是为了把「快门拍照」和「点对号发送」分开：快门只抓一帧暂存，
+     对号再把暂存的那张发出去。以前两个钮都直接抓帧+发送，点对号就又拍一张，
+     网关不通停在本屏时会变成「一直喀喀喀」。 */
+  function grabFinderFrame(cb){
     if (!finderActive()) { openSystemCamera(); return; }
     var v = finderVideo;
     var w = v.videoWidth, h = v.videoHeight;
@@ -2376,23 +2450,30 @@
     var canvas = document.createElement('canvas');
     canvas.width = side; canvas.height = side;
     var ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) { cb(null); return; }
     if (w !== h) { /* 非正方形画面裁中间正方形，别拉伸变形 */
       var sx = (w - side) / 2, sy = (h - side) / 2;
       ctx.drawImage(v, sx, sy, side, side, 0, 0, side, side);
     } else ctx.drawImage(v, 0, 0, side, side);
-    var f = document.getElementById('camFlash');
-    if (f) { f.classList.add('on'); setTimeout(function(){ f.classList.remove('on'); }, 180); }
     canvas.toBlob(function(blob){
-      if (!blob) { showCaptureFeedback('拍到的画面读不出来，请再按一次快门'); return; }
+      if (!blob) { cb(null); return; }
       var reader = new FileReader();
-      reader.onload = function(){
-        var arr = new Uint8Array(reader.result || []);
-        processJpegBytes(arr);
-      };
-      reader.onerror = function(){ showCaptureFeedback('照片读取失败，请重拍'); };
+      reader.onload = function(){ cb(new Uint8Array(reader.result || [])); };
+      reader.onerror = function(){ cb(null); };
       reader.readAsArrayBuffer(blob);
     }, 'image/jpeg', 0.9);
+  }
+  function flashCam(){
+    var f = document.getElementById('camFlash');
+    if (f) { f.classList.add('on'); setTimeout(function(){ f.classList.remove('on'); }, 180); }
+  }
+  /* 抓帧 + 直接发送（保留给可能的其他调用；主取景器按钮已改用下面的两步流程） */
+  function captureFromFinder(){
+    grabFinderFrame(function(arr){
+      if (!arr || !arr.length) { showCaptureFeedback('拍到的画面读不出来，请再按一次快门'); return; }
+      flashCam();
+      processJpegBytes(arr);
+    });
   }
   function openSystemCamera(){
     var input = captureInput;
@@ -2508,8 +2589,24 @@
     /* 没照片不再拿 96×96 假图顶上去发网关 */
     showCaptureFeedback('还没有照片，请先拍一张题目的照片。');
   }
-  document.getElementById('shutterBtn').addEventListener('click', function(){ captureFromFinder(); });
-  document.getElementById('finderConfirm').addEventListener('click', function(){ captureFromFinder(); });
+  /* 快门只拍一帧暂存，点对号才发送；没点对号前不会重复抓帧，也就不会「一直喀喀喀」 */
+  var pendingCapture = null;   // 暂存刚拍的 JPEG 字节
+  function shutterTake(){
+    grabFinderFrame(function(arr){
+      if (!arr || !arr.length) { showCaptureFeedback('拍到的画面读不出来，请再按一次快门'); return; }
+      pendingCapture = arr;
+      flashCam();
+      showCaptureFeedback('已拍好，点对号发送');
+    });
+  }
+  function confirmSend(){
+    if (!pendingCapture || !pendingCapture.length) { showCaptureFeedback('请先按快门拍一张'); return; }
+    var arr = pendingCapture;
+    pendingCapture = null;      // 取出即清，防重复点发送同一张
+    processJpegBytes(arr);
+  }
+  document.getElementById('shutterBtn').addEventListener('click', shutterTake);
+  document.getElementById('finderConfirm').addEventListener('click', confirmSend);
 
   /* --- 第5/6屏 五道题（与板子稿同一套数据） --- */
   var QUESTIONS = [];
@@ -2928,6 +3025,19 @@
     dismissKeyboard();
     if (!phone || !pwd) { showFormFeedback('先填手机号和密码。'); return; }
     document.getElementById('loginBtn').disabled = true;
+    /* 本地直登：凭据匹配内置账号即放行，不依赖服务端 */
+    if (phone === LOCAL_ACCOUNT.phone && pwd === LOCAL_ACCOUNT.password) {
+      loggedIn = true;
+      setAuthToken('local-demo-token');
+      setAuthIdentity({ role:'admin', member_no:1 });
+      renderAcctPhone(phone);
+      showFormFeedback('');
+      /* 本地演示模式：登录后刷新卡余额与待批申请，管理页能看到本地演示数据 */
+      loadCardBalance(); loadApplications(); loadRecords();
+      goTo(10);
+      document.getElementById('loginBtn').disabled = false;
+      return;
+    }
     api.login(phone, pwd).then(function(data){
       loggedIn = true;
       setAuthIdentity(data);
@@ -3089,6 +3199,7 @@
     return {
       value: function(){ return boxes.map(function(b){ return b.value; }).join(''); },
       clear: function(){ boxes.forEach(function(b){ b.value = ''; }); },
+      set: function(str){ str = str || ''; boxes.forEach(function(b, i){ b.value = str.charAt(i) || ''; }); },
       focusFirstEmpty: function(){
         for (var i = 0; i < boxes.length; i++) { if (!boxes[i].value) { boxes[i].focus(); return; } }
         boxes[0].focus();
@@ -3113,6 +3224,14 @@
     mgmtPinChecking = true;
     var btn = document.getElementById('pinEnterBtn');
     btn.disabled = true;
+    /* 本地直登：管理密码匹配内置值即放行，不依赖服务端 */
+    if (pin.value() === LOCAL_ACCOUNT.adminPassword) {
+      mgmtPinVerified = true;
+      enterMgmt();
+      mgmtPinChecking = false;
+      btn.disabled = false;
+      return;
+    }
     api.verifyAdminPassword(pin.value()).then(function(){
       mgmtPinVerified = true;
       enterMgmt();

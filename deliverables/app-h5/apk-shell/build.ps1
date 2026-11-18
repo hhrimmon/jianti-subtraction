@@ -24,8 +24,12 @@ New-Item -ItemType Directory -Force -Path "$root\build", "$root\gen", "$root\ass
 # H5 打进 assets
 Copy-Item $srcH5 "$root\assets\index.html"
 
+# 图标资源（res/mipmap-*）先编译成扁平包，再参与链接
+& "$bt\aapt2.exe" compile --dir "$root\res" -o "$root\build\res.zip"
+if ($LASTEXITCODE -ne 0) { throw "aapt2 compile failed" }
+
 # 资源链接 + 生成 R.java
-& "$bt\aapt2.exe" link -o "$root\build\base.apk" --manifest "$root\AndroidManifest.xml" -I $androidJar -A "$root\assets" --java "$root\gen" --auto-add-overlay
+& "$bt\aapt2.exe" link -o "$root\build\base.apk" --manifest "$root\AndroidManifest.xml" -I $androidJar -A "$root\assets" -R "$root\build\res.zip" --java "$root\gen" --auto-add-overlay
 if ($LASTEXITCODE -ne 0) { throw "aapt2 link failed" }
 
 # 编译 Java

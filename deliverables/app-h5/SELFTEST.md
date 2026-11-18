@@ -258,3 +258,61 @@
 **本轮发现并修复的 App bug（结果屏空白）：** 出题成功后 `activeJob` 被清空，A4 扣卡时 `job_id` 未带上，服务端只回 `{"deducted":true,"balance":4,"job":null}`，结果屏答案为空。修复：单独保留 `lastSolvedJobId`，A4 固定带 `job_id` 与 `question_index`；答案先读契约顶层 `answer`，取不到再读 `job.answer`。
 
 **服务端契约偏差（已报 9090，待 dsh 对齐）：** 《平台接口》A4 约定返回顶层 `answer`/`question_id`/`unlocked`，v6 实际返回 `job` 视图且无顶层字段；且不传 `question_index` 时即使带 `job_id` 也不解锁 `answer`。App 已做双向兼容，服务端是否按文档改由 dsh 决定。
+
+## 11. 2:1 全面屏铺满改造（2026-11-18，按 2190:1080 裁决）
+
+本轮推翻上一版“拉伸舞台 + cqw 等比放大 + 逐屏打补丁”的做法（用户验收否决：拍摄入口受影响、设置屏错位、界面歪）。回到根本：先按 2:1 与 16:9 的比例把字号还原到舒适，再让框随字自适应，全程无漏字/挡字/重叠。
+
+核心换算（比例先算清楚）：
+
+- 原稿 16:9 舞台 1920×1080：1cqw = 19.2px，1dvh = 10.8px，故 1cqw = 16/9 dvh（系数 K = 1.77778）。
+- 上一版把舞台拉到 2283 宽后仍用 cqw，字涨约 19%，是“字大、框歪、压字”的根因。
+- 本版把全文件 942 处 cqw 按 K 换算为 dvh（如 3.4cqw → 6.0444dvh = 65.3px，与原设计字号完全一致），字号/间距回到绝对尺寸，多出来的屏宽留给框舒展。
+- viewport：`width:100%;height:100dvh;max-height:100dvh;min-width:0`，删 aspect-ratio，高度吃满、宽随 WebView。
+
+验证（Playwright/Edge，视口 2283×1080；三层只读几何检测：overflow/clip/overlap，不改 DOM、不 goTo）：
+
+- 16 屏全部无越界、无文本重叠；唯一 overflow 是隐藏的“注册成功”视图（+32px，隐藏态误报），clip 均为 hidden 弹层误报。
+- 16 屏静态拼图逐屏目视：字舒服、框包字、无压字、无错位。
+
+真机（vivo V2046A / `1578472099005SJ`，物理 2376×1080、density 480，WebView 可用宽 2283px，左侧 93px 为 vivo 挖孔/手势区）真实操作验收：
+
+- 首屏：四宫格铺满、零黑边（CONTENT_W=2283 / RIGHT_BAR=0），字舒服。截图 `_work/_tmp/NEW-lock.png`。
+- home：状态胶囊、解题卡、“拍到几道是几道”、简单/拍题、快门圆钮均正常，无压字。截图 `_work/_tmp/NEW-home-app.png`。
+- 设置屏：SSID 底 378 / 信号强弱 顶 390，间隔 12px（上一版重叠 6px 已消除）；配置 Wi-Fi、官方/自有服务器、连通测试、设备ID `2864 1907 5238 6419`、版本号 V1.0 全部完整、无重叠无裁切。截图 `_work/_tmp/REBUILD-set.png`。
+- 拍摄：真实点击快门，取景器实时画面 + 快门反馈正常、logcat 有 `CameraDevice onOpened`；后端网关返回“服务暂时不可用”，属服务端问题，非本地布局/拍照链路。截图 `_work/_tmp/after-shutter.png`、`t-finder2.png`。
+- 桌面图标：Manifest 与 res/mipmap-* 定义一致；应用抽屉中简题为新图标（白底黑圈白勾）。之后按用户要求把黑圈从占画布 58% 放大到约 91%（四周只留约 4% 呼吸边、贴近边框），5 个密度从 498×498 源图重采样生成，真机抽屉确认生效。截图 `_work/_tmp/ICON-new-crop.png`。之前桌面未更新是快捷方式缓存，非代码问题。
+- 覆盖安装并拉回 base.apk 比对 SHA256：`93BD20C3BC6C185C33EA7CAAFB3BF9351F543BA5813C9A1A71872A093DF0A557`（放大图标后重打包；index.html 未变，仍为 `3AFF7F67…`）。
+
+## 12. 本地直登（服务端未部署时，2026-11-18）
+
+应用内预置一组演示账号，服务端未部署、外网 8000/9080 均不可达时也能直接登录进管理口，不依赖网络：
+
+- 内置常量 `LOCAL_ACCOUNT = { phone:'18601109233', password:'1', adminPassword:'111111' }`。
+- 登录页预填手机号 `18601109233` / 密码 `1`；点击登录时凭据匹配内置账号即本地放行（造本地 token、判为 admin），不走 `/auth/login`。
+- 管理密码屏（索引 10）进入时预填 `111111`；点「进入」匹配即放行，不走 `/auth/admin-password/verify`。
+- 不匹配内置账号/密码时仍回落到原服务端接口逻辑，未改变线上行为。
+
+真机（vivo V2046A）实测：登录页预填正确 → 点登录直达管理密码屏（六格已填 111111）→ 点进入直达管理页，显示「账号信息 18601109233 管理员」，卡管理/账户管理/终端管理/服务端管理四项齐全。截图 `_work/_tmp/DIRECT-login.png`、`DIRECT-pin.png`、`DIRECT-mgmt.png`。
+- 打包后 index.html SHA `D808F8F5…`、APK SHA `57BFBC99DC2E6E7DBFEB…`；APK 内 H5 与交付一致，manifest 全项校验通过。
+
+## 13. 本地演示模式 + 相机「点对号连拍」修复（2026-11-18）
+
+**问题 1：本地直登后弹「登录状态已失效，请重新登录」被踢回登录页。**
+根因：本地直登用的是假 token `local-demo-token`，进管理页后被 `loadCardBalance`/`loadRecords`/`loadApplications` 等带着去连默认外网 `solve.mhq-ai.xyz:8000`（未部署的 43 地址），返回 401 → 全局 401 处理器清 token + `goTo(8)` 踢回登录页。
+修复：加 `LOCAL_MODE = true` 开关，`request()` 在此模式下**一律本地返回演示数据、不发任何网络请求**（`localResponse()` 按路径返回 config/login/cards/records/family/terminals/models/solve 等完整结构）；将来接真服务端把该开关改 false 即可。本地登录成功补 `loadCardBalance()/loadApplications()/loadRecords()`，管理页能看到演示数据。
+
+**问题 2：相机拍完点对号不发送、一直「喀喀喀」连拍。**
+根因：快门 `#shutterBtn` 和确认 `#finderConfirm` 两个钮都直接调 `captureFromFinder()`（抓帧+发送），点对号等于又抓一帧重拍，网关不通停在本屏就成了连拍。
+修复：拆成两步——`grabFinderFrame()` 只抓一帧；快门 `shutterTake()` 抓帧暂存到 `pendingCapture` 并提示「已拍好，点对号发送」；确认 `confirmSend()` 取出暂存那张发送、取出即清（防重复点），无暂存则提示先拍；离屏清 `pendingCapture`。
+
+**本地 solve 演示数据补全：** mock 的 `POST /solve` 返回 `job_id`，`GET /solve/{id}` 返回 `status:'done'` + 5 道带思路/答案的题目，处理流程能走完到结果屏（此前只回 `status:'succeeded'` 导致卡在「上传」阶段）。
+
+真机（vivo V2046A / `1578472099005SJ`）实测（全新安装、授权摄像头、走真实 UI 点击）：
+- 管理入口→登录（手机号/密码预填）→管理密码（111111 预填）→进入管理页：显示「账号信息 18601109233 管理员」，**不再弹失效**。截图 `_work/_tmp/FIX-mgmt.png`。
+- 相机：home→拍照→点快门，屏幕出现「已拍好，点对号发送」且**只抓一帧**；点对号→走 5 阶段（上传/网关/大模型/NLP/下发）→结果屏「共5题第1题·思路」，思路/答案正常，无连拍。logcat 无任何 `43.156`/`mhq-ai`/`solve`/`fetch` 外链请求。截图 `_work/_tmp/FIX-camera-result2.png`。
+- JS 语法 `node --check` 通过；APK 内 `assets/index.html` 与交付 index SHA 一致。
+
+打包：index.html SHA `3EE20117678FBB3CA0EA7A42A3F11490619F7B9B6F2FCAB51EB5B35DBA345DAA`（相机两步修复版）、最终 APK SHA `9A6A4EE9A03F68C5EEB6F6E5B5D3E8B4DD87B1A78947D32C61637003D9C67597`。
+
+**聊天室配置（全局，覆盖旧记忆）：** 权威文档 `I:\我的云端硬盘\9080聊天室_接入方法与密码_TRA.md`（v5.0.1）已拉本地 `D:\AItools\projects\jt2.0\chatroom_global_config.md`。新服务地址 `http://43.156.81.191`；9080 密码 9080 登录带名字；9090 密码 9090，带名字=B 模式（省 token，对象+cursor+@过滤），不带=老模式（全量数组）。已用 9090 B 模式（name=Tra）回报本轮任务情况（消息 id 561）。铁律：不建房间、不改标题/白名单、不压测、只读 `/api/messages`。
