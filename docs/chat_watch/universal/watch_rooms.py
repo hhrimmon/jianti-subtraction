@@ -154,11 +154,39 @@ def probe_room(room, my_name, aliases, mention):
             return d.get("messages", []), d.get("cursor")
         return d, None
 
+    def fetch_head():
+        """首屏请求(不带 after)的服务端 cursor 恒等于全库 head，用作冷启动基线。"""
+        d = json.loads(op.open(base + "/api/messages?limit=1", timeout=15).read().decode("utf-8"))
+        if isinstance(d, dict) and d.get("cursor") is not None:
+            return int(d["cursor"])
+        return None
+
     if need_login:
         try:
             login()
         except Exception:
             return [], cur, cold, "login failed"
+
+    # 冷启动：基线必须推到全库 head，不能用 after=0 那页的 cursor(只是扫描位置)，
+    # 否则下一轮会从 head 之前继续拉、把历史一页页重放成 HITS。
+    if cold:
+        try:
+            head = fetch_head()
+        except urllib.error.HTTPError as e:
+            if e.code == 401 and need_login:
+                try:
+                    login()
+                    head = fetch_head()
+                except Exception as ex:
+                    return [], cur, cold, "cold relogin failed %r" % ex
+            else:
+                return [], cur, cold, "cold head HTTP %s" % e.code
+        except Exception as e:
+            return [], cur, cold, "cold head error %r" % e
+        if head is None:
+            return [], cur, cold, "cold head unavailable"
+        write_cursor(key, head)
+        return [], head, True, "cold baseline head=%d" % head
 
     try:
         msgs, cur_srv = fetch(cur)
@@ -181,11 +209,6 @@ def probe_room(room, my_name, aliases, mention):
         nxt = max(int(m["id"]) for m in msgs)
     else:
         nxt = cur
-
-    # 冷启动：只推游标当基线，不重放历史
-    if cold:
-        write_cursor(key, nxt)
-        return [], nxt, True, "cold baseline cursor=%d" % nxt
 
     write_cursor(key, nxt)
 
