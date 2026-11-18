@@ -222,3 +222,21 @@
 **本轮发现并修复的 App bug（真机取景器验证中暴露）：** 486 真机核对时发现 483 版快门抓帧会先设 `canvas.width/height=w×h`、画完后再改成正方形，第二次改尺寸把画布清空 → 上传几 KB 黑图；且 `BarcodeDetector` 构造抛错/detect 挂住会卡死整条拍题链路。已修复（`captureFromFinder()` 先定尺寸再画 + `ctx` 空判断；`processJpegBytes()` 扫码加 `settled` 防重入 + 构造 try/catch + 3 秒兜底，识别异常照常发网关）。修复后重打包 APK，内嵌 index 与交付 index SHA256 一致 `D3A0EBEE…`。
 
 **结论：** 注册登录、管理各屏、拍题快门走网关、回车不乱串、反馈提示全部通过。真机侧网络层（reverse + 连通测试）、相机层（真实取景器 + 快门抓真帧）已确认；UI 输入录屏受 vivo 系统干扰未能稳定完成，但不是 App 或网关逻辑缺陷。本轮修复了 2 个真机暴露的 App bug 并重打包，交付 BASELINE 见 manifest（`index.html` `D3A0EBEE…`、APK `9A9F39E1…`）。
+
+## 10. v6 同步测试：思路屏 / 结果屏 / 扣卡 / 使用记录（9090 消息 510、512，2026-11-18）
+
+环境：`origin/dev` 的 `deliverables/platform-server-v6.zip`（SHA256 `babc813b…`，与 dsh 报的一致）解包后本地起 v6，`JIANTI_TEST_MODE=1`、端口 8001；Edge headless + 假摄像头，App 请求由 `solve.mhq-ai.xyz:8000` 改写到 `127.0.0.1:8001`；全程真实点击/输入、真实导航（不直接 `goTo`/改 transform）。脚本 `_work/_tmp/v6sync-487.mjs`，**13/13 ALL_PASS**，截图 `_work/_tmp/shots-487/`。
+
+| 校验项 | 实测 |
+|---|---|
+| 注册 → 管理密码 → 管理首页（第 12 屏） | 屏=11，`POST /auth/register`、`POST /auth/admin-password/verify` |
+| 管理页返回 home | 屏=1 |
+| 真实导航进拍摄屏、取景流就绪 | 屏=2，`videoWidth=640`、`readyState=4` |
+| 快门 → 网关 `POST /solve` → 思路屏 | 屏=4，`共1题第1题 · 思路`，思路文本含“测试模拟”，解题卡 5 张 |
+| 点解题卡 → 结果屏（第 6 屏） | 屏=5，答案“【测试模拟数据，非真实模型输出】3 + 4 = 7…” |
+| 扣卡余额 | 5 → 4（结果屏与卡管理 3 处 `data-card-balance` 均为 4） |
+| 卡管理使用记录 | `GET /records` 返回 3 条：做题思路、拍题成功、解题用卡（数量 1） |
+
+**本轮发现并修复的 App bug（结果屏空白）：** 出题成功后 `activeJob` 被清空，A4 扣卡时 `job_id` 未带上，服务端只回 `{"deducted":true,"balance":4,"job":null}`，结果屏答案为空。修复：单独保留 `lastSolvedJobId`，A4 固定带 `job_id` 与 `question_index`；答案先读契约顶层 `answer`，取不到再读 `job.answer`。
+
+**服务端契约偏差（已报 9090，待 dsh 对齐）：** 《平台接口》A4 约定返回顶层 `answer`/`question_id`/`unlocked`，v6 实际返回 `job` 视图且无顶层字段；且不传 `question_index` 时即使带 `job_id` 也不解锁 `answer`。App 已做双向兼容，服务端是否按文档改由 dsh 决定。

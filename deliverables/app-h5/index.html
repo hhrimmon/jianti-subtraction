@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
@@ -1895,10 +1895,11 @@
     if (questionId) body.question_id = questionId;
     return request('POST', '/cards/check', { body:body, terminal:true, terminalId:terminalId });
   };
-  api.cardsDeduct = function(questionId, terminalId, key, batchId, jobId){
+  api.cardsDeduct = function(questionId, terminalId, key, batchId, jobId, questionIndex){
     var body = { question_id:questionId };
     if (batchId) body.batch_id = batchId;
     if (jobId) body.job_id = jobId;
+    if (questionIndex != null) body.question_index = questionIndex;
     return request('POST', '/cards/deduct', { body:body, terminal:true, terminalId:terminalId, idemKey:key });
   };
   api.cardsAdvance = function(terminalId, key){
@@ -2288,6 +2289,7 @@
           if (!items.length) { toShooter('没看清题目，请重拍'); return; }
           clearWaiting();
           setQuestions(items);
+          lastSolvedJobId = jobId;
           activeJob = null;
           qi = 0;
           qOpened = {};
@@ -2404,6 +2406,8 @@
   document.getElementById('toFinder').addEventListener('click', function(){ goTo(2); });
   document.getElementById('finderBack').addEventListener('click', function(){ goTo(1); });
   var activeJob = null;
+  // 出题后 activeJob 会清空，但扣卡（A4）需要 job_id 才能定位本题并取回答案，这里单独留一份
+  var lastSolvedJobId = '';
   /* 拍题上传：8MB 预检；同一张照片重发沿用同一个 Idempotency-Key（按照片内容哈希）；
      413 连续两次提示「照片太大，请靠近一点拍」；429 读 Retry-After 由用户手动重试 */
   var MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
@@ -2599,10 +2603,14 @@
         goTo(5);
         return;
       }
-      return api.cardsDeduct(q.question_id, activeJob && activeJob.terminalId || normalizeTerminalId(deviceId), idemKey(), activeJob && activeJob.key, activeJob && activeJob.jobId).then(function(res){
+      return api.cardsDeduct(q.question_id, activeJob && activeJob.terminalId || normalizeTerminalId(deviceId), idemKey(), activeJob && activeJob.key, activeJob && activeJob.jobId || lastSolvedJobId, qi).then(function(res){
         if (res && res.balance != null) cardBalance = Math.max(0, Number(res.balance) || 0);
         if (res && res.question_id) q.question_id = res.question_id;
-        if (res && res.answer != null) q.answer = res.answer;
+        // 平台 v5/v6 的 A4 实际把答案放在 job 视图里（job.answer），顶层不重复下发；
+        // 先读契约顶层字段，取不到再读 job.answer，避免结果屏空白。
+        var ansJob = res && res.job ? res.job : null;
+        var ans = res && res.answer != null ? res.answer : (ansJob && ansJob.answer != null ? ansJob.answer : null);
+        if (ans != null) q.answer = ans;
         q.unlocked = true;
         qOpened[qi] = true;
         evCards.push(Date.now());
