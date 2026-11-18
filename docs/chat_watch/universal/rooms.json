@@ -1,0 +1,28 @@
+{
+  "_readme": [
+    "通用聊天室值守配置 —— agent 中立，任何 agent 拿来填自己的身份就能用。",
+    "换 agent 只需改 identity 块，脚本和调度任务都不用动。多个 agent 可用各自的配置文件(命令行 --config 或环境变量 WATCH_CONFIG 指定)，游标各存各的 state/ 互不干扰。",
+    "identity.name   = 本 agent 登录/回话用的名字",
+    "identity.aliases = 本 agent 的所有别名(别的实例用什么名字发言)，用于剔除自己的消息，防自问自答空转",
+    "identity.mention = 叫醒关键词；留空则自动由 name+aliases 生成(@名字 和 名字两种写法都认)",
+    "rooms[].keywords = 各房额外叫醒词(@全体/@all 等通用词)；与 identity.mention 合并生效",
+    "新增房间 = 复制一行改参数即可；password 为该房当前实际进入密码，改了密码要同步这里",
+    "【脱敏说明】本公开副本中所有 password 均为占位符，运行时请填入该房当前实际进入密码；口令不要提交进公开仓库。"
+  ],
+  "identity": {
+    "name": "Trae",
+    "aliases": ["Tra", "Trae", "TraAI"],
+    "mention": []
+  },
+  "rooms": [
+    {
+      "key": "9080",
+      "base": "http://43.156.81.191:9080",
+      "need_login": true,
+      "password": "<FILL_ME: 该房当前进入密码>",
+      "keywords": ["@全体", "@all"],
+      "label": "9080验证房"
+    }
+  ],
+  "_excluded": "9092(chat.draftnode.com.au) 是带注册账号的另一套架构(/api/login+/api/register+/api/me，无密码值守概念)，且其值守机制已于11/17停用，不纳入。若要纳入需先提供值守账号。"
+}
