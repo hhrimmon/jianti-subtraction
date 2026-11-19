@@ -31,3 +31,9 @@ local.properties
 # 系统
 .DS_Store
 Thumbs.db
+deliverables/app-h5/apk-shell/assets/
+deliverables/app-h5/apk-shell/gen/
+deliverables/app-h5/apk-shell/build/
+deliverables/app-h5/apk-shell/debug.keystore
+deliverables/app-h5/apk-shell/*.apk
+deliverables/app-h5/apk-shell/*.apk.idsig

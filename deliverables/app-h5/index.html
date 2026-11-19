@@ -1130,12 +1130,12 @@
             <div class="pin-view" id="pinView">
               <div class="pin-prompt">请输入六位管理密码</div>
               <div class="pin-row" id="pinRow">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 1 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 2 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 3 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 4 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 5 位">
-                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" value="1" aria-label="管理密码第 6 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 1 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 2 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 3 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 4 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 5 位">
+                <input class="pin-box" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="管理密码第 6 位">
               </div>
               <div class="pin-actions">
                 <button class="big-btn" id="pinEnterBtn" type="button">进入</button>
@@ -1707,7 +1707,7 @@
   var DEFAULT_BASE_URL = 'http://solve.mhq-ai.xyz:8000';
   var baseURL = DEFAULT_BASE_URL;
   /* 本地直登账号（服务端未部署时直接用这组凭据进 App，不走网络） */
-  var LOCAL_ACCOUNT = { phone:'18601109233', password:'1', adminPassword:'111111' };
+  var LOCAL_ACCOUNT = { phone:'18601109233', password:'1' };
   /* 本地演示模式：APK 内未部署服务端，所有接口在本地直接返回演示数据，不发任何网络请求。
      这样登录进管理页后不会被外网 401 顶回登录页，也不会连那个没部署的地址。
      将来要接真服务端时，把这里改成 false 即可。 */
@@ -2255,8 +2255,6 @@
     if (i < 0 || i > total - 1) return;
     if (i === current) return;                        // 同屏不重复 render / 重复拉接口
     current = i;
-    /* 本地直登：进入管理密码屏时预填内置管理密码，点「进入」即可 */
-    if (current === 10 && pin) pin.set(LOCAL_ACCOUNT.adminPassword);
     render();
     /* 483：第3屏取景器（索引2）接真相机——进屏开后置实时流，离屏一律停流 */
     if (current === 2) startFinderCamera(); else { stopFinderCamera(); if (typeof pendingCapture !== 'undefined') pendingCapture = null; }
@@ -3224,14 +3222,6 @@
     mgmtPinChecking = true;
     var btn = document.getElementById('pinEnterBtn');
     btn.disabled = true;
-    /* 本地直登：管理密码匹配内置值即放行，不依赖服务端 */
-    if (pin.value() === LOCAL_ACCOUNT.adminPassword) {
-      mgmtPinVerified = true;
-      enterMgmt();
-      mgmtPinChecking = false;
-      btn.disabled = false;
-      return;
-    }
     api.verifyAdminPassword(pin.value()).then(function(){
       mgmtPinVerified = true;
       enterMgmt();
