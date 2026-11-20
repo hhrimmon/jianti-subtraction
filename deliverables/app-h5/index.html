@@ -2332,7 +2332,8 @@
     var terminalId = activeJob.terminalId;
     var polled = 0;
     var baseDelay = SEND_DURATIONS.reduce(function(a,b){ return a + b; }, 0) + 350;
-    function renderStage(index){
+    var stageShown = 0;   // 本地动画已点亮到第几步（1..5），只增不减
+    function paintStage(index){
       stages.forEach(function(s, i){
         var done = i < index;
         s.classList.toggle('done', done);
@@ -2341,30 +2342,54 @@
       });
       if (fill) fill.style.width = (index / 5 * 100) + '%';
     }
+    // 五阶段动画纯本地按 SEND_DURATIONS 逐段推进，不依赖轮询节奏，也不被服务端
+    // stage_index 跳过：判题可能瞬间 done（第一次 poll 就 stage_index=5），若照它
+    // 直接跳页，用户就只看到前两步。只有走满本地动画才允许进结果页。
+    var acc = 0;
+    SEND_DURATIONS.forEach(function(dur, i){
+      acc += dur;
+      waitTimers.push(setTimeout(function(){
+        if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
+        stageShown = Math.max(stageShown, i + 1);
+        paintStage(stageShown);
+      }, acc));
+    });
     function toShooter(message){
       if (message) showCaptureFeedback(message);
       activeJob = null;
       clearWaiting();
       goTo(2);
     }
+    // 判题完成：等本地动画补齐到 5 再跳结果页，保证五步都完整显示。
+    function finishWhenStagesShown(cb){
+      if (stageShown >= 5 || current !== 3) { cb(); return; }
+      var elapsed = 0;
+      for (var i = 0; i < stageShown; i++) elapsed += SEND_DURATIONS[i];
+      var remain = baseDelay - 350 - elapsed;
+      waitTimer = setTimeout(function(){
+        stageShown = 5; paintStage(5); cb();
+      }, Math.max(0, remain) + 60);
+    }
     function poll(){
       if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
       api.solveStatus(jobId, terminalId).then(function(data){
         if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
-        renderStage(Math.max(0, Math.min(5, parseInt(data && data.stage_index, 10) || 0)));
         var status = data && data.status;
         if (status === 'done') {
           var items = (data && data.questions) || [];
           if (!items.length) { toShooter('没看清题目，请重拍'); return; }
-          clearWaiting();
-          setQuestions(items);
-          lastSolvedJobId = jobId;
-          activeJob = null;
-          qi = 0;
-          qOpened = {};
-          renderQuestion();
-          renderResult();
-          goTo(4);
+          finishWhenStagesShown(function(){
+            if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
+            clearWaiting();
+            setQuestions(items);
+            lastSolvedJobId = jobId;
+            activeJob = null;
+            qi = 0;
+            qOpened = {};
+            renderQuestion();
+            renderResult();
+            goTo(4);
+          });
           return;
         }
         if (status === 'failed') {
@@ -2382,6 +2407,7 @@
         else toShooter(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
       });
     }
+    paintStage(0);
     poll();
   }
 
