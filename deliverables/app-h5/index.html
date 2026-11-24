@@ -12090,6 +12090,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     return request('POST', '/applications/' + encodeURIComponent(appId) + '/withdraw', { terminal:true });
   };
   api.configServer = function(){ return request('GET', '/config/server', { terminal:true }); };
+  api.health = function(){ return request('GET', '/health', { auth:false }); };
   api.configEnvironment = function(){ return request('GET', '/config/environment', { auth:false }); };
   api.login = function(phone, password){
     return request('POST', '/auth/login', { body:{ phone:phone, password:password }, auth:false }).then(function(data){
@@ -12906,10 +12907,30 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   }
   function markChainDone(i){
     var s = chainSteps[i];
-    s.classList.remove('active');
+    s.classList.remove('active', 'fail');
     s.classList.add('done');
     s.querySelector('.chain-dot').textContent = '✓';
     if (chainArrows[i]) { chainArrows[i].classList.add('done'); chainArrows[i].textContent = '✓'; }
+  }
+  function markChainFail(i){
+    var s = chainSteps[i];
+    s.classList.remove('active', 'done');
+    s.classList.add('fail');
+    s.querySelector('.chain-dot').textContent = '×';
+    if (chainArrows[i]) { chainArrows[i].classList.remove('done'); chainArrows[i].textContent = '→'; }
+  }
+  /* PRD v5.7：第 3 步「服务器」必须真拉服务端配置，拉到才连通；拉不到显示未测，不许恒通过。
+     结果与拍题页右上角服务器状态共用一份，避免「测试全连通、拍题页仍显示未连接」。 */
+  function probeServer(){
+    return api.health().then(function(data){
+      var ok = !!(data && (data.ok === true || data.service || data.version));
+      if (!ok) throw new Error('bad health payload');
+      setServerChip(true);
+      return true;
+    }).catch(function(){
+      setServerChip(false);
+      return false;
+    });
   }
   function runChainTest(){
     if (chainRunning) return;
@@ -12922,8 +12943,17 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
       chainTimers.push(setTimeout(function(){ chainSteps[stepIdx].classList.add('active'); }, elapsed));
       elapsed += CHAIN_DURATIONS[stepIdx];
       chainTimers.push(setTimeout(function(){
-        markChainDone(stepIdx);
-        if (k === order.length - 1) {
+        /* 第 2 步（服务器）用真实探测结果，其余步骤保留本地动画 */
+        if (stepIdx === 2) {
+          probeServer().then(function(ok){
+            if (ok) markChainDone(stepIdx); else markChainFail(stepIdx);
+            chainRunning = false;
+            chainResult.textContent = ok ? '全部连通' : '服务器未测·请检查服务端';
+          });
+        } else {
+          markChainDone(stepIdx);
+        }
+        if (k === order.length - 1 && stepIdx !== 2) {
           chainRunning = false;
           chainResult.textContent = '全部连通';
         }
@@ -14445,19 +14475,21 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   loadRecords();
   /* 待批申请每 30 秒拉一次（B2），消息条不再只靠本机点「发送申请」才出现；没登录时内部直接跳过 */
   setInterval(loadApplications, 30000);
-  if (authToken || terminalToken) {
-    api.configServer().then(function(data){
-      setServerChip(true);
-      var ip = data && (data.custom_ip || data.ip);
-      var mode = data && (data.server_mode || data.mode);
-      if (ip) {
-        gwLanIp = String(ip).replace(/^https?:\/\//, '').split('/')[0].replace(/:\d+$/, '');
-        setGwMode('lan', true);
-      } else if (mode === 'official' || mode === 'pub') setGwMode('pub', true);
-    }).catch(function(){ setServerChip(false); });
-  } else {
-    setServerChip(false);
-  }
+  /* 服务器状态取真实连通：不依赖是否登录，先探 /health；有终端/管理 token 时再拉 /config/server 同步 IP/模式 */
+  api.health().then(function(data){
+    if (!(data && (data.ok === true || data.service || data.version))) throw new Error('bad health payload');
+    setServerChip(true);
+    if (authToken || terminalToken) {
+      api.configServer().then(function(cfg){
+        var ip = cfg && (cfg.custom_ip || cfg.ip);
+        var mode = cfg && (cfg.server_mode || cfg.mode);
+        if (ip) {
+          gwLanIp = String(ip).replace(/^https?:\/\//, '').split('/')[0].replace(/:\d+$/, '');
+          setGwMode('lan', true);
+        } else if (mode === 'official' || mode === 'pub') setGwMode('pub', true);
+      }).catch(function(){});
+    }
+  }).catch(function(){ setServerChip(false); });
   /* --- 屏幕常亮 + 全屏：APK 壳内由壳设沉浸式与 FLAG_KEEP_SCREEN_ON，H5 侧再兜一层 --- */
   var wakeLock = null;
   function keepAwake(){
