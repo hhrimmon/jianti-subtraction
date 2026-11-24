@@ -163,6 +163,8 @@
   .card-btn{border:none;background:var(--ink);color:#f4f4f4;border-radius:4.2667dvh;font-size:6.0444dvh;font-weight:800;padding:0 2.8444dvh;min-height:0;white-space:nowrap;flex:none;height:11.0222dvh;}
   .card-btn.used{opacity:.7;}
   .card-btn:active{transform:scale(.96);}
+  .test-data-banner{margin-top:1.2dvh;padding:1.2dvh 3.5dvh;border-radius:2dvh;background:#b3261e;color:#fff;font-size:5.5dvh;font-weight:800;text-align:center;}
+  .test-data-banner[hidden]{display:none;}
   .idea-row{margin-top:1.4222dvh;margin-bottom:1.7778dvh;padding:1.7778dvh 5.3333dvh;display:flex;flex-direction:row;align-items:stretch;gap:5.3333dvh;flex:1;min-height:0;}
   .idea-main{flex:1;min-width:0;display:flex;flex-direction:column;}
   .verdict-line{font-size:8.1778dvh;font-weight:800;line-height:1.35;}
@@ -942,6 +944,7 @@
             <div class="recognize-line num" id="recognizeLine">共5题第1题 · 思路</div>
             <div class="card-action"><button class="card-btn" id="cardBtn" type="button">解题卡 <span class="num" data-card-balance></span>张</button></div>
           </div>
+          <div class="test-data-banner" id="testDataBanner" hidden>测试模拟数据，非真实判题结果</div>
           <div class="box idea-row">
             <div class="idea-main">
               <div class="verdict-line" id="verdictLine">这个题做错了</div>
@@ -11930,6 +11933,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   function setBaseURL(ip){
     var value = String(ip || '').trim().replace(/^https?:\/\//, '').split('/')[0];
     baseURL = value ? 'http://' + value.replace(/:\d+$/, '') + ':8000' : DEFAULT_BASE_URL;
+    try { localStorage.setItem('jt2-server-address', value); } catch (e) {}
   }
   function setAuthToken(token){ authToken = token || ''; }
   function setTerminalToken(token){ terminalToken = token || ''; }
@@ -12102,6 +12106,15 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   };
   api.configServer = function(){ return request('GET', '/config/server', { terminal:true }); };
   api.health = function(){ return request('GET', '/health', { auth:false }); };
+  api.healthSync = function(){
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', baseURL + '/health', false);
+      xhr.send();
+      if (xhr.status >= 200 && xhr.status < 300) return JSON.parse(xhr.responseText || '{}');
+    } catch (e) {}
+    return null;
+  };
   api.configEnvironment = function(){ return request('GET', '/config/environment', { auth:false }); };
   /* v5.10 msg273：锁屏专用只读接口，时间/温度/MEMO 由服务端下发 */
   api.lockscreen = function(){ return request('GET', '/lockscreen', { auth:false }); };
@@ -12179,16 +12192,43 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   /* v5.10 msg273：锁屏第1屏温度/MEMO 走 GET /lockscreen，服务端下发。
      断网/失败不清屏，保留上一次成功取到的值（不回退成 ---）。 */
   var lastLockTemp = null, lastLockMemo = null;
-  function envText(){
+  var lockMemos = [], lockMemoIndex = 0;
+  function paintLockTemp(){
     var t = document.querySelector('.temp');
+    if (t) t.textContent = lastLockTemp == null ? '---°C' : (/^-?\d+(\.\d+)?$/.test(String(lastLockTemp)) ? lastLockTemp + '°C' : String(lastLockTemp));
+  }
+  function paintLockMemo(){
     var m = document.querySelector('.memo-text');
+    if (m) m.textContent = lastLockMemo == null ? '---' : String(lastLockMemo);
+  }
+  /* msg325③：服务端 /lockscreen 一次给 3 条 memos，App 存队列轮显；空了再取，锁屏不许空 */
+  function rotateLockMemo(){
+    if (!lockMemos.length) { envText(); return; }
+    lockMemoIndex = (lockMemoIndex + 1) % lockMemos.length;
+    lastLockMemo = lockMemos[lockMemoIndex];
+    paintLockMemo();
+  }
+  function envText(forceFetch){
     api.lockscreen().then(function(data){
       var temperature = data && data.temperature != null ? data.temperature : null;
-      var memo = data && data.memo != null ? data.memo : null;
       if (temperature != null && temperature !== '') { lastLockTemp = temperature; }
-      if (memo != null && memo !== '') { lastLockMemo = memo; }
-      if (t) t.textContent = lastLockTemp == null ? '---°C' : (/^-?\d+(\.\d+)?$/.test(String(lastLockTemp)) ? lastLockTemp + '°C' : String(lastLockTemp));
-      if (m) m.textContent = lastLockMemo == null ? '---' : String(lastLockMemo);
+      paintLockTemp();
+      var memos = [];
+      var list = data && Array.isArray(data.memos) ? data.memos : [];
+      list.forEach(function(x){
+        var s = x == null ? '' : String(x).trim();
+        if (s && memos.indexOf(s) < 0) memos.push(s);
+      });
+      var single = data && data.memo != null ? String(data.memo).trim() : '';
+      if (single && memos.indexOf(single) < 0) memos.push(single);
+      if (memos.length) {
+        lockMemos = memos;
+        lockMemoIndex = 0;
+        lastLockMemo = lockMemos[0];
+      } else if (lastLockMemo == null) {
+        lastLockMemo = '';
+      }
+      paintLockMemo();
     }).catch(function(){
       /* 断网：保留 lastLockTemp/lastLockMemo，界面维持上一次的值 */
     });
@@ -12381,6 +12421,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     if (i === current) return;                        // 同屏不重复 render / 重复拉接口
     current = i;
     render();
+    if (i === 0 && typeof paintLockMemo === 'function') paintLockMemo();
     /* 483：第3屏取景器（索引2）接真相机——进屏开后置实时流，离屏一律停流 */
     if (current === 2) startFinderCamera(); else { stopFinderCamera(); if (typeof pendingCapture !== 'undefined') pendingCapture = null; if (typeof unfreezeFinderFrame === 'function') unfreezeFinderFrame(); }
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
@@ -12498,11 +12539,26 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     function poll(){
       if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
       api.solveStatus(jobId, terminalId).then(function(data){
+        /* 异步返回时 job 可能已切走，必须按当前 jobId 丢弃旧轮询，不能显示上一题答案 */
         if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
         var status = data && data.status;
+        if (data && data.job_id && data.job_id !== jobId) return;
         if (status === 'done') {
           var items = (data && data.questions) || [];
           if (!items.length) { toShooter('没看清题目，请重拍'); return; }
+          /* 测试模式 mock 答案不是照片里的题，必须显式标注，不能冒充真实判题 */
+          var mockResult = !!(data && (data.test_mode || data.mock || data.result_source === 'mock')) || !!serverTestMode;
+          items = items.map(function(item){
+            var copy = {};
+            Object.keys(item || {}).forEach(function(k){ copy[k] = item[k]; });
+            copy.mockResult = mockResult;
+            if (mockResult) {
+              copy.answer = '测试模拟数据，非真实判题结果';
+              copy.thinking = ['测试模拟数据，非真实判题结果'];
+              copy.process = [];
+            }
+            return copy;
+          });
           finishWhenStagesShown(function(){
             if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
             clearWaiting();
@@ -12674,6 +12730,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     } else goTo(1);
   });
   var activeJob = null;
+  var serverTestMode = false;   /* /health 的 test_mode：mock 结果必须显式标注 */
   // 出题后 activeJob 会清空，但扣卡（A4）需要 job_id 才能定位本题并取回答案，这里单独留一份
   var lastSolvedJobId = '';
   /* 拍题上传：8MB 预检；同一张照片重发沿用同一个 Idempotency-Key（按照片内容哈希）；
@@ -12782,6 +12839,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     grabFinderFrame(function(arr){
       if (!arr || !arr.length) { showCaptureFeedback('拍到的画面读不出来，请再按一次快门'); return; }
       pendingCapture = arr;
+      try { sessionStorage.setItem('jt2-last-capture', btoa(String.fromCharCode.apply(null, arr))); } catch (e) {}
       freezeFinderFrame();       /* 画面定格：拍完就停，不再实时流动 */
       flashCam();
       showCaptureFeedback('已拍好，点对号发送');
@@ -12790,6 +12848,13 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   function confirmSend(){
     if (!pendingCapture || !pendingCapture.length) { showCaptureFeedback('请先按快门拍一张'); return; }
     var arr = pendingCapture;
+    /* msg325①：调试留痕，只记本次发送的照片哈希，不记题面/图片内容 */
+    if (window.crypto && crypto.subtle && crypto.subtle.digest) {
+      crypto.subtle.digest('SHA-256', arr).then(function(buf){
+        var digest = Array.prototype.map.call(new Uint8Array(buf), function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
+        try { sessionStorage.setItem('jt2-last-sent-sha256', digest); } catch (e) {}
+      }).catch(function(){});
+    }
     /* v5.9：未登录点勾 -> 弹登录/注册，登录后继续发这张，不跳绑定页、不卡住 */
     if (!authToken) {
       pendingSendAfterLogin = arr;
@@ -12820,7 +12885,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
         idea:steps,
         process:Array.isArray(process) ? process : [],
         answer:item && item.unlocked && item.answer != null ? item.answer : null,
-        unlocked:!!(item && item.unlocked)
+        unlocked:!!(item && item.unlocked),
+        mockResult:!!(item && item.mockResult)
       };
     });
     currentQuestionKey = QUESTIONS.map(function(q){ return q.question_id || q.question_index; }).join('|');
@@ -12834,12 +12900,14 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   var verdictLine = document.getElementById('verdictLine');
   var ideaList = document.getElementById('ideaList');
   var cardBtn = document.getElementById('cardBtn');
+  var testDataBanner = document.getElementById('testDataBanner');
   function renderQuestion(){
     var q = QUESTIONS[qi];
     if (!q) return;
     var index = (q.question_index != null ? parseInt(q.question_index, 10) + 1 : qi + 1);
     recognizeLine.textContent = '共' + QUESTIONS.length + '题第' + index + '题 · 思路';
     verdictLine.textContent = q.correct ? '这个题做对了' : '这个题做错了';
+    if (testDataBanner) testDataBanner.hidden = !q.mockResult;
     ideaList.innerHTML = '';
     q.thinking.forEach(function(step){
       var li = document.createElement('li');
@@ -12936,6 +13004,15 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   /* --- 第7屏 设置 --- */
   var serverMode = 'pub';
   var srvOpts = Array.prototype.slice.call(document.querySelectorAll('.srv-opt'));
+  function reflectGwSeg(){
+    if (!savedAddress) {
+      Array.prototype.forEach.call(document.querySelectorAll('#gwSeg button'), function(x){ x.classList.toggle('active', x.getAttribute('data-gw') === 'pub'); });
+      return;
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#gwSeg button'), function(x){ x.classList.toggle('active', x.getAttribute('data-gw') === 'lan'); });
+    var lanRow = srvOpts.filter(function(x){ return x.getAttribute('data-server') === 'lan'; })[0];
+    if (lanRow) selectSrv(lanRow);
+  }
   function selectSrv(row){
     srvOpts.forEach(function(b){
       var on = b === row;
@@ -14405,11 +14482,15 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   var gwLanDialog = document.getElementById('gwLanDialog');
   var gwLanInput = document.getElementById('gwLanInput');
   var gwLanFeedback = document.getElementById('gwLanFeedback');
-  var gwMode = 'pub';
-  var gwLanIp = '';
+  var savedAddress = '';
+  try { savedAddress = String(localStorage.getItem('jt2-server-address') || '').trim(); } catch (e) {}
+  var gwMode = savedAddress ? 'lan' : 'pub';
+  var gwLanIp = savedAddress.replace(/:\d+$/, '');
+  if (gwLanIp) setBaseURL(gwLanIp);
+  if (typeof reflectGwSeg === 'function') reflectGwSeg();
   function setGwMode(mode, silent){
     gwMode = mode;
-    if (mode === 'pub') setBaseURL('');
+    if (mode === 'pub') { gwLanIp = ''; setBaseURL(''); }
     else setBaseURL(gwLanIp);
     Array.prototype.forEach.call(document.querySelectorAll('#gwSeg button'), function(x){ x.classList.toggle('active', x.getAttribute('data-gw') === mode); });
     srvOpts.forEach(function(row){ if (row.getAttribute('data-server') === mode) selectSrv(row); });
@@ -14549,8 +14630,9 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   render();
   applyVisibility();
   envText();
-  /* v5.10 msg273：锁屏数据每 30 分钟从服务端刷新一次 */
-  setInterval(envText, 30 * 60 * 1000);
+  /* v5.10 msg273：锁屏数据每 30 分钟从服务端刷新一次；msg325③ 队列轮显 */
+  setInterval(function(){ envText(); }, 30 * 60 * 1000);
+  setInterval(rotateLockMemo, 8 * 1000);
   loadCardBalance();
   loadRecords();
   /* 待批申请每 30 秒拉一次（B2），消息条不再只靠本机点「发送申请」才出现；没登录时内部直接跳过 */
@@ -14558,6 +14640,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   /* 服务器状态取真实连通：不依赖是否登录，先探 /health；有终端/管理 token 时再拉 /config/server 同步 IP/模式 */
   api.health().then(function(data){
     if (!(data && (data.ok === true || data.service || data.version))) throw new Error('bad health payload');
+    serverTestMode = !!(data && data.test_mode);   /* 服务端测试模式：结果页必须标注，不能冒充真实判题 */
     setServerChip(true);
     if (authToken || terminalToken) {
       api.configServer().then(function(cfg){

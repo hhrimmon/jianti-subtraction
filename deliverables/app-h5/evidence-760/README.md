@@ -62,6 +62,17 @@ BIND_SCAN JianTi-4000000000000202 409
 ### 10_finder_back_home.png
 取景态再点返回，真机回到第 2 屏 home。
 
+## v5.10 / msg325 真机证据
+
+### 11_lockscreen_server_memo.png
+锁屏真机截图：App 切到自建服务 `127.0.0.1:8000`（adb reverse）后，锁屏显示服务端 `/lockscreen` 下发的 MEMO，温度服务端返回 null 时显示 `---°C`（正确行为，不是丢数据）。补 ABB msg318 的 v5.10 锁屏证据。
+
+### 12_server_persist_after_restart.png
+`adb shell am force-stop com.jianti.app` 后重开 App，设置页仍选中「局域网/自建服务」、`服务器已连接`，回到锁屏仍显示服务端 MEMO 与 `---°C`。证明 msg325② 的自建服务器地址已持久化（localStorage `jt2-server-address`），重开客户端不再回官方服务器导致锁屏数据丢失。
+
+### msg325① 答案对不上拍的题：根因复现
+真机拍「白纸/黑条」发 `/solve`，本地服务端 `/health` 明示 `test_mode:true`，返回的却是固定数学题解析——即服务端在测试模式用 mock 答案，与上传照片无关，不是 App 发错图。已在 App 侧加显式红底横幅「测试模拟数据，非真实判题结果」，结果页不再把 mock 冒充真实判题；服务端侧同步 `mock`/`result_source` 标记（待 DSH 部署）后双保险。轮询严格按 `activeJob.jobId` 丢弃旧 job 结果，防止串题。
+
 ## SHA256
 e666f66d6c4b25c8a3fa587f300e5bbd3218a4c3e987b7944446111f45213f5b  01_realcamera_decoded.png
 ddf05ea613b30114ba3c4771e96b38d7ed05d5043ddb0b5476beb610bf683b50  02_bindscan_201.py
@@ -73,3 +84,5 @@ d8741f5afb92f9f32dc1ac59e388290700d03f5334aad37542c326a61bc3d6ea  07_gate_login.
 167a694b35358ec9d2c3a1147ba8073b2aa3c7ac0eed01a304e4fea09fd36293  08_login_resume_processing.png
 8778293229b626f3463b150acd02b0d5857e33ff893ef44cb931c981930fe8c7  09_frozen_back_refinder.png
 e699235428047421e7b016cef929cf5fcfaa89d1d74ec42843224c1cff88a968  10_finder_back_home.png
+b3159c9c5e4d19825ea342a611c49b22567d1ac068de9fdb13606b37e1243e51  11_lockscreen_server_memo.png
+0e4732a921e1d75c762a8c58a198d0a0d4b426693dae3bf205c67815d0b3f74a  12_server_persist_after_restart.png
