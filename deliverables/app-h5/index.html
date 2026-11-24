@@ -111,6 +111,13 @@
   /* 483：拍题取景器接真相机——实时画面铺满取景框，盖住静态纸（纸仅作兜底占位） */
   .finder-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:1;pointer-events:none;}
   .finder-video[hidden]{display:none;}
+  /* 快门拍好后把这一帧定格在取景框里：盖住实时流，浩爷能明确看到「拍住了」 */
+  .finder-still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:2;pointer-events:none;}
+  .finder-still[hidden]{display:none;}
+  /* 有暂存照片时对号高亮成实心，明确告诉用户 √ 已经可点 */
+  .vf-btn.ready{background:#111;}
+  .vf-btn.ready svg{color:#fff;}
+  .vf-btn.ready svg path{stroke:#fff;}
   .cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4;}
   .cam-flash.on{opacity:.85;transition:none;}
   .cam-flash{transition:opacity .45s ease;}
@@ -889,6 +896,7 @@
           <span class="vf-corner br" aria-hidden="true"></span>
         </div>
         <video class="finder-video" id="finderVideo" playsinline autoplay muted hidden></video>
+        <canvas class="finder-still" id="finderStill" hidden></canvas>
         <div class="cam-flash" id="camFlash"></div>
       </div>
       <div class="vf-bar">
@@ -12364,7 +12372,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     current = i;
     render();
     /* 483：第3屏取景器（索引2）接真相机——进屏开后置实时流，离屏一律停流 */
-    if (current === 2) startFinderCamera(); else { stopFinderCamera(); if (typeof pendingCapture !== 'undefined') pendingCapture = null; }
+    if (current === 2) startFinderCamera(); else { stopFinderCamera(); if (typeof pendingCapture !== 'undefined') pendingCapture = null; if (typeof unfreezeFinderFrame === 'function') unfreezeFinderFrame(); }
     /* 人已经翻到第 13 屏卡管理，申请就在眼前，消息条收起 */
     if (current === 12) { var ap = document.getElementById('askPush'); if (ap) ap.hidden = true; loadCardRules(); loadApplications(); loadRecords(); }
     if (current !== 12) { var lp = document.getElementById('logPage'); if (lp) lp.hidden = true; }
@@ -12538,6 +12546,10 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     finderStarting = false;
     if (finderStream) { finderStream.getTracks().forEach(function(t){ t.stop(); }); finderStream = null; }
     if (finderVideo) { try { finderVideo.pause(); } catch(e){} finderVideo.srcObject = null; finderVideo.hidden = true; }
+    var cv = document.getElementById('finderStill');
+    if (cv) cv.hidden = true;
+    var ok = document.getElementById('finderConfirm');
+    if (ok) ok.classList.remove('ready');
   }
   function finderActive(){
     return !!(finderStream && finderStream.getVideoTracks().some(function(t){ return t.readyState === 'live'; })
@@ -12598,6 +12610,30 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     var f = document.getElementById('camFlash');
     if (f) { f.classList.add('on'); setTimeout(function(){ f.classList.remove('on'); }, 180); }
   }
+  /* 拍好后把当前视频帧定格到 canvas 上，隐藏实时流，让用户明确看到照片拍住了 */
+  function freezeFinderFrame(){
+    var v = finderVideo, cv = document.getElementById('finderStill');
+    if (!v || !cv || !finderActive()) return;
+    var w = v.videoWidth, h = v.videoHeight, side = Math.min(w, h);
+    cv.width = side; cv.height = side;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;
+    if (w !== h) {
+      var sx = (w - side) / 2, sy = (h - side) / 2;
+      ctx.drawImage(v, sx, sy, side, side, 0, 0, side, side);
+    } else ctx.drawImage(v, 0, 0, side, side);
+    cv.hidden = false;
+    v.hidden = true;           /* 盖住并停掉实时画面观感，帧已定格在 canvas */
+    var ok = document.getElementById('finderConfirm');
+    if (ok) ok.classList.add('ready');
+  }
+  function unfreezeFinderFrame(){
+    var v = finderVideo, cv = document.getElementById('finderStill');
+    if (cv) { cv.hidden = true; }
+    if (v && finderActive()) { v.hidden = false; }
+    var ok = document.getElementById('finderConfirm');
+    if (ok) ok.classList.remove('ready');
+  }
   /* 抓帧 + 直接发送（保留给可能的其他调用；主取景器按钮已改用下面的两步流程） */
   function captureFromFinder(){
     grabFinderFrame(function(arr){
@@ -12616,7 +12652,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
 
   /* --- 第2→3→4屏 --- */
   document.getElementById('toFinder').addEventListener('click', function(){ goTo(2); });
-  document.getElementById('finderBack').addEventListener('click', function(){ goTo(1); });
+  document.getElementById('finderBack').addEventListener('click', function(){ unfreezeFinderFrame(); pendingCapture = null; goTo(1); });
   var activeJob = null;
   // 出题后 activeJob 会清空，但扣卡（A4）需要 job_id 才能定位本题并取回答案，这里单独留一份
   var lastSolvedJobId = '';
@@ -12726,6 +12762,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     grabFinderFrame(function(arr){
       if (!arr || !arr.length) { showCaptureFeedback('拍到的画面读不出来，请再按一次快门'); return; }
       pendingCapture = arr;
+      freezeFinderFrame();       /* 画面定格：拍完就停，不再实时流动 */
       flashCam();
       showCaptureFeedback('已拍好，点对号发送');
     });
@@ -12734,6 +12771,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     if (!pendingCapture || !pendingCapture.length) { showCaptureFeedback('请先按快门拍一张'); return; }
     var arr = pendingCapture;
     pendingCapture = null;      // 取出即清，防重复点发送同一张
+    unfreezeFinderFrame();      /* 发送后回到实时取景，等下一张 */
     processJpegBytes(arr);
   }
   document.getElementById('shutterBtn').addEventListener('click', shutterTake);
