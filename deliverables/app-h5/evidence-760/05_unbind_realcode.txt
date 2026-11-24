@@ -1,0 +1,12 @@
+=== 真码解绑证据（ABB msg241/243：先解绑 2864190752386419 再扫码出 201） ===
+time: 2026-11-25 01:00 (Asia/Shanghai)
+server: http://127.0.0.1:8000  (本地 v9.1)
+
+操作：DELETE /terminals/2864190752386419
+账号：占用该真码的家庭组管理员（凭证不在日志/房间明文出现）
+响应：HTTP 200 {"unbound": true, "device_id": "2864190752386419", "terminal_no": 5}
+
+说明：解绑前 bindings.json 中该码绑在家庭 64155336（terminal_no=5），
+      这正是真机扫码 01_realcamera_decoded.png 报"已绑定到别的家庭组"的原因。
+      解绑后该真码释放，随后 04_realcode_201_raw.txt 用该真码扫码拿到 201。
+解绑后核验：bindings.json 中 2864190752386419 已不存在（total bindings 7->6）。

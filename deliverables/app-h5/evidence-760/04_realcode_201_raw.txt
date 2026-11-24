@@ -1,0 +1,13 @@
+=== REALCODE 201 RAW LOG ===
+time: 2026-11-25 01:04:55
+server: http://127.0.0.1:8000
+real_code: 2864190752386419 (此前被占用，已解绑)
+payload: JianTi-2864190752386419
+
+[register] HTTP 201 raw={"user_id": "user-a48275c59f55", "phone": "<redacted>", "family_id": "47533886", "member_no": 1, "role": "管理员", "token": "<redacted>", "next_step": "verify_admin_password", "sms_code_stub": true, "message": "注册成功，请输一次六位管理密码进入管理。"}
+[login] HTTP 200 has_token=True
+[admin_verify] HTTP 200 raw={"verified": true, "family_id": "47533886", "message": "管理密码正确，已进入管理。"}
+[bind-scan REQUEST] POST /terminals/bind-scan body={"qr_payload":"JianTi-2864190752386419"}
+[bind-scan RESPONSE] HTTP 201 raw={"device_id": "2864190752386419", "device_id_display": "2864 1907 5238 6419", "device_type": "安卓", "family_id": "47533886", "member_no": null, "terminal_no": 1, "bind_method": "scan", "bound_at": "2026-11-25T01:04:56", "already_bound": false, "registered_at": "2026-11-20T01:14:36"}
+
+RESULT: PASS real-code 201
