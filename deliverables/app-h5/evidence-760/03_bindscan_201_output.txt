@@ -1,0 +1,5 @@
+﻿REGISTER 201 phone_tail 7380
+LOGIN 200 has_token True
+ADMIN_VERIFY 200 verified True
+BIND_SCAN JianTi-4000000000000201 409 device_id=None bind_method=None
+BIND_SCAN JianTi-4000000000000202 409 device_id=None bind_method=None
