@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>简题 · 配置 Wi-Fi</title>
+<!--
+  简题 2.0 板子 SoftAP 配网页（captive portal）草稿 v0.1 —— DSH
+  口径：PRD v5.10 §5.4 / 开发手册 v3 §5 —— 只连 Wi-Fi：
+  不放服务器二选一、不填服务器地址（服务器默认官方，手机上改、服务端下推）。
+  页面由板子固件（ESP-IDF httpd）在 192.168.4.1 提供；第 7 屏点"配置 Wi-Fi"
+  才起 SoftAP，关页热点随之关。联上家里 Wi-Fi 后，绑定二维码显示在板子屏上
+  （屏逻辑，非本页）。本页给 COD 嵌固件用；API 契约见 ap_config_api.md。
+-->
+<style>
+  body{font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;margin:0;
+       background:#f2f3f5;color:#222}
+  .card{max-width:420px;margin:24px auto;background:#fff;border-radius:14px;
+        padding:20px 18px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:#888;font-size:13px;margin-bottom:16px}
+  ul#ssids{list-style:none;margin:0 0 14px;padding:0;max-height:260px;overflow:auto}
+  ul#ssids li{padding:11px 12px;border-bottom:1px solid #eee;cursor:pointer;
+              display:flex;justify-content:space-between}
+  ul#ssids li.sel{background:#e8f0ff}
+  .sig{color:#999;font-size:12px}
+  input[type=password]{width:100%;box-sizing:border-box;padding:12px;font-size:16px;
+        border:1px solid #ddd;border-radius:8px;margin-bottom:14px}
+  button{width:100%;padding:13px;font-size:16px;border:0;border-radius:8px;
+         background:#2f6fed;color:#fff}
+  button:disabled{background:#a9c1f5}
+  #msg{margin-top:12px;font-size:14px;min-height:20px;color:#555}
+  #msg.ok{color:#1a9e56}#msg.err{color:#d33}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>配置 Wi-Fi</h1>
+  <div class="sub">选择家里的 Wi-Fi 并输入密码；联网成功后请在<b>板子屏幕上</b>扫码绑定。</div>
+  <ul id="ssids"><li>正在扫描…</li></ul>
+  <input id="pw" type="password" placeholder="Wi-Fi 密码" autocomplete="off">
+  <button id="go" onclick="connect()">连 接</button>
+  <div id="msg"></div>
+</div>
+<script>
+let sel = null, timer = null;
+function sigTxt(r){ return r >= -55 ? "强" : r >= -70 ? "中" : "弱"; }
+function scan(){
+  fetch("/ap/scan").then(r=>r.json()).then(d=>{
+    const ul = document.getElementById("ssids");
+    ul.innerHTML = "";
+    (d.items || []).forEach(it=>{
+      const li = document.createElement("li");
+      li.innerHTML = "<span>" + it.ssid + "</span><span class='sig'>" +
+                     sigTxt(it.rssi) + (it.auth ? " 🔒" : "") + "</span>";
+      li.onclick = ()=>{ sel = it.ssid;
+        [...ul.children].forEach(x=>x.classList.remove("sel"));
+        li.classList.add("sel"); };
+      ul.appendChild(li);
+    });
+    if(!ul.children.length) ul.innerHTML = "<li>未扫描到网络，正在重试…</li>";
+  }).catch(()=>{ document.getElementById("ssids").innerHTML =
+    "<li>扫描失败，正在重试…</li>"; });
+}
+function connect(){
+  if(!sel){ setMsg("请先选择一个 Wi-Fi", "err"); return; }
+  const pw = document.getElementById("pw").value;
+  fetch("/ap/connect", {method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ssid: sel, password: pw})})
+  .then(r=>r.json()).then(d=>{
+    if(!d.ok){ setMsg(d.msg || "连接请求失败", "err"); return; }
+    setMsg("正在连接 Wi-Fi…", "");
+    clearInterval(timer);
+    timer = setInterval(poll, 1500);
+  }).catch(()=>setMsg("请求失败，请重试", "err"));
+}
+function poll(){
+  fetch("/ap/status").then(r=>r.json()).then(d=>{
+    if(d.stage === "connected"){
+      clearInterval(timer);
+      setMsg("已连上 " + d.ssid + "。请看板子屏幕上的绑定二维码。", "ok");
+      document.getElementById("go").disabled = true;
+    }else if(d.stage === "failed"){
+      clearInterval(timer);
+      setMsg("连接失败：" + (d.msg || "密码错误或信号不佳") + "，请重试", "err");
+      scan();
+    }else{
+      setMsg("正在连接 Wi-Fi…", "");
+    }
+  });
+}
+function setMsg(t, cls){ const m = document.getElementById("msg");
+  m.textContent = t; m.className = cls; }
+scan();
+</script>
+</body>
+</html>
