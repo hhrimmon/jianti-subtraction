@@ -14339,6 +14339,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     else setBaseURL(gwLanIp);
     Array.prototype.forEach.call(document.querySelectorAll('#gwSeg button'), function(x){ x.classList.toggle('active', x.getAttribute('data-gw') === mode); });
     srvOpts.forEach(function(row){ if (row.getAttribute('data-server') === mode) selectSrv(row); });
+    /* PRD v5.7：切换服务端后立即重探，拍题页状态跟随真实连通，不残留上一次的「未连接」 */
+    if (typeof probeServer === 'function') probeServer();
   }
   function closeGwLanDialog(){
     if (gwLanDialog) gwLanDialog.hidden = true;
