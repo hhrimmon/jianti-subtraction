@@ -39,7 +39,8 @@ $javaFiles += (Get-ChildItem "$root\gen" -Recurse -Filter *.java | ForEach-Objec
 New-Item -ItemType Directory -Force -Path "$root\build\classes" | Out-Null
 # JDK17 用 -source/-target 8 会往 stderr 打 bootstrap warning；PS5 在 Stop 模式下会把
 # native stderr 误当终止错误。临时切 Continue，真失败仍由 $LASTEXITCODE 拦住。
-$_prevEAP = $ErrorActionPreference
+$_prevEAP = [System.Management.Automation.ActionPreference]::Continue
+if ($null -ne $ErrorActionPreference) { $_prevEAP = $ErrorActionPreference }
 $ErrorActionPreference = 'Continue'
 & "$jdk\bin\javac.exe" -source 8 -target 8 -nowarn -encoding UTF-8 -classpath $androidJar -d "$root\build\classes" $javaFiles 2>$null
 $ErrorActionPreference = $_prevEAP

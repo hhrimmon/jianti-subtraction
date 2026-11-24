@@ -117,7 +117,10 @@
   /* 有暂存照片时对号高亮成实心，明确告诉用户 √ 已经可点 */
   .vf-btn.ready{background:#111;}
   .vf-btn.ready svg{color:#fff;}
-  .vf-btn.ready svg path{stroke:#fff;}
+  .vf-btn.ready svg path{stroke:#fff;} /* 黑底白勾=发送 */
+  /* 冻结后快门置灰不可再按，避免重复拍摄 */
+  .vf-btn.locked{opacity:.35;}
+  .vf-btn.locked:active{transform:none;}
   .cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4;}
   .cam-flash.on{opacity:.85;transition:none;}
   .cam-flash{transition:opacity .45s ease;}
@@ -12100,15 +12103,20 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   api.configServer = function(){ return request('GET', '/config/server', { terminal:true }); };
   api.health = function(){ return request('GET', '/health', { auth:false }); };
   api.configEnvironment = function(){ return request('GET', '/config/environment', { auth:false }); };
+  /* v5.10 msg273：锁屏专用只读接口，时间/温度/MEMO 由服务端下发 */
+  api.lockscreen = function(){ return request('GET', '/lockscreen', { auth:false }); };
   api.login = function(phone, password){
-    return request('POST', '/auth/login', { body:{ phone:phone, password:password }, auth:false }).then(function(data){
+    /* v5.9 msg280：服务端登录时自动把 X-Terminal-Id 绑到当前家庭，App 不再直调 /terminals/bind */
+    return request('POST', '/auth/login', { body:{ phone:phone, password:password }, auth:false,
+      extraHeaders:{'X-Terminal-Id': normalizeTerminalId(deviceId)} }).then(function(data){
       var token = tokenOf(data);
       if (token) setAuthToken(token);
       return data;
     });
   };
   api.register = function(payload){
-    return request('POST', '/auth/register', { body:payload, auth:false }).then(function(data){
+    return request('POST', '/auth/register', { body:payload, auth:false,
+      extraHeaders:{'X-Terminal-Id': normalizeTerminalId(deviceId)} }).then(function(data){
       var token = tokenOf(data);
       if (token) { setAuthToken(token); return data; }
       /* 服务端注册响应不带 token：用刚注册的凭据自动登录一次，
@@ -12168,19 +12176,21 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     if (ssidValue) ssidValue.textContent = ssid ? String(ssid).slice(0, 8) : '---';
     if (signalValue) signalValue.textContent = signal == null || signal === '' ? '---' : String(signal);
   }
+  /* v5.10 msg273：锁屏第1屏温度/MEMO 走 GET /lockscreen，服务端下发。
+     断网/失败不清屏，保留上一次成功取到的值（不回退成 ---）。 */
+  var lastLockTemp = null, lastLockMemo = null;
   function envText(){
     var t = document.querySelector('.temp');
     var m = document.querySelector('.memo-text');
-    api.configEnvironment().then(function(data){
-      var temperature = data && (data.temperature || (data.environment && data.environment.temperature) || (data.config && data.config.temperature));
-      var memo = data && (data.memo || (data.environment && data.environment.memo) || (data.config && data.config.memo) || (data.config && data.config.MEMO));
-      if (t) t.textContent = temperature == null || temperature === '' ? '---°C' : (/^-?\d+(\.\d+)?$/.test(String(temperature)) ? temperature + '°C' : String(temperature));
-      if (m) m.textContent = (memo == null || memo === '') ? '---' : String(memo);
-      applyNetInfo(data);
+    api.lockscreen().then(function(data){
+      var temperature = data && data.temperature != null ? data.temperature : null;
+      var memo = data && data.memo != null ? data.memo : null;
+      if (temperature != null && temperature !== '') { lastLockTemp = temperature; }
+      if (memo != null && memo !== '') { lastLockMemo = memo; }
+      if (t) t.textContent = lastLockTemp == null ? '---°C' : (/^-?\d+(\.\d+)?$/.test(String(lastLockTemp)) ? lastLockTemp + '°C' : String(lastLockTemp));
+      if (m) m.textContent = lastLockMemo == null ? '---' : String(lastLockMemo);
     }).catch(function(){
-      if (t) t.textContent = '---°C';
-      if (m) m.textContent = '---';
-      applyNetInfo(null);
+      /* 断网：保留 lastLockTemp/lastLockMemo，界面维持上一次的值 */
     });
   }
 
@@ -12626,6 +12636,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     v.hidden = true;           /* 盖住并停掉实时画面观感，帧已定格在 canvas */
     var ok = document.getElementById('finderConfirm');
     if (ok) ok.classList.add('ready');
+    var sh = document.getElementById('shutterBtn');
+    if (sh) { sh.disabled = true; sh.classList.add('locked'); }  /* 冻结后快门置灰 */
   }
   function unfreezeFinderFrame(){
     var v = finderVideo, cv = document.getElementById('finderStill');
@@ -12633,6 +12645,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     if (v && finderActive()) { v.hidden = false; }
     var ok = document.getElementById('finderConfirm');
     if (ok) ok.classList.remove('ready');
+    var sh = document.getElementById('shutterBtn');
+    if (sh) { sh.disabled = false; sh.classList.remove('locked'); } /* 恢复可拍 */
   }
   /* 抓帧 + 直接发送（保留给可能的其他调用；主取景器按钮已改用下面的两步流程） */
   function captureFromFinder(){
@@ -12652,7 +12666,13 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
 
   /* --- 第2→3→4屏 --- */
   document.getElementById('toFinder').addEventListener('click', function(){ goTo(2); });
-  document.getElementById('finderBack').addEventListener('click', function(){ unfreezeFinderFrame(); pendingCapture = null; goTo(1); });
+  document.getElementById('finderBack').addEventListener('click', function(){
+    /* v5.8：冻结态点返回=回取景重拍（不跳屏）；取景态点返回=回第2屏 */
+    if (pendingCapture || document.getElementById('finderStill') && !document.getElementById('finderStill').hidden) {
+      unfreezeFinderFrame(); pendingCapture = null;
+      showCaptureFeedback('已回到取景，请重新拍');
+    } else goTo(1);
+  });
   var activeJob = null;
   // 出题后 activeJob 会清空，但扣卡（A4）需要 job_id 才能定位本题并取回答案，这里单独留一份
   var lastSolvedJobId = '';
@@ -12770,6 +12790,13 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   function confirmSend(){
     if (!pendingCapture || !pendingCapture.length) { showCaptureFeedback('请先按快门拍一张'); return; }
     var arr = pendingCapture;
+    /* v5.9：未登录点勾 -> 弹登录/注册，登录后继续发这张，不跳绑定页、不卡住 */
+    if (!authToken) {
+      pendingSendAfterLogin = arr;
+      showCaptureFeedback('请先登录，登录后再发送');
+      goTo(8);                  /* 第9屏：登录/注册 */
+      return;
+    }
     pendingCapture = null;      // 取出即清，防重复点发送同一张
     unfreezeFinderFrame();      /* 发送后回到实时取景，等下一张 */
     processJpegBytes(arr);
@@ -13218,21 +13245,32 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     var ae = document.activeElement;
     if (ae && ae.blur && ae !== document.body) ae.blur();
   }
+  /* v5.9：登录成功后若有「登录后继续」的待办（未登录点勾发的那张题），
+     先续发再决定去哪屏；没有待办才按原逻辑进管理屏。 */
+  var pendingSendAfterLogin = null;
+  function afterLoginSuccess(phone, data, fromGate){
+    loggedIn = true;
+    setAuthIdentity(data);
+    renderAcctPhone(phone);
+    showFormFeedback('');
+    /* 登录后立刻按服务端刷新卡余额与待批申请，home 的「今日剩余」不再是 --- */
+    loadCardBalance(); loadApplications();
+    if (fromGate && pendingSendAfterLogin) {
+      var arr = pendingSendAfterLogin; pendingSendAfterLogin = null;
+      goTo(2);                  /* 回到拍题取景器，让 sent 反馈/跳屏落在正确屏 */
+      processJpegBytes(arr);    /* 登录后继续发送刚才那张题 */
+    } else goTo(10);
+  }
   document.getElementById('loginBtn').addEventListener('click', function(){
     var phone = document.getElementById('loginPhone').value.trim();
     var pwd = document.getElementById('loginPwd').value;
     dismissKeyboard();
     if (!phone || !pwd) { showFormFeedback('先填手机号和密码。'); return; }
     document.getElementById('loginBtn').disabled = true;
+    var fromGate = !!pendingSendAfterLogin;
     /* 登录只走服务端校验，不留本地直登口 */
     api.login(phone, pwd).then(function(data){
-      loggedIn = true;
-      setAuthIdentity(data);
-      renderAcctPhone(phone);
-      showFormFeedback('');
-      /* 登录后立刻按服务端刷新卡余额与待批申请，home 的「今日剩余」不再是 --- */
-      loadCardBalance(); loadApplications();
-      goTo(10);
+      afterLoginSuccess(phone, data, fromGate);
     }).catch(function(err){ showFormFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试'); })
       .then(function(){ document.getElementById('loginBtn').disabled = false; });
   });
@@ -13252,7 +13290,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     var pwd = document.getElementById('regPwd').value;
     var adminPwd = Array.prototype.map.call(document.querySelectorAll('#regAdminRow .pin-box'), function(b){ return b.value; }).join('');
     dismissKeyboard();
-    if (!phone || !code || !pwd) { showFormFeedback('先填手机号、验证码和密码。'); return; }
+    /* v5.9：短信验证码未接通前可跳过，不填也能注册；手机号/密码仍必填 */
+    if (!phone || !pwd) { showFormFeedback('先填手机号和密码。'); return; }
     if (!/^\d{6}$/.test(adminPwd)) { showFormFeedback('管理员密码还没输满。'); return; }
     document.getElementById('registerBtn').disabled = true;
     api.register({ phone:phone, password:pwd, admin_password:adminPwd, code:code }).then(function(data){
@@ -13267,11 +13306,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   document.getElementById('regSuccessNext').addEventListener('click', function(){
     document.getElementById('regSuccessView').hidden = true;
     document.getElementById('regMain').hidden = false;
-    loggedIn = true;
-    renderAcctPhone(document.getElementById('regPhone').value);
-    /* 注册成功即已登录：先按服务端刷新卡余额与待批申请，再进管理密码屏 */
-    loadCardBalance(); loadApplications();
-    goTo(10);
+    afterLoginSuccess(document.getElementById('regPhone').value, {}, !!pendingSendAfterLogin);
   });
   document.getElementById('logoutBtn').addEventListener('click', function(){
     loggedIn = false;
@@ -14380,6 +14415,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     srvOpts.forEach(function(row){ if (row.getAttribute('data-server') === mode) selectSrv(row); });
     /* PRD v5.7：切换服务端后立即重探，拍题页状态跟随真实连通，不残留上一次的「未连接」 */
     if (typeof probeServer === 'function') probeServer();
+    /* v5.10 msg273：切换服务端后重拉锁屏温度/MEMO，让新服务端的数据立刻显示 */
+    if (typeof envText === 'function') envText();
   }
   function closeGwLanDialog(){
     if (gwLanDialog) gwLanDialog.hidden = true;
@@ -14512,6 +14549,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   render();
   applyVisibility();
   envText();
+  /* v5.10 msg273：锁屏数据每 30 分钟从服务端刷新一次 */
+  setInterval(envText, 30 * 60 * 1000);
   loadCardBalance();
   loadRecords();
   /* 待批申请每 30 秒拉一次（B2），消息条不再只靠本机点「发送申请」才出现；没登录时内部直接跳过 */

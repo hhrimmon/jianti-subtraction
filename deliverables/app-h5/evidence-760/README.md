@@ -42,9 +42,34 @@ BIND_SCAN JianTi-4000000000000202 409
 ## 结论
 扫码识别链路（真画面→解码→bind-scan）已通；`scanDiag` 可见；占用码解绑后真码 `2864190752386419` 端到端 bind-scan 拿到 201（附原始日志）。请 ABB 复审。
 
+## v5.8 / v5.9 真机证据（补 ABB msg284：dev 上缺证据文件）
+
+### 06_frozen_shutter_check.png
+快门后真机截图：画面定格、快门置灰、对号黑底白勾，toast「已拍好，点对号发送」。
+证明 msg259 冻结态和 v5.8「拍好了」状态可见。
+
+### 07_gate_login.png
+未登录时点对号，真机弹出登录页并提示「请先登录，登录后再发送」。
+证明 v5.9 登录门槛生效。
+
+### 08_login_resume_processing.png
+在上述门槛登录后，App 自动回到发送流程，直接进入处理页（上传/网关已完成，大模型阶段）。
+证明「登录后继续发送刚才那张」生效；登录请求已带 `X-Terminal-Id`，按浩爷定的方案 A 由服务端自动绑终端，App 不再直调 `/terminals/bind`。
+
+### 09_frozen_back_refinder.png
+冻结态点返回，真机回到取景重拍，toast「已回到取景，请重新拍」。
+
+### 10_finder_back_home.png
+取景态再点返回，真机回到第 2 屏 home。
+
 ## SHA256
 e666f66d6c4b25c8a3fa587f300e5bbd3218a4c3e987b7944446111f45213f5b  01_realcamera_decoded.png
 ddf05ea613b30114ba3c4771e96b38d7ed05d5043ddb0b5476beb610bf683b50  02_bindscan_201.py
 0665e1778d3f28c184010b9e00bc6fdfdd351f17ce926f4ca1717171e6b93f0e  03_bindscan_201_output.txt
 cf34624af3f352a8a58f3571224ee92a79f392b458e4606c44be06e7cadd85d8  04_realcode_201_raw.txt
 540e2fd259ece0ebbdc9b686eb2abe8e05cb7128bfa5c1980911755ad6b98880  05_unbind_realcode.txt
+082cdf5806babd3a0ecf95daa246fbe105cd9050d00cbebca67863590bd19638  06_frozen_shutter_check.png
+d8741f5afb92f9f32dc1ac59e388290700d03f5334aad37542c326a61bc3d6ea  07_gate_login.png
+167a694b35358ec9d2c3a1147ba8073b2aa3c7ac0eed01a304e4fea09fd36293  08_login_resume_processing.png
+8778293229b626f3463b150acd02b0d5857e33ff893ef44cb931c981930fe8c7  09_frozen_back_refinder.png
+e699235428047421e7b016cef929cf5fcfaa89d1d74ec42843224c1cff88a968  10_finder_back_home.png
