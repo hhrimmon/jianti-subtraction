@@ -12858,7 +12858,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
         q.unlocked = true;
         renderQuestion(); renderResult();
         goTo(5);
-      } else if (code === 402 || (err && err.message && /余额|不足/.test(err.message))) {
+      } else if (code === 402 && !(err && err.message && /未绑定|登录已失效|40101/.test(err.message))) {
+        /* 只有真·余额不足才跳设置页；未绑定/登录失效即便带 402 也留在当前屏提示，避免跳屏叠加成鬼魂界面 */
         goTo(7);
       } else {
         showCaptureFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
