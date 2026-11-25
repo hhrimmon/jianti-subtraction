@@ -39,11 +39,18 @@ static const char *TAG = "JT_CLIENT";
 
 static char s_base_url[192] = JT_GATEWAY_BASE_URL;
 static char s_terminal_id[32] = JT_TERMINAL_ID;
+static bool s_terminal_id_overridden = false;
 
 const char *jt_client_get_terminal_id(void)
 {
     return s_terminal_id;
 }
+
+const char *jt_client_terminal_id_source(void)
+{
+    return s_terminal_id_overridden ? "runtime-config" : "compile-time-default";
+}
+
 static char s_auth_token[256] = JT_AUTH_TOKEN;
 static bool s_network_ready = false;
 static bool s_wifi_started = false;
@@ -84,6 +91,81 @@ bool jt_client_network_ready(void)
         return true;
     }
     return s_network_ready;
+}
+
+bool jt_client_internet_reachable(uint32_t timeout_ms)
+{
+    const char *probe_url = "http://www.baidu.com";
+    esp_http_client_config_t cfg = {
+        .url = probe_url,
+        .method = HTTP_METHOD_GET,
+        .timeout_ms = timeout_ms,
+        .disable_auto_redirect = true,
+    };
+    esp_http_client_handle_t client = esp_http_client_init(&cfg);
+    if (!client) {
+        ESP_LOGE(TAG, "internet probe init failed: %s", probe_url);
+        return false;
+    }
+
+    bool reachable = false;
+    int status_code = 0;
+    const char *resolved_url = probe_url;
+    esp_err_t err = esp_http_client_open(client, 0);
+    if (err == ESP_OK) {
+        int content_length = esp_http_client_fetch_headers(client);
+        status_code = esp_http_client_get_status_code(client);
+        /* A captive portal may answer 4xx/5xx. Only a real upstream response
+         * proves that the internet segment was reached. */
+        reachable = content_length >= 0 && status_code >= 200 && status_code < 300;
+    } else {
+        ESP_LOGW(TAG, "internet probe open failed: %s", esp_err_to_name(err));
+    }
+    esp_http_client_close(client);
+    esp_http_client_cleanup(client);
+    ESP_LOGI(TAG, "internet probe %s status=%d reachable=%d",
+             resolved_url, status_code, (int)reachable);
+    return reachable;
+}
+
+bool jt_client_server_reachable(uint32_t timeout_ms)
+{
+    char url[JT_MAX_URL] = {0};
+    snprintf(url, sizeof(url), "%s/lockscreen?device_id=%s",
+             s_base_url, s_terminal_id);
+    esp_http_client_config_t cfg = {
+        .url = url,
+        .method = HTTP_METHOD_GET,
+        .timeout_ms = timeout_ms,
+        .disable_auto_redirect = true,
+    };
+    esp_http_client_handle_t client = esp_http_client_init(&cfg);
+    if (!client) {
+        ESP_LOGE(TAG, "server probe init failed: %s", url);
+        return false;
+    }
+
+    bool reachable = false;
+    int status_code = 0;
+    esp_err_t err = esp_http_client_open(client, 0);
+    char host_value[128] = "-";
+    if (err == ESP_OK) {
+        int content_length = esp_http_client_fetch_headers(client);
+        status_code = esp_http_client_get_status_code(client);
+        char *header = NULL;
+        if (esp_http_client_get_header(client, "Host", &header) == ESP_OK &&
+            header && *header) {
+            snprintf(host_value, sizeof(host_value), "%s", header);
+        }
+        reachable = content_length >= 0 && status_code > 0 && status_code < 600;
+    } else {
+        ESP_LOGW(TAG, "server probe open failed: %s", esp_err_to_name(err));
+    }
+    ESP_LOGI(TAG, "server probe %s host=%s status=%d reachable=%d",
+             url, host_value, status_code, (int)reachable);
+    esp_http_client_close(client);
+    esp_http_client_cleanup(client);
+    return reachable;
 }
 
 bool jt_client_network_init(uint32_t timeout_ms)
@@ -614,6 +696,7 @@ void jt_client_set_config(const char *base_url,
     }
     if (terminal_id && terminal_id[0]) {
         snprintf(s_terminal_id, sizeof(s_terminal_id), "%s", terminal_id);
+        s_terminal_id_overridden = true;
     }
     if (auth_token) {
         snprintf(s_auth_token, sizeof(s_auth_token), "%s", auth_token);

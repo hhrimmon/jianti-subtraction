@@ -107,6 +107,12 @@ void jt_client_set_config(const char *base_url,
 const char *jt_client_get_terminal_id(void);
 
 /**
+ * @brief Origin of the current terminal id.
+ * @return "compile-time-default" unless overridden by jt_client_set_config().
+ */
+const char *jt_client_terminal_id_source(void);
+
+/**
  * @brief Initialize lwIP and connect the ESP32-C6 Wi-Fi uplink.
  * @note Safe to call multiple times. Uploads wait for a valid IPv4 address.
  */
@@ -120,6 +126,19 @@ void jt_client_mark_network_ready(void);
 
 /** True after ESP32-C6 station has a valid IPv4 address. */
 bool jt_client_network_ready(void);
+
+/**
+ * @brief Probe public Internet reachability independently of the local server.
+ * @param timeout_ms HTTP timeout for the probe.
+ * @return true when a public endpoint returns a successful/redirect status.
+ */
+bool jt_client_internet_reachable(uint32_t timeout_ms);
+
+/**
+ * @brief Probe the configured business server independently of the public
+ *        Internet test. A 4xx response still proves the server is reachable.
+ */
+bool jt_client_server_reachable(uint32_t timeout_ms);
 
 /**
  * @brief Upload one raw JPEG and poll A2 until done/failed/timeout.

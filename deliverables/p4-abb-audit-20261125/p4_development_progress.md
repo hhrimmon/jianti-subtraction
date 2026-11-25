@@ -625,3 +625,26 @@
   - 最终统一编译烧录：`build_abb_settings_log.log` / `flash_abb_settings_log.log`，固件 `0xb17100`，app 分区剩余 8%。
   - 板端确认：进入设置页日志 `network_ready=1`，无崩溃；进入拍摄页 OV5647 出帧约 20.8fps 并保存照片。9080 已向 ABB 回报三项齐，等待板端审计。
 
+### 2026-11-25 ABB 572/NYX 580 复审整改
+- 9080 心跳机制确认：inbox 每轮写本地 `cod_gateway_heartbeat.txt`，guard 10 分钟检查，超过 180 秒视为 stale 并拉起缺失进程。纯本地 IO，不产生模型调用、不消耗 token；当前 inbox/wake/guard PID 为 10600/16868/35716，心跳 age 6~10 秒。
+- 修复退出热点页 AP 未停止：`app_jt_ui.c` 的 `jt_show_softap(false)` 改为无条件停 DHCP/AP 并切回 `WIFI_MODE_STA`，不再依赖 `jt_client_network_ready()`。板端串口日志：`softap stopped: dhcps=0x103 mode_set=0x0 mode_now=1(STA=1)`，随后 STA 重连并拿到 `192.168.0.105`。
+- 修复连通测试互联网段：`jt_client.c` 新增 `jt_client_internet_reachable()`，用 `http://www.baidu.com` 独立 HTTP GET 判断公网；服务器段仍由 `jt_client_server_reachable()` 判断，不再复用 WiFi 状态。板端串口日志：`internet probe http://www.baidu.com status=200 reachable=1`、`server probe http://192.168.0.108:8000/lockscreen?device_id=2040059832773436 status=200 reachable=1`、`chain test: wifi=1 internet=1 server=1`。
+- 设备 ID 来源：`jt_client.c` 默认 `JT_TERMINAL_ID "2040059832773436"`，`s_terminal_id` 初始值来自该编译常量；`jt_client_set_config()` 可在运行时覆盖。新增 `jt_client_terminal_id_source()` 和启动日志，板端实证 `device id=2040059832773436 source=compile-time-default`。当前不是 EFUSE/MAC 硬件派生；如要求硬件派生，需要 ABB/NYX 给出终端 ID 编码规范后再改。
+- 编译通过：`D:\AItools\projects\jt2.0\_work\build_abb_reaudit_console2.log`，固件 `0xb176f0`，app 分区剩余 `0xe8910`（8%）。
+- 烧录通过：`D:\AItools\projects\jt2.0\_work\flash_abb_reaudit_console2.log`，`Hash of data verified` / `Hard resetting via RTS pin`。
+- 证据文件：
+  - `D:\AItools\projects\jt2.0\_work\abb_audit_boot_id.log`（启动、设备 ID 来源、ELF SHA256）
+  - `D:\AItools\projects\jt2.0\_work\abb_audit_camera_serial_evidence.log`（OV5647、RGB565、PHOTO003、约 20.8fps）
+  - `D:\AItools\projects\jt2.0\_work\abb_audit_chain_serial_evidence.log`（热点开启/退出、AP 停止、STA 重连）
+  - `D:\AItools\projects\jt2.0\_work\abb_audit_chain_only.log`（独立互联网探针和三段连通结果）
+- 固件 SHA256：bootloader `334a2850b405eaa51ae6a0154d7ac46267fc827de6c1227312183383765ae439`，partition-table `d1d2b2745f8ec4697960f395dd8f0572dfb12798d467ea9643f488eae21b0361`，app `88ab653c7f9234cefbab010a6925cc6368318e0d64c19772a8e978618bf03d84`。
+
+### 2026-11-25 右上角齿轮按钮按原型图重做
+- 排查结论：原 `make_jt_icons.py` 的齿轮按钮取错像素源，使用了旧的 `v113_screen1.png` 和 `(850,120,884,162)` 裁切范围；当前 `v113/screen1.png` 中齿轮实际位于约 `(936,28)-(976,68)`。
+- 修正：齿轮按钮改为从 `v113/screen1.png` 的 `(936,28,976,68)` 裁出并放大成 64×64 原型图片，继续以透明底 RGB565A8 图片按钮使用；左屏/首页热区不变。
+- 重新生成：`main/APP/IMAGE/jt_v113_icons.c/.h`、`gear_image_button_preview.png`；预览确认齿轮形状与原型一致。
+- 编译通过：`D:\AItools\projects\jt2.0\_work\build_gear_fix.log`，固件 `0xb17a00`，app 分区剩余 `0xe8600`（8%）。
+- 烧录通过：`D:\AItools\projects\jt2.0\_work\flash_gear_fix.log`，`Hash of data verified` / `Hard resetting via RTS pin`。
+- 串口验证：`D:\AItools\projects\jt2.0\_work\monitor_gear_fix.log`，ELF SHA256 `74507779f...`，`JT_UI: JianTi v114 native-widget UI ready`，无重启/崩溃。
+- PC 摄像头实拍：`D:\AItools\projects\jt2.0\_work\gearfix_01_gear.png`，锁屏右上角可见清晰小齿轮，位置和形态与原型一致。
+

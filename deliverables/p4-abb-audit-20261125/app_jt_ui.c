@@ -1179,9 +1179,39 @@ static void jt_show_softap(bool show)
         lv_obj_clear_flag(s_jt.softap_page, LV_OBJ_FLAG_HIDDEN);
         lv_obj_move_foreground(s_jt.softap_page);
     } else {
-        if (!jt_client_network_ready()) {
-            esp_wifi_set_mode(WIFI_MODE_STA);
+        esp_netif_t *ap_netif = esp_netif_get_handle_from_ifkey("WIFI_AP_DEF");
+        wifi_mode_t mode = WIFI_MODE_MAX;
+        esp_err_t stop_err = ESP_ERR_INVALID_STATE;
+        esp_err_t mode_err = ESP_ERR_INVALID_STATE;
+        wifi_mode_t target_mode = WIFI_MODE_STA;
+        bool sta_should_restart = jt_client_network_ready();
+        if (ap_netif) {
+            stop_err = esp_netif_dhcps_stop(ap_netif);
+            ESP_LOGI(JT_UI_TAG, "softap dhcps stop err=0x%x", (unsigned)stop_err);
+        } else {
+            ESP_LOGW(JT_UI_TAG, "softap ap netif missing on stop");
+        }
+        /* Keep the STA interface running while disabling only the AP. */
+        mode_err = esp_wifi_set_mode(target_mode);
+        esp_wifi_get_mode(&mode);
+        ESP_LOGI(JT_UI_TAG,
+                 "softap stopped: dhcps=0x%x mode_set=0x%x mode_now=%d(STA=%d) sta_restart=%d",
+                 (unsigned)stop_err, (unsigned)mode_err, (int)mode,
+                 (int)WIFI_MODE_STA, (int)sta_should_restart);
+        if (mode_err != ESP_OK) {
+            /* Legacy fallback: a few remote Wi-Fi builds only apply an AP stop
+             * through a full stop/start cycle. Reconnect STA afterwards. */
+            ESP_LOGW(JT_UI_TAG, "softap direct mode switch failed, restart wifi");
+            esp_wifi_stop();
+            mode_err = esp_wifi_set_mode(target_mode);
+            esp_wifi_get_mode(&mode);
             esp_wifi_start();
+            ESP_LOGI(JT_UI_TAG,
+                     "softap stopped fallback: mode_set=0x%x mode_now=%d(STA=%d)",
+                     (unsigned)mode_err, (int)mode, (int)WIFI_MODE_STA);
+            if (sta_should_restart) {
+                esp_wifi_connect();
+            }
         }
         lv_obj_add_flag(s_jt.softap_page, LV_OBJ_FLAG_HIDDEN);
     }
@@ -1301,18 +1331,52 @@ static void jt_run_chain_test(lv_event_t *e)
 {
     (void)e;
     char chain_label[128];
-    jt_business_environment_t config = jt_business_server_config_refresh();
     if (s_jt.settings_chain) {
         lv_obj_clear_flag(s_jt.settings_chain, LV_OBJ_FLAG_HIDDEN);
         bool wifi_ok = jt_client_network_ready();
-        bool server_ok = config.result == JT_RESULT_OK;
+        bool internet_ok = jt_client_internet_reachable(3000);
+        bool server_ok = jt_client_server_reachable(3000);
+        wifi_mode_t mode = WIFI_MODE_MAX;
+        esp_wifi_get_mode(&mode);
+        ESP_LOGI(JT_UI_TAG, "chain test: wifi=%d internet=%d server=%d",
+                 (int)wifi_ok, (int)internet_ok, (int)server_ok);
+        ESP_LOGI(JT_UI_TAG,
+                 "chain state: wifi_mode=%d(APSTA=%d) softap_page=%d wifi=%d "
+                 "internet=%d server=%d",
+                 (int)mode, (int)WIFI_MODE_APSTA, (int)s_jt.softap_on,
+                 (int)wifi_ok, (int)internet_ok, (int)server_ok);
         snprintf(chain_label, sizeof(chain_label),
                  "① WiFi %s → ② 互联网 %s → ③ 服务器 %s",
                  wifi_ok ? "OK" : "FAIL",
-                 wifi_ok ? "OK" : "FAIL",
+                 internet_ok ? "OK" : "FAIL",
                  server_ok ? "OK" : "FAIL");
         lv_label_set_text(s_jt.settings_chain, chain_label);
     }
+}
+
+void app_jt_ui_debug_softap(bool start)
+{
+    if (start == s_jt.softap_on) {
+        ESP_LOGI(JT_UI_TAG, "debug softap state already start=%d", (int)start);
+        return;
+    }
+    jt_show_softap(start);
+}
+
+void app_jt_ui_debug_chain_test(void)
+{
+    jt_run_chain_test(NULL);
+}
+
+void app_jt_ui_debug_ap_state(void)
+{
+    wifi_mode_t mode = WIFI_MODE_MAX;
+    esp_err_t err = esp_wifi_get_mode(&mode);
+    ESP_LOGI(JT_UI_TAG, "ap state: err=0x%x mode=%d ap_active=%d softap_page=%d",
+             (unsigned)err, (int)mode,
+             (int)((mode == WIFI_MODE_AP || mode == WIFI_MODE_APSTA) &&
+                   s_jt.softap_on),
+             (int)s_jt.softap_on);
 }
 
 static void jt_select_server(lv_event_t *e)
@@ -2082,6 +2146,8 @@ void app_jt_ui_init(void)
     s_jt.server_official = true;
     snprintf(s_jt.device_id, sizeof(s_jt.device_id), "%s",
              jt_client_get_terminal_id());
+    ESP_LOGI(JT_UI_TAG, "device id=%s source=%s", s_jt.device_id,
+             jt_client_terminal_id_source());
     jt_hide_legacy_ui();
 
     s_jt.root = lv_obj_create(lv_layer_top());
