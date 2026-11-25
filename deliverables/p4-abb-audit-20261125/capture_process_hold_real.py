@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Capture timestamped UART proof that real confirm entry stays on page 4.
 
-Sequence: freeze 0 -> page 3 -> confirm -> repeated read-only screen/status
-queries over >10 seconds. `page 4` is intentionally not used because it sets
-the debug freeze flag and would not prove real no-fake-jump behaviour.
+Sequence: freeze 0 -> page 2 (home starts camera/finder) -> confirm -> repeated
+read-only screen/status queries over >10 seconds. `page 4` is intentionally not
+used because it sets the debug freeze flag and would not prove real no-fake-jump
+behaviour.
 """
 
 import argparse
@@ -64,11 +65,37 @@ def main():
             emit("CAPTURE_END")
             return
         emit("READY_CONFIRMED " + ready_buffer.decode("utf-8", "replace").strip())
-        for cmd in (b"freeze 0\r", b"shutter\r"):
+        for cmd in (b"freeze 0\r", b"page 2\r"):
             ser.write(cmd)
             ser.flush()
             emit("UART_TX " + cmd.decode("ascii").strip())
-            time.sleep(6.0 if cmd == b"shutter\r" else 0.5)
+            time.sleep(0.5)
+
+        # Wait until the camera stream and the first preview frame are ready;
+        # shutter/confirm are intentionally gated on both in the firmware.
+        finder_deadline = time.monotonic() + 20.0
+        finder_buffer = b""
+        finder_ready = False
+        while time.monotonic() < finder_deadline:
+            ser.write(b"status\r")
+            ser.flush()
+            emit("UART_TX finder readiness status")
+            probe_deadline = time.monotonic() + 0.8
+            while time.monotonic() < probe_deadline:
+                chunk = ser.read(256)
+                if chunk:
+                    finder_buffer += chunk
+                    if b"stream=1 frame=1" in finder_buffer:
+                        finder_ready = True
+                        break
+            if finder_ready:
+                break
+            time.sleep(0.4)
+        if not finder_ready:
+            emit("FINDER_READY_TIMEOUT")
+            emit("CAPTURE_END")
+            return
+        emit("FINDER_READY_CONFIRMED " + finder_buffer.decode("utf-8", "replace").strip())
 
         ser.write(b"status\r")
         ser.flush()

@@ -32,6 +32,10 @@ Screen 2 is the finder page. Because the real shutter/confirm path was gated
 by `stream_ready=0 frame_ready=0`, these logs do **not** satisfy ABB's
 request and are retained only as truthful failed-attempt evidence.
 
+This is not a proof of the process page. It is also evidence that camera live
+stream readiness is a prerequisite for the process-hold test; without a live
+finder frame the real shutter/confirm path cannot enter screen 4.
+
 `page 4` was deliberately not used for this proof: `app_jt_ui_debug_show_page(4)`
 sets `s_jt_process_frozen = true`, so a page-4 debug sample would not prove the
 real no-fake-jump behavior.
