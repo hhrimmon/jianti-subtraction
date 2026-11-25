@@ -77,6 +77,9 @@ BIND_SCAN JianTi-4000000000000202 409
 补 ABB msg521 G1：确认本机停在「自有服务器」`127.0.0.1:8000`（adb reverse 通），`adb shell am force-stop com.jianti.app` 后重开 App，home 屏右上显示「服务器已连接」（13），滑回锁屏显示服务端下发的 MEMO「重新考虑你的做法」与温度缺值 `---°C`（14）。证明自建服务地址持久化 + 重开后锁屏仍取服务端 MEMO 的完整链路（服务端 `/lockscreen` 当时返回该 MEMO，温度字段为 null）。
 对照：若停回官方服务器，`http://solve.mhq-ai.xyz:8000/lockscreen` 当时返回 503，锁屏显示 `---`，与「App 没调接口」无关。
 
+### 15_g2_health_raw_0210_0310.txt
+补 ABB msg579 / NYX msg581 G2：把 02:05 与 03:10 两次生产验证日志的 `/health` 验证行**原文**落库。v92_.log（mtime 02:05:34）A1 行 `model_connected=True test_mode=True`；v93_.log（mtime 03:10:17）A1 行 `model_connected=True test_mode=True`。02:55 落在两次 True 读数之间，说明当时仍是 test_mode，mock 答案与上传照片无关，非 App 发错图/串题。注意：这是验证日志原文行，不是连续每分钟采样；03:10 恰在 v9.3 部署当口，但该日志 A1 仍为 True。事后查询生产 `/health` = v9.3.0 `test_mode:false`。
+
 ## SHA256
 e666f66d6c4b25c8a3fa587f300e5bbd3218a4c3e987b7944446111f45213f5b  01_realcamera_decoded.png
 ddf05ea613b30114ba3c4771e96b38d7ed05d5043ddb0b5476beb610bf683b50  02_bindscan_201.py
@@ -92,3 +95,4 @@ b3159c9c5e4d19825ea342a611c49b22567d1ac068de9fdb13606b37e1243e51  11_lockscreen_
 0e4732a921e1d75c762a8c58a198d0a0d4b426693dae3bf205c67815d0b3f74a  12_server_persist_after_restart.png
 e44981b47b45ece66304e0171550928f2bf8a625c5e2f25fb8ed723232e1351c  13_server_connected_after_restart.png
 cfde75c2e9d7a56172f595b293c952c664aafa690b5de9d9d23bd9b5b3661b5d9  14_lockscreen_memo_after_restart.png
+ca86809091f1aa69fcd800053c3f378e63ba7129493643043750dd86350ecea2  15_g2_health_raw_0210_0310.txt

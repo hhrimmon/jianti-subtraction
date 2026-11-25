@@ -1,0 +1,19 @@
+﻿# G2 evidence: production /health raw verification lines (02:05 v9.2 / 03:10 v9.3.0)
+# Source logs (verbatim, no modification): D:\AItools\projects\jt2.0\_work\dsh-verify-20261116\v9-4batch\v92_.log and v93_.log
+# Log mtimes: v92_.log 2026-11-25 02:05:34 ; v93_.log 2026-11-25 03:10:17 (local Asia/Shanghai)
+
+===== v92_.log =====
+======================================================================
+A. 公共端点（无需鉴权）
+[PASS] A1 GET /health model_connected=True test_mode=True
+[PASS] A2 GET /lockscreen {'city': '', 'temperature': None, 'memo': '数到5，再试一次'}
+
+===== v93_.log =====
+======================================================================
+A. 公共端点（无需鉴权）
+[PASS] A1 GET /health model_connected=True test_mode=True
+[PASS] A2 GET /lockscreen {'city': '', 'temperature': None, 'memo': '先做好其他事'}
+
+# Interpretation: 02:55 lies between the 02:05 v9.2 A1 reading (test_mode=True) and the 03:10 v9.3.0 A1 reading (test_mode=True).
+# caveats: these are verification-run A1 lines, not a continuous hourly trace; 03:10 coincides with the v9.3 deployment window and does not by itself prove every intermediate instant.
+# current production /health (queried after the incident) = version 9.3.0 test_mode=false.
