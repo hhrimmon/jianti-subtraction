@@ -274,7 +274,7 @@ static lv_color_t jt_ink(void)
 static void jt_pointer_cb(lv_event_t *e);
 static void jt_set_finder_state(jt_finder_state_t state);
 static void jt_go_settings(lv_event_t *e);
-static void jt_go_settings(lv_event_t *e);
+static void jt_go_idea(lv_event_t *e);
 
 static lv_color_t jt_paper(void)
 {
@@ -991,6 +991,9 @@ void app_jt_ui_debug_show_page(int page)
     if (page == JT_SCREEN_HOME) {
         jt_go_finder(NULL);
     }
+    if (page == JT_SCREEN_IDEA) {
+        jt_go_idea(NULL);
+    }
     if (page == JT_SCREEN_SETTINGS) {
         ESP_LOGI(JT_UI_TAG, "debug settings: network_ready=%d",
                  (int)jt_client_network_ready());
@@ -1101,6 +1104,19 @@ static void jt_set_finder_state(jt_finder_state_t state)
 static void jt_go_idea(lv_event_t *e)
 {
     (void)e;
+    const jt_question_t *question = jt_current_question();
+    const jt_business_solve_t *solve = jt_business_solve_cached();
+    if (question) {
+        jt_business_card_t card = jt_business_cards_refresh(
+            question->question_id,
+            solve && solve->job_id[0] ? solve->job_id : question->job_id);
+        ESP_LOGI(JT_UI_TAG, "idea cards refresh: result=%d balance=%d unlocked=%d",
+                 (int)card.result, card.balance, (int)card.unlocked);
+        if (card.result == JT_RESULT_OK) {
+            s_jt.answer_opened[s_jt.question_index] = card.unlocked;
+            jt_update_cards();
+        }
+    }
     jt_show_screen(JT_SCREEN_IDEA);
 }
 
@@ -1118,18 +1134,45 @@ static void jt_use_card(lv_event_t *e)
     (void)e;
     const jt_question_t *question = jt_current_question();
     const jt_business_solve_t *solve = jt_business_solve_cached();
-    if (jt_card_balance() == 0) {
+    const char *job_id;
+    jt_business_card_t refreshed;
+    jt_business_card_t card;
+    if (!question) {
+        return;
+    }
+    job_id = solve && solve->job_id[0] ? solve->job_id : question->job_id;
+    refreshed = jt_business_cards_refresh(
+        question->question_id,
+        job_id);
+    ESP_LOGI(JT_UI_TAG, "use card refresh: result=%d balance=%d unlocked=%d",
+             (int)refreshed.result, refreshed.balance, (int)refreshed.unlocked);
+    if (refreshed.result == JT_RESULT_OK && refreshed.unlocked) {
+        s_jt.answer_opened[s_jt.question_index] = true;
+        jt_update_cards();
+        jt_go_result(e);
+        return;
+    }
+    if (refreshed.result == JT_RESULT_OK && refreshed.balance <= 0 &&
+        !refreshed.can_deduct) {
         jt_show_screen(JT_SCREEN_CLAIM);
         return;
     }
-    if (question) {
-        jt_business_card_t card = jt_business_answer_unlock(
-            question->question_id, "",
-            solve && solve->job_id[0] ? solve->job_id : question->job_id);
-        if (card.result == JT_RESULT_OK) {
-            jt_update_cards();
+    /* A card balance means the answer must be unlocked now. A stale or failed
+     * refresh must never turn the primary action into a claim-page shortcut. */
+    card = jt_business_answer_unlock(question->question_id, "", job_id);
+    ESP_LOGI(JT_UI_TAG, "unlock card: result=%d http=%d balance=%d can_deduct=%d",
+             (int)card.result, card.http_status, card.balance, (int)card.can_deduct);
+    if (card.result != JT_RESULT_OK) {
+        ESP_LOGW(JT_UI_TAG, "unlock card failed: %s",
+                 card.message[0] ? card.message : "unknown");
+        if (card.http_status == 402 || (card.balance <= 0 && !card.can_deduct)) {
+            jt_show_screen(JT_SCREEN_CLAIM);
         }
+        jt_update_cards();
+        return;
     }
+    s_jt.answer_opened[s_jt.question_index] = true;
+    jt_update_cards();
     jt_go_result(e);
 }
 

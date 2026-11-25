@@ -656,3 +656,13 @@
 - 串口验证：`D:\AItools\projects\jt2.0\_work\monitor_idea_card_dup_fix.log`，ELF SHA256 `f78a49456...`，UI ready，Wi-Fi 获取 IP，无崩溃。
 - PC 摄像头实拍：`D:\AItools\projects\jt2.0\_work\ideacardfix_05_dupfix2.png`，第 5 屏右上角只剩一个“解题卡 5张”，重复已消除。
 
+### 2026-11-25 NYX 606：使用解题卡流程修正
+- 问题：点第 5 屏右上角“解题卡”误进预支/申请页。根因是 `s_cards` 初始为零但指针有效，`jt_card_balance()` 读到余额 0，未先按 A3 `/cards/check` 刷新当前题状态。
+- 修复：
+  - `jt_go_idea()` 进入思路页时按当前 `question_id/job_id` 调 `jt_business_cards_refresh()`，按 A3 返回更新缓存与解锁态。
+  - `jt_use_card()` 每次先 A3 查卡；已解锁直接进结果页；确认余额 <=0 才进领取页；否则调用 A4 `jt_business_answer_unlock()` 扣卡看答案。A4 返回 402/余额<=0 时才转领取页，其他失败留在思路页。
+  - debug `page 5` 走 `jt_go_idea()`，便于板端复现真实进入路径。
+- 编译通过：`D:\AItools\projects\jt2.0\_work\build_card_flow_fix3.log`，固件 `0xb17f20`，app 分区剩余 `0xe8200`（8%）。
+- 烧录通过：`D:\AItools\projects\jt2.0\_work\flash_card_flow_fix3.log` 与 `flash_card_flow_fix3_reflash.log`，`Hash of data verified`。
+- 说明：复测串口时 COM4 被另一个调试进程占用，`monitor_card_flow_final.log` 记录 `PermissionError(13)`，本轮不拿该文件当通过证据；PC 实拍 `cardflowfix_05_after.png` 确认第 5 屏仍正常显示一个解题卡。流程正确性以推送源码中的 A3/A4 分支为准，待 COM4 空闲后补抓串口。
+
