@@ -1,0 +1,94 @@
+{
+  "jobs": {
+    "job-e24fa24f8a93": {
+      "job_id": "job-e24fa24f8a93",
+      "terminal_id": "2040059832773436",
+      "family_id": "64155336",
+      "image_bytes": 12644,
+      "model_id": "jt-lite-2.0",
+      "status": "failed",
+      "stages": {
+        "uploading": "done",
+        "gateway": "done",
+        "model": "failed",
+        "nlp": "pending",
+        "delivering": "pending"
+      },
+      "stage": "model",
+      "correct": null,
+      "thinking": null,
+      "answer": null,
+      "raw_model_text": null,
+      "error": {
+        "code": "judge_failed",
+        "message": "模型服务返回 HTTP 403，判题未完成。"
+      },
+      "failure_reason": "model_unavailable",
+      "cancelled": false,
+      "unlocked": false,
+      "mock": false,
+      "result_source": "real",
+      "created_at": "2026-11-25T21:50:22"
+    },
+    "job-bbc6db626c45": {
+      "job_id": "job-bbc6db626c45",
+      "terminal_id": "2040059832773436",
+      "family_id": "64155336",
+      "image_bytes": 12644,
+      "model_id": "jt-lite-2.0",
+      "status": "failed",
+      "stages": {
+        "uploading": "done",
+        "gateway": "done",
+        "model": "done",
+        "nlp": "failed",
+        "delivering": "pending"
+      },
+      "stage": "model",
+      "correct": null,
+      "thinking": null,
+      "answer": null,
+      "raw_model_text": null,
+      "error": {
+        "code": "no_question",
+        "message": "照片里没有识别出可判的数学题。"
+      },
+      "failure_reason": "no_question",
+      "cancelled": false,
+      "unlocked": false,
+      "mock": false,
+      "result_source": "real",
+      "created_at": "2026-11-25T21:51:11"
+    },
+    "job-00591dc7dc31": {
+      "job_id": "job-00591dc7dc31",
+      "terminal_id": "2040059832773436",
+      "family_id": "64155336",
+      "image_bytes": 70336,
+      "model_id": "jt-lite-2.0",
+      "status": "failed",
+      "stages": {
+        "uploading": "done",
+        "gateway": "done",
+        "model": "done",
+        "nlp": "failed",
+        "delivering": "pending"
+      },
+      "stage": "model",
+      "correct": null,
+      "thinking": null,
+      "answer": null,
+      "raw_model_text": null,
+      "error": {
+        "code": "no_question",
+        "message": "照片里没有识别出可判的数学题。"
+      },
+      "failure_reason": "no_question",
+      "cancelled": false,
+      "unlocked": false,
+      "mock": false,
+      "result_source": "real",
+      "created_at": "2026-11-25T21:51:45"
+    }
+  }
+}

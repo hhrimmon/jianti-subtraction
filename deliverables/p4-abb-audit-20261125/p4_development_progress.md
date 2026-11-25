@@ -1,5 +1,15 @@
 # P4 开发进度记录
 
+## 2026-11-25 9080 纠错：/solve 上传鉴权与全流程断点推进
+
+- 纠正上一条分类：`jt_client.h` 枚举是 `OK=0`、`NETWORK_ERROR=1`、`HTTP_ERROR=2`、`SERVER_ERROR=3`、`TIMEOUT=4`；`p4_prd_flow_wait_ready2.log` 中的 `result=2` 实际是 `JT_RESULT_HTTP_ERROR`，不是 server error。
+- 服务端本地复现：裸 `POST http://127.0.0.1:8000/solve`（只有 `X-Terminal-Id`/`Content-Type`/`Idempotency-Key`）返回 `401 {"error":{"code":"unauthorized","message":"缺少 Authorization: Bearer token。"}}`；`gateway.py` 的 `/solve` 走 `_auth_user()`，测试模式不豁免 Bearer 鉴权。
+- 根因：固件 `jt_client.c` 的 `JT_AUTH_TOKEN` 默认为空，`jt_http_perform()` 仅在 token 非空时发送 `Authorization: Bearer ...`。
+- 修复：从当前家庭账号登录取得会话 token 并注入 `JT_AUTH_TOKEN`，同时给 `/solve` 上传/轮询的非 2xx 分支增加 `status` 与响应体日志；编译通过 `build_auth_token_fix.log`，固件 `0xb187d0`，app 分区剩余 8%；刷机通过 `flash_auth_token_fix.log`。
+- 真机复跑：`p4_auth_fix_shutter.log` 中 `PHOTO011.jpg size=70336`、`submit photo: jpeg_size=70336`、`solve async start`，随后 `solve done: result=3 questions=0`，无重启。
+- 服务端证据：`solve_sessions.json` 新增 `job-00591dc7dc31`，`image_bytes=70336`，`failure_reason=no_question`，证明上传鉴权已打通、图片已被网关接收；当前断点推进为模型未识别出可判数学题，属于图片内容/模型识别层，不再是 HTTP 接入层。
+- 本轮另有一次 readiness 过早触发的历史快门崩溃（相机首帧未就绪时发 `shutter`），板子自动重启后恢复正常；随后按首帧就绪流程复跑成功，不作为本次 `/solve` 诊断结论。
+
 ## 2026-11-25 NYX 639/640：就绪判断修复、全流程断点与审计补件
 
 - 按 639 修复快门取帧就绪判断：快门/确认按钮在 `camera_stream_ready=0` 时不取帧、不切页；取帧只从最新完成的 `preview_buffers[preview_write_index]` 复制；离开 finder 前 detach `lv_img` 数据源并停预览回调。

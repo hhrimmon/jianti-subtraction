@@ -1,0 +1,19 @@
+[0;32mI (58074) JT_UI: finder shutter -> process[0m
+shutter=done
+[0;32mI (58717) mipi_cam: PHOTO SAVED /storage/PICTURE/PHOTO011.jpg size=70336[0m
+[0;32mI (58717) mipi_cam: submit photo: jpeg_size=70336[0m
+[0;32mI (58720) mipi_cam: solve async start[0m
+[0;32mI (59222) mipi_cam: fps: 10.003575[0m
+[0;32mI (61614) mipi_cam: fps: 20.905545[0m
+[0;32mI (62884) mipi_cam: solve done: result=3 questions=0[0m
+[0;32mI (64028) mipi_cam: fps: 20.715222[0m
+[0;32mI (66428) mipi_cam: fps: 20.835677[0m
+[0;32mI (68812) mipi_cam: fps: 20.971756[0m
+[0;32mI (71211) mipi_cam: fps: 20.836007[0m
+[0;32mI (73611) mipi_cam: fps: 20.840358[0m
+[0;32mI (76010) mipi_cam: fps: 20.837753[0m
+[0;32mI (78410) mipi_cam: fps: 20.836641[0m
+[0;32mI (80809) mipi_cam: fps: 20.839941[0m
+[0;32mI (83209) mipi_cam: fps: 20.835981[0m
+[0;32mI (85608) mipi_cam: fps: 20.840254[0m
+[0;32mI (88008) mipi_cam: fps: 20.836355[0m

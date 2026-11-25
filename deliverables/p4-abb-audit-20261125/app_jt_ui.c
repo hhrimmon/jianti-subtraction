@@ -1027,8 +1027,10 @@ static void jt_finder_shutter(lv_event_t *e)
     if (s_jt.screen != JT_SCREEN_FINDER) {
         return;
     }
-    if (!camera_stream_ready) {
-        ESP_LOGW(JT_UI_TAG, "finder shutter ignored: camera not ready");
+    if (!camera_stream_ready || !preview_frame_ready) {
+        ESP_LOGW(JT_UI_TAG,
+                 "finder shutter ignored: stream_ready=%d frame_ready=%d",
+                 (int)camera_stream_ready, (int)preview_frame_ready);
         if (s_jt.finder_status) {
             lv_label_set_text(s_jt.finder_status, "摄像头启动中，请稍候");
         }
@@ -1071,8 +1073,10 @@ static void jt_finder_send(lv_event_t *e)
     if (s_jt.screen != JT_SCREEN_FINDER) {
         return;
     }
-    if (!camera_stream_ready) {
-        ESP_LOGW(JT_UI_TAG, "finder confirm ignored: camera not ready");
+    if (!camera_stream_ready || !preview_frame_ready) {
+        ESP_LOGW(JT_UI_TAG,
+                 "finder confirm ignored: stream_ready=%d frame_ready=%d",
+                 (int)camera_stream_ready, (int)preview_frame_ready);
         if (s_jt.finder_status) {
             lv_label_set_text(s_jt.finder_status, "摄像头启动中，请稍候");
         }

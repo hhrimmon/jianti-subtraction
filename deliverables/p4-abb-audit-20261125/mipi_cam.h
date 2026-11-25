@@ -31,6 +31,7 @@
 
 extern bool camera_running;
 extern volatile bool camera_stream_ready;
+extern volatile bool preview_frame_ready;
 
 /* 函数声明 */
 esp_err_t mipi_cam_init(void);          /* mipi_cam初始化 */

@@ -56,6 +56,13 @@ No new source files in this update; the listed changed sources are unchanged.
 - build_prd_flow_readyguard.log.txt and flash_prd_flow_readyguard.log.txt cover the camera readiness fix.
 - p4_prd_flow_wait_ready2.log.txt is the pushed-firmware-style serial capture: camera started,
   PHOTO008.jpg saved, JPEG submitted, solve callback returned result=2 questions=0, no reboot.
+  Correction: result=2 is JT_RESULT_HTTP_ERROR, not server_error (jt_client.h enum: 0/1/2/3/4).
 - p4_prd_flow_02_finder_20261125.png shows the live MIPI preview with a real paper question.
 - app_jt_ui.c/.h, main.c, mipi_cam.c and jt_business.c/.h are refreshed from the current firmware tree.
 - cardflowfix_05_after.png, ideacardfix_05_dupfix2.png and the finder photo are force-added despite *.png ignore.
+
+2026-11-25 /solve auth correction:
+- Bare POST /solve reproduced 401 unauthorized; firmware JT_AUTH_TOKEN was empty.
+- Injected current family session token and added HTTP error status/body logs; built build_auth_token_fix.log and flashed flash_auth_token_fix.log.
+- p4_auth_fix_shutter.log: PHOTO011.jpg 70336 bytes, solve async start, then result=3 questions=0.
+- Server job-00591dc7dc31 received image_bytes=70336 and failed with no_question; upload/auth path PASS, recognition/content remains.
