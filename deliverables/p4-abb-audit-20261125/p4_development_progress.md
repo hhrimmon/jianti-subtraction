@@ -648,3 +648,11 @@
 - 串口验证：`D:\AItools\projects\jt2.0\_work\monitor_gear_fix.log`，ELF SHA256 `74507779f...`，`JT_UI: JianTi v114 native-widget UI ready`，无重启/崩溃。
 - PC 摄像头实拍：`D:\AItools\projects\jt2.0\_work\gearfix_01_gear.png`，锁屏右上角可见清晰小齿轮，位置和形态与原型一致。
 
+### 2026-11-25 NYX 603：共5题屏解题卡重复
+- 问题：第 5 屏（共5题/思路）右上角“解题卡”重复渲染，一处来自原型底图静态图，另一处来自动态 `s_jt.idea_card` 标签。
+- 修复：`jt_add_prototype_backgrounds()` 的保留控件列表移除 `s_jt.idea_card`，原型底图继续绘制静态卡片，动态标签隐藏，避免同一位置画两遍。
+- 编译通过：`D:\AItools\projects\jt2.0\_work\build_idea_card_dup_fix.log`，固件 `0xb17a00`，app 分区剩余 `0xe8600`（8%）。
+- 烧录通过：`D:\AItools\projects\jt2.0\_work\flash_idea_card_dup_fix.log`，`Hash of data verified`。
+- 串口验证：`D:\AItools\projects\jt2.0\_work\monitor_idea_card_dup_fix.log`，ELF SHA256 `f78a49456...`，UI ready，Wi-Fi 获取 IP，无崩溃。
+- PC 摄像头实拍：`D:\AItools\projects\jt2.0\_work\ideacardfix_05_dupfix2.png`，第 5 屏右上角只剩一个“解题卡 5张”，重复已消除。
+

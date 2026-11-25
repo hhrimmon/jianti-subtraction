@@ -1507,7 +1507,7 @@ static void jt_add_prototype_backgrounds(void)
                         child == s_jt.lock_week || child == s_jt.lock_temp ||
                         child == s_jt.lock_memo ||
                         child == s_jt.process_bar_fill ||
-                        child == s_jt.idea_card || child == s_jt.idea_verdict ||
+                        child == s_jt.idea_verdict ||
                         child == s_jt.claim_balance || child == s_jt.claim_advanced ||
                         child == s_jt.claim_feedback;
             if (!keep) {
