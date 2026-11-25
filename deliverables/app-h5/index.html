@@ -12649,21 +12649,42 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
      拆出这一步是为了把「快门拍照」和「点对号发送」分开：快门只抓一帧暂存，
      对号再把暂存的那张发出去。以前两个钮都直接抓帧+发送，点对号就又拍一张，
      网关不通停在本屏时会变成「一直喀喀喀」。 */
+  /* 取景器看到的画面和拍照取到的画面必须是同一块区域。
+     取景器是 .finder-video 用 CSS object-fit:cover 铺满 .vf-view（横屏矩形），
+     cover 会按容器宽高比把视频溢出的部分裁掉；以前拍照却固定裁视频中间的 1:1 正方形，
+     两者裁切窗口不同，于是「取景框里框到的内容，拍出来被裁掉」。
+     这里按 cover 的同一套几何算出源矩形，保证所见即所得。 */
+  function finderSourceRect(v){
+    var vw = v.videoWidth, vh = v.videoHeight;
+    var cw = v.clientWidth || 0, ch = v.clientHeight || 0;
+    if (!vw || !vh) return null;
+    if (!cw || !ch) { /* 拿不到容器尺寸时退回整幅画面，至少不丢内容 */
+      return { sx:0, sy:0, sw:vw, sh:vh, outW:vw, outH:vh };
+    }
+    var contAsp = cw / ch, vidAsp = vw / vh, sw, sh;
+    if (vidAsp > contAsp) { sh = vh; sw = vh * contAsp; }   /* 视频比容器宽：左右裁 */
+    else { sw = vw; sh = vw / contAsp; }                    /* 视频比容器高：上下裁 */
+    var sx = (vw - sw) / 2, sy = (vh - sh) / 2;
+    var outW = Math.round(sw), outH = Math.round(sh);
+    var maxSide = 1600;                                      /* 控制上传体积，不放大 */
+    if (Math.max(outW, outH) > maxSide) {
+      var k = maxSide / Math.max(outW, outH);
+      outW = Math.round(outW * k); outH = Math.round(outH * k);
+    }
+    return { sx:sx, sy:sy, sw:sw, sh:sh, outW:outW, outH:outH };
+  }
   function grabFinderFrame(cb){
     if (!finderActive()) { openSystemCamera(); return; }
     var v = finderVideo;
-    var w = v.videoWidth, h = v.videoHeight;
+    var r = finderSourceRect(v);
+    if (!r) { cb(null); return; }
     /* 先按取景比例定好画布尺寸再画：画完再改 canvas.width/height 会把画布清空，
        抓出来是一张几 KB 的黑图 */
-    var side = Math.min(w, h);
     var canvas = document.createElement('canvas');
-    canvas.width = side; canvas.height = side;
+    canvas.width = r.outW; canvas.height = r.outH;
     var ctx = canvas.getContext('2d');
     if (!ctx) { cb(null); return; }
-    if (w !== h) { /* 非正方形画面裁中间正方形，别拉伸变形 */
-      var sx = (w - side) / 2, sy = (h - side) / 2;
-      ctx.drawImage(v, sx, sy, side, side, 0, 0, side, side);
-    } else ctx.drawImage(v, 0, 0, side, side);
+    ctx.drawImage(v, r.sx, r.sy, r.sw, r.sh, 0, 0, r.outW, r.outH);
     canvas.toBlob(function(blob){
       if (!blob) { cb(null); return; }
       var reader = new FileReader();
@@ -12680,14 +12701,12 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   function freezeFinderFrame(){
     var v = finderVideo, cv = document.getElementById('finderStill');
     if (!v || !cv || !finderActive()) return;
-    var w = v.videoWidth, h = v.videoHeight, side = Math.min(w, h);
-    cv.width = side; cv.height = side;
+    var r = finderSourceRect(v);
+    if (!r) return;
+    cv.width = r.outW; cv.height = r.outH;
     var ctx = cv.getContext('2d');
     if (!ctx) return;
-    if (w !== h) {
-      var sx = (w - side) / 2, sy = (h - side) / 2;
-      ctx.drawImage(v, sx, sy, side, side, 0, 0, side, side);
-    } else ctx.drawImage(v, 0, 0, side, side);
+    ctx.drawImage(v, r.sx, r.sy, r.sw, r.sh, 0, 0, r.outW, r.outH);
     cv.hidden = false;
     v.hidden = true;           /* 盖住并停掉实时画面观感，帧已定格在 canvas */
     var ok = document.getElementById('finderConfirm');
