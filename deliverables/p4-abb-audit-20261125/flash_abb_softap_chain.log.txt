@@ -1,0 +1,404 @@
+Adding "flash"'s dependency "all" to list of commands with default set of options.
+Executing action: all (aliases: build)
+Running ninja in directory D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build
+Executing "ninja all"...
+[1/4] C:\Windows\system32\cmd.exe /C "cd /D D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build && D:\AItools\projects\jt2.0\_work\esp32p4\idf_py\Scripts\python.exe D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/partition_table/check_sizes.py --offset 0x10000 partition --type app D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/partition_table/partition-table.bin D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/comprehensive_routine_70inch_mipilcd.bin"
+
+comprehensive_routine_70inch_mipilcd.bin binary size 0xb17040 bytes. Smallest app partition is 0xc00000 bytes. 0xe8fc0 bytes (8%) free.
+
+
+[2/4] Performing build step for 'bootloader'
+
+[1/1] C:\Windows\system32\cmd.exe /C "cd /D D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build\bootloader && D:\AItools\projects\jt2.0\_work\esp32p4\idf_py\Scripts\python.exe D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/partition_table/check_sizes.py --offset 0x10000 bootloader 0x2000 D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/bootloader/bootloader.bin"
+
+
+Bootloader binary size 0x6400 bytes. 0x7c00 bytes (55%) free.
+
+
+
+[3/4] No install step for 'bootloader'
+
+[4/4] Completed 'bootloader'
+
+Executing action: flash
+Running ninja in directory D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build
+Executing "ninja flash"...
+[1/5] C:\Windows\system32\cmd.exe /C "cd /D D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build && D:\AItools\projects\jt2.0\_work\esp32p4\idf_py\Scripts\python.exe D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/partition_table/check_sizes.py --offset 0x10000 partition --type app D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/partition_table/partition-table.bin D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/comprehensive_routine_70inch_mipilcd.bin"
+
+comprehensive_routine_70inch_mipilcd.bin binary size 0xb17040 bytes. Smallest app partition is 0xc00000 bytes. 0xe8fc0 bytes (8%) free.
+
+
+[2/5] Performing build step for 'bootloader'
+
+[1/1] C:\Windows\system32\cmd.exe /C "cd /D D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build\bootloader && D:\AItools\projects\jt2.0\_work\esp32p4\idf_py\Scripts\python.exe D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/partition_table/check_sizes.py --offset 0x10000 bootloader 0x2000 D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/bootloader/bootloader.bin"
+
+
+Bootloader binary size 0x6400 bytes. 0x7c00 bytes (55%) free.
+
+
+
+[3/5] No install step for 'bootloader'
+
+[4/5] Completed 'bootloader'
+
+[4/5] Running utility command for flash
+
+esptool --chip esp32p4 -p COM4 -b 460800 --before=default-reset --after=hard-reset write-flash --flash-mode dio --flash-freq 80m --flash-size 16MB 0x2000 bootloader/bootloader.bin 0x10000 partition_table/partition-table.bin 0x20000 comprehensive_routine_70inch_mipilcd.bin
+
+esptool v5.6.0
+
+Serial port COM4:
+
+Connecting....
+
+Connected to ESP32-P4 on COM4:
+
+Chip type:          ESP32-P4 (revision v3.2)
+
+Features:           Dual Core + LP Core, 400MHz
+
+Crystal frequency:  40MHz
+
+MAC:                80:f1:b2:d6:29:4a
+
+
+
+Uploading stub flasher...
+
+Running stub flasher...
+
+Stub flasher running.
+
+Changing baud rate to 460800...
+
+Changed.
+
+
+
+Configuring flash size...
+
+
+
+Writing 'bootloader/bootloader.bin' at 0x00002000...
+
+SHA digest in image updated.
+
+Flash will be erased from 0x00002000 to 0x00008fff...
+
+Compressed 25600 bytes to 15305...
+
+Writing at 0x00008400 ============================== 100.0% 14.95kB/14.95kB [0s] 
+
+Wrote 25600 bytes (15305 compressed) at 0x00002000 in 0.7 seconds (299.5 kbit/s).
+
+Verifying written data...
+
+Hash of data verified.
+
+
+
+Writing 'partition_table/partition-table.bin' at 0x00010000...
+
+Flash will be erased from 0x00010000 to 0x00010fff...
+
+Compressed 3072 bytes to 120...
+
+Writing at 0x00010c00 ============================== 100.0% 120B/120B [0s] 
+
+Wrote 3072 bytes (120 compressed) at 0x00010000 in 0.0 seconds (2234.1 kbit/s).
+
+Verifying written data...
+
+Hash of data verified.
+
+
+
+Writing 'comprehensive_routine_70inch_mipilcd.bin' at 0x00020000...
+
+Flash will be erased from 0x00020000 to 0x00b37fff...
+
+Compressed 11628608 bytes to 2217178...
+
+Writing at 0x0002c997                                  0.7% 16.00kB/2.11MB [0s] 
+
+Writing at 0x0003d7b7                                  1.5% 32.00kB/2.11MB [0s] 
+
+Writing at 0x0004cab0 >                                2.2% 48.00kB/2.11MB [1s] 
+
+Writing at 0x0005a731 >                                3.0% 64.00kB/2.11MB [1s] 
+
+Writing at 0x001898f6 =                                3.7% 80.00kB/2.11MB [2s] 
+
+Writing at 0x0019dcd5 =                                4.4% 96.00kB/2.11MB [10s] 
+
+Writing at 0x001b2477 =>                               5.2% 112.00kB/2.11MB [11s] 
+
+Writing at 0x001c9137 =>                               5.9% 128.00kB/2.11MB [11s] 
+
+Writing at 0x001de81e =>                               6.7% 144.00kB/2.11MB [12s] 
+
+Writing at 0x001ede9d ==                               7.4% 160.00kB/2.11MB [13s] 
+
+Writing at 0x002021b1 ==                               8.1% 176.00kB/2.11MB [13s] 
+
+Writing at 0x00212a97 ==>                              8.9% 192.00kB/2.11MB [14s] 
+
+Writing at 0x0022507b ==>                              9.6% 208.00kB/2.11MB [14s] 
+
+Writing at 0x00236986 ===                             10.3% 224.00kB/2.11MB [15s] 
+
+Writing at 0x0024943b ===                             11.1% 240.00kB/2.11MB [15s] 
+
+Writing at 0x0025ae99 ===>                            11.8% 256.00kB/2.11MB [16s] 
+
+Writing at 0x0026c594 ===>                            12.6% 272.00kB/2.11MB [17s] 
+
+Writing at 0x0027616d ===>                            13.3% 288.00kB/2.11MB [17s] 
+
+Writing at 0x0027f790 ====                            14.0% 304.00kB/2.11MB [18s] 
+
+Writing at 0x0028b248 ====                            14.8% 320.00kB/2.11MB [18s] 
+
+Writing at 0x00295f3f ====>                           15.5% 336.00kB/2.11MB [19s] 
+
+Writing at 0x002a0c81 ====>                           16.3% 352.00kB/2.11MB [19s] 
+
+Writing at 0x002aa323 =====                           17.0% 368.00kB/2.11MB [19s] 
+
+Writing at 0x002b2ffd =====                           17.7% 384.00kB/2.11MB [20s] 
+
+Writing at 0x002bdd67 =====>                          18.5% 400.00kB/2.11MB [20s] 
+
+Writing at 0x002d811a =====>                          19.2% 416.00kB/2.11MB [21s] 
+
+Writing at 0x002e6b00 =====>                          20.0% 432.00kB/2.11MB [22s] 
+
+Writing at 0x002ef1fd ======                          20.7% 448.00kB/2.11MB [22s] 
+
+Writing at 0x002f6bc6 ======                          21.4% 464.00kB/2.11MB [22s] 
+
+Writing at 0x002fdb6a ======>                         22.2% 480.00kB/2.11MB [23s] 
+
+Writing at 0x00308345 ======>                         22.9% 496.00kB/2.11MB [23s] 
+
+Writing at 0x003120d1 =======                         23.6% 512.00kB/2.11MB [24s] 
+
+Writing at 0x0031b6b8 =======                         24.4% 528.00kB/2.11MB [24s] 
+
+Writing at 0x0032d869 =======>                        25.1% 544.00kB/2.11MB [24s] 
+
+Writing at 0x0035ded7 =======>                        25.9% 560.00kB/2.11MB [25s] 
+
+Writing at 0x003a7a9c =======>                        26.6% 576.00kB/2.11MB [26s] 
+
+Writing at 0x003c711d ========                        27.3% 592.00kB/2.11MB [28s] 
+
+Writing at 0x003ffcc2 ========                        28.1% 608.00kB/2.11MB [29s] 
+
+Writing at 0x004207fe ========>                       28.8% 624.00kB/2.11MB [31s] 
+
+Writing at 0x0043c899 ========>                       29.6% 640.00kB/2.11MB [32s] 
+
+Writing at 0x00465be4 =========                       30.3% 656.00kB/2.11MB [33s] 
+
+Writing at 0x004a7ddd =========                       31.0% 672.00kB/2.11MB [34s] 
+
+Writing at 0x004c0db3 =========>                      31.8% 688.00kB/2.11MB [35s] 
+
+Writing at 0x00505a74 =========>                      32.5% 704.00kB/2.11MB [35s] 
+
+Writing at 0x0053c01b =========>                      33.3% 720.00kB/2.11MB [36s] 
+
+Writing at 0x0057b824 ==========                      34.0% 736.00kB/2.11MB [37s] 
+
+Writing at 0x005aab5b ==========                      34.7% 752.00kB/2.11MB [38s] 
+
+Writing at 0x005e12e1 ==========>                     35.5% 768.00kB/2.11MB [38s] 
+
+Writing at 0x00605a98 ==========>                     36.2% 784.00kB/2.11MB [39s] 
+
+Writing at 0x00636d3f ===========                     36.9% 800.00kB/2.11MB [39s] 
+
+Writing at 0x006fb174 ===========                     37.7% 816.00kB/2.11MB [40s] 
+
+Writing at 0x007b3521 ===========>                    38.4% 832.00kB/2.11MB [43s] 
+
+Writing at 0x008004a5 ===========>                    39.2% 848.00kB/2.11MB [45s] 
+
+Writing at 0x0082844f ===========>                    39.9% 864.00kB/2.11MB [46s] 
+
+Writing at 0x0087496c ============                    40.6% 880.00kB/2.11MB [47s] 
+
+Writing at 0x0088ac79 ============                    41.4% 896.00kB/2.11MB [48s] 
+
+Writing at 0x008c48ee ============>                   42.1% 912.00kB/2.11MB [48s] 
+
+Writing at 0x008fad0e ============>                   42.9% 928.00kB/2.11MB [49s] 
+
+Writing at 0x0091c0d5 =============                   43.6% 944.00kB/2.11MB [49s] 
+
+Writing at 0x0093bb1a =============                   44.3% 960.00kB/2.11MB [50s] 
+
+Writing at 0x00943ad0 =============>                  45.1% 976.00kB/2.11MB [50s] 
+
+Writing at 0x0094c7cb =============>                  45.8% 992.00kB/2.11MB [50s] 
+
+Writing at 0x009564ef =============>                  46.6% 1008.00kB/2.11MB [51s] 
+
+Writing at 0x00961462 ==============                  47.3% 1.00MB/2.11MB [51s] 
+
+Writing at 0x0096e280 ==============                  48.0% 1.02MB/2.11MB [51s] 
+
+Writing at 0x0097b5c8 ==============>                 48.8% 1.03MB/2.11MB [52s] 
+
+Writing at 0x00989c76 ==============>                 49.5% 1.05MB/2.11MB [52s] 
+
+Writing at 0x0099dad6 ===============                 50.2% 1.06MB/2.11MB [53s] 
+
+Writing at 0x009a4f6a ===============                 51.0% 1.08MB/2.11MB [53s] 
+
+Writing at 0x009a94d4 ===============>                51.7% 1.09MB/2.11MB [53s] 
+
+Writing at 0x009ad8b7 ===============>                52.5% 1.11MB/2.11MB [54s] 
+
+Writing at 0x009b1d57 ===============>                53.2% 1.12MB/2.11MB [54s] 
+
+Writing at 0x009b61de ================                53.9% 1.14MB/2.11MB [54s] 
+
+Writing at 0x009ba64f ================                54.7% 1.16MB/2.11MB [55s] 
+
+Writing at 0x009beb98 ================>               55.4% 1.17MB/2.11MB [55s] 
+
+Writing at 0x009c3114 ================>               56.2% 1.19MB/2.11MB [56s] 
+
+Writing at 0x009c75d1 =================               56.9% 1.20MB/2.11MB [56s] 
+
+Writing at 0x009cbabb =================               57.6% 1.22MB/2.11MB [56s] 
+
+Writing at 0x009d1e40 =================>              58.4% 1.23MB/2.11MB [57s] 
+
+Writing at 0x009d6b9d =================>              59.1% 1.25MB/2.11MB [57s] 
+
+Writing at 0x009dd629 =================>              59.9% 1.27MB/2.11MB [57s] 
+
+Writing at 0x009ef1b0 ==================              60.6% 1.28MB/2.11MB [58s] 
+
+Writing at 0x009f4c6e ==================              61.3% 1.30MB/2.11MB [58s] 
+
+Writing at 0x009fb422 ==================>             62.1% 1.31MB/2.11MB [58s] 
+
+Writing at 0x00a014c3 ==================>             62.8% 1.33MB/2.11MB [59s] 
+
+Writing at 0x00a07c49 ===================             63.6% 1.34MB/2.11MB [59s] 
+
+Writing at 0x00a0dc0c ===================             64.3% 1.36MB/2.11MB [1:00] 
+
+Writing at 0x00a13a39 ===================>            65.0% 1.38MB/2.11MB [1:00] 
+
+Writing at 0x00a19c26 ===================>            65.8% 1.39MB/2.11MB [1:00] 
+
+Writing at 0x00a1f923 ===================>            66.5% 1.41MB/2.11MB [1:01] 
+
+Writing at 0x00a256c0 ====================            67.2% 1.42MB/2.11MB [1:01] 
+
+Writing at 0x00a2b7b0 ====================            68.0% 1.44MB/2.11MB [1:01] 
+
+Writing at 0x00a3116c ====================>           68.7% 1.45MB/2.11MB [1:02] 
+
+Writing at 0x00a3643c ====================>           69.5% 1.47MB/2.11MB [1:02] 
+
+Writing at 0x00a3bbeb =====================           70.2% 1.48MB/2.11MB [1:03] 
+
+Writing at 0x00a40f4a =====================           70.9% 1.50MB/2.11MB [1:03] 
+
+Writing at 0x00a46714 =====================>          71.7% 1.52MB/2.11MB [1:03] 
+
+Writing at 0x00a4bc7e =====================>          72.4% 1.53MB/2.11MB [1:04] 
+
+Writing at 0x00a53af9 =====================>          73.2% 1.55MB/2.11MB [1:04] 
+
+Writing at 0x00a58cab ======================          73.9% 1.56MB/2.11MB [1:04] 
+
+Writing at 0x00a5eb31 ======================          74.6% 1.58MB/2.11MB [1:05] 
+
+Writing at 0x00a651a4 ======================>         75.4% 1.59MB/2.11MB [1:05] 
+
+Writing at 0x00a6c4b7 ======================>         76.1% 1.61MB/2.11MB [1:06] 
+
+Writing at 0x00a74102 =======================         76.9% 1.62MB/2.11MB [1:06] 
+
+Writing at 0x00a794ce =======================         77.6% 1.64MB/2.11MB [1:06] 
+
+Writing at 0x00a7fd46 =======================         78.3% 1.66MB/2.11MB [1:07] 
+
+Writing at 0x00a86b2c =======================>        79.1% 1.67MB/2.11MB [1:07] 
+
+Writing at 0x00a8cea6 =======================>        79.8% 1.69MB/2.11MB [1:07] 
+
+Writing at 0x00a93e08 ========================        80.5% 1.70MB/2.11MB [1:08] 
+
+Writing at 0x00a9ace0 ========================        81.3% 1.72MB/2.11MB [1:08] 
+
+Writing at 0x00aa104c ========================>       82.0% 1.73MB/2.11MB [1:08] 
+
+Writing at 0x00aa6ddb ========================>       82.8% 1.75MB/2.11MB [1:09] 
+
+Writing at 0x00aacb15 =========================       83.5% 1.77MB/2.11MB [1:09] 
+
+Writing at 0x00ab27e6 =========================       84.2% 1.78MB/2.11MB [1:10] 
+
+Writing at 0x00ab82e5 =========================       85.0% 1.80MB/2.11MB [1:10] 
+
+Writing at 0x00abe31c =========================>      85.7% 1.81MB/2.11MB [1:10] 
+
+Writing at 0x00ac3b76 =========================>      86.5% 1.83MB/2.11MB [1:11] 
+
+Writing at 0x00ac976f ==========================      87.2% 1.84MB/2.11MB [1:11] 
+
+Writing at 0x00acf65e ==========================      87.9% 1.86MB/2.11MB [1:11] 
+
+Writing at 0x00ad4be7 ==========================>     88.7% 1.88MB/2.11MB [1:12] 
+
+Writing at 0x00ada894 ==========================>     89.4% 1.89MB/2.11MB [1:12] 
+
+Writing at 0x00ae1612 ===========================     90.2% 1.91MB/2.11MB [1:13] 
+
+Writing at 0x00ae6a94 ===========================     90.9% 1.92MB/2.11MB [1:13] 
+
+Writing at 0x00aec22d ===========================     91.6% 1.94MB/2.11MB [1:13] 
+
+Writing at 0x00af278e ===========================>    92.4% 1.95MB/2.11MB [1:14] 
+
+Writing at 0x00af9a46 ===========================>    93.1% 1.97MB/2.11MB [1:14] 
+
+Writing at 0x00aff659 ============================    93.8% 1.98MB/2.11MB [1:14] 
+
+Writing at 0x00b05f26 ============================    94.6% 2.00MB/2.11MB [1:15] 
+
+Writing at 0x00b0da66 ============================>   95.3% 2.02MB/2.11MB [1:15] 
+
+Writing at 0x00b1435d ============================>   96.1% 2.03MB/2.11MB [1:15] 
+
+Writing at 0x00b1a6e0 =============================   96.8% 2.05MB/2.11MB [1:16] 
+
+Writing at 0x00b200ea =============================   97.5% 2.06MB/2.11MB [1:16] 
+
+Writing at 0x00b263b1 =============================   98.3% 2.08MB/2.11MB [1:17] 
+
+Writing at 0x00b2c99e =============================>  99.0% 2.09MB/2.11MB [1:17] 
+
+Writing at 0x00b3318d =============================>  99.8% 2.11MB/2.11MB [1:17] 
+
+Writing at 0x00b37040 ============================== 100.0% 2.11MB/2.11MB [1:17] 
+
+Wrote 11628608 bytes (2217178 compressed) at 0x00020000 in 78.0 seconds (1191.9 kbit/s).
+
+Verifying written data...
+
+Hash of data verified.
+
+
+
+Hard resetting via RTS pin...
+
+Done

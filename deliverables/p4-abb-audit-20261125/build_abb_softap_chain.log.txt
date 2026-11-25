@@ -1,0 +1,275 @@
+Executing action: all (aliases: build)
+Running ninja in directory D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build
+Executing "ninja all"...
+[1/9] Performing build step for 'bootloader'
+
+[1/1] C:\Windows\system32\cmd.exe /C "cd /D D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build\bootloader && D:\AItools\projects\jt2.0\_work\esp32p4\idf_py\Scripts\python.exe D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/partition_table/check_sizes.py --offset 0x10000 bootloader 0x2000 D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/bootloader/bootloader.bin"
+
+
+Bootloader binary size 0x6400 bytes. 0x7c00 bytes (55%) free.
+
+
+
+[2/9] No install step for 'bootloader'
+
+[3/9] Completed 'bootloader'
+
+[4/9] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_jt_ui.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:9:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+      |             ^~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+   64 | static bool check_game_over(void);
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1037:13: warning: 'jt_go_process' defined but not used [-Wunused-function]
+ 1037 | static void jt_go_process(lv_event_t *e)
+      |             ^~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:646:16: warning: 'jt_advanced_count' defined but not used [-Wunused-function]
+  646 | static uint8_t jt_advanced_count(void)
+      |                ^~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:569:18: warning: 'jt_create_head_icon_button' defined but not used [-Wunused-function]
+  569 | static lv_obj_t *jt_create_head_icon_button(lv_obj_t *parent, const lv_img_dsc_t *icon,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:483:18: warning: 'jt_create_symbol_button' defined but not used [-Wunused-function]
+  483 | static lv_obj_t *jt_create_symbol_button(lv_obj_t *parent, const char *symbol,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:334:25: warning: 'jt_font_memo' defined but not used [-Wunused-function]
+  334 | static const lv_font_t *jt_font_memo(void)
+      |                         ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:329:25: warning: 'jt_font_small' defined but not used [-Wunused-function]
+  329 | static const lv_font_t *jt_font_small(void)
+      |                         ^~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:324:25: warning: 'jt_font_lock_time' defined but not used [-Wunused-function]
+  324 | static const lv_font_t *jt_font_lock_time(void)
+
+      |                         ^~~~~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:319:25: warning: 'jt_font_lock_brand' defined but not used [-Wunused-function]
+
+  319 | static const lv_font_t *jt_font_lock_brand(void)
+
+      |                         ^~~~~~~~~~~~~~~~~~
+
+[5/9] Linking C static library esp-idf\main\libmain.a
+
+[6/9] Generating esp-idf/esp_system/ld/sections.ld
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/bt/host/nimble/Kconfig.in:1421: BT_NIMBLE_MESH_PROVISIONER: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/fatfs/Kconfig:230: FATFS_PRINT_LLI: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/fatfs/Kconfig:235: FATFS_PRINT_FLOAT: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/bootloader/Kconfig.projbuild:385: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/bootloader/Kconfig.projbuild:425: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/bt/common/Kconfig.in:131: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/bt/host/nimble/Kconfig.in:1016: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support\./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/openthread/Kconfig:106: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+
+NOTE: D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/esp_hosted\host\mcu/eh_host_mcu_transport\Kconfig.host.sdio:404: Trying to set symbol ESP_HOSTED_HOST_SDIO_RX_STREAMING_MODE to n, but it is currently selected by choice ESP_HOSTED_HOST_SDIO_RX_OPT. For setting it to n, set another choice symbol to y instead.
+
+Default value for ESP_HOSTED_HOST_CP_RESET_SETTLE_MS in sdkconfig is 500 but it is 1500 according to Kconfig.
+
+Using default value from sdkconfig (500).
+
+Default value for LV_MEM_SIZE_KILOBYTES in sdkconfig is 128 but it is 32 according to Kconfig.
+
+Using default value from sdkconfig (128).
+
+Default value for LV_DISP_DEF_REFR_PERIOD in sdkconfig is 20 but it is 30 according to Kconfig.
+
+Using default value from sdkconfig (20).
+
+Default value for LV_INDEV_DEF_READ_PERIOD in sdkconfig is 15 but it is 30 according to Kconfig.
+
+Using default value from sdkconfig (15).
+
+Default value for LV_FONT_MONTSERRAT_8 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_10 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_12 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_16 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_18 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_20 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_22 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_24 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_26 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_28 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_30 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_32 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_34 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_36 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_38 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_40 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_42 in sdkconfig is y but it is n according to Kconfig.
+
+Using default value from sdkconfig (y).
+
+Default value for LV_FONT_MONTSERRAT_44 in sdkconfig is y but it is n according to Kconfig.
+
+
+Using default value from sdkconfig (y).
+
+
+Default value for LV_FONT_MONTSERRAT_46 in sdkconfig is y but it is n according to Kconfig.
+
+
+Using default value from sdkconfig (y).
+
+
+Default value for LV_FONT_MONTSERRAT_48 in sdkconfig is y but it is n according to Kconfig.
+
+
+Using default value from sdkconfig (y).
+
+
+[7/9] Linking CXX executable comprehensive_routine_70inch_mipilcd.elf
+
+[8/9] Generating binary image from built executable
+
+esptool v5.6.0
+
+
+Creating ESP32-P4 image...
+
+
+Merged 3 ELF sections.
+
+
+Successfully created ESP32-P4 image.
+
+
+Generated D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/comprehensive_routine_70inch_mipilcd.bin
+
+[9/9] C:\Windows\system32\cmd.exe /C "cd /D D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build && D:\AItools\projects\jt2.0\_work\esp32p4\idf_py\Scripts\python.exe D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/partition_table/check_sizes.py --offset 0x10000 partition --type app D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/partition_table/partition-table.bin D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/comprehensive_routine_70inch_mipilcd.bin"
+
+comprehensive_routine_70inch_mipilcd.bin binary size 0xb17040 bytes. Smallest app partition is 0xc00000 bytes. 0xe8fc0 bytes (8%) free.
+
+
+
+
+Project build complete. To flash, run:
+ idf.py flash
+or
+ idf.py -p PORT flash
+or
+ python -m esptool --chip esp32p4 -b 460800 --before default-reset --after hard-reset write-flash --flash-mode dio --flash-size 16MB --flash-freq 80m 0x2000 _work\esp32p4\p4b\build\bootloader\bootloader.bin 0x10000 _work\esp32p4\p4b\build\partition_table\partition-table.bin 0x20000 _work\esp32p4\p4b\build\comprehensive_routine_70inch_mipilcd.bin
+or from the "D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build" directory
+ python -m esptool --chip esp32p4 -b 460800 --before default-reset --after hard-reset write-flash "@flash_args"
