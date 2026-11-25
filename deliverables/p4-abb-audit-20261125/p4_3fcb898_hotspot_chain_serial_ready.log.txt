@@ -1,0 +1,24 @@
+[0;32mI (331859) JT_UI: ap state: err=0x0 mode=1 ap_active=0 softap_page=0[0m
+ap-state=done
+[0;32mI (332380) eh_wifi: set_config iface=AP ssid="JianTi-2040059832773436" (23 bytes)[0m
+[0;32mI (332399) eh_wifi: rx RPC WifiEventNoArgs id=12[0m
+[0;32mI (332401) JT_UI: softap started: JianTi-2040059832773436[0m
+softap=1
+[0;32mI (332414) eh_wifi: rx RPC WifiEventNoArgs id=2[0m
+[0;32mI (332426) esp_wifi_remote: esp_wifi_internal_reg_rxcb: sta: 0x480b11fc[0m
+[0;32mI (332427) WIFI_APP: WiFi station connected to AP[0m
+[0;32mI (332441) eh_wifi: rx RPC WifiEventNoArgs id=13[0m
+[0;32mI (332456) eh_wifi: rx RPC WifiEventNoArgs id=12[0m
+[0;32mI (332860) JT_UI: ap state: err=0x0 mode=3 ap_active=1 softap_page=1[0m
+ap-state=done
+[0;32mI (333648) JT_CLIENT: internet probe http://www.baidu.com status=200 reachable=1[0m
+[0;32mI (333659) JT_CLIENT: server probe http://192.168.0.108:8000/lockscreen?device_id=2040059832773436 host=192.168.0.108:8000 status=200 reachable=1[0m
+[0;32mI (333665) JT_UI: chain test: wifi=1 internet=1 server=1[0m
+[0;32mI (333669) JT_UI: chain state: wifi_mode=3(APSTA=3) softap_page=1 wifi=1 internet=1 server=1[0m
+chain=done
+[0;33mW (333858) JT_UI: softap ap netif missing on stop[0m
+[0;32mI (333866) JT_UI: softap stopped: dhcps=0x103 mode_set=0x0 mode_now=1(STA=1) sta_restart=1[0m
+softap=0
+[0;32mI (333874) eh_wifi: rx RPC WifiEventNoArgs id=13[0m
+[0;32mI (334362) JT_UI: ap state: err=0x0 mode=1 ap_active=0 softap_page=0[0m
+ap-state=done

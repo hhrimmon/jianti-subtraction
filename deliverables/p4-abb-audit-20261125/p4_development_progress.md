@@ -1,5 +1,15 @@
 # P4 开发进度记录
 
+## 2026-11-25 3fcb898 热点/三段链路证据闭环
+
+- 在已推送的 `3fcb898` 固件上重新抓取热点启停和连通测试串口证据，原始日志：`p4_3fcb898_hotspot_chain_serial_ready.log.txt`。
+- 热点开启：`softap started: JianTi-2040059832773436`，随后 `ap state: err=0x0 mode=3 ap_active=1 softap_page=1`。
+- 三段链路：`internet probe http://www.baidu.com status=200 reachable=1`；`server probe http://192.168.0.108:8000/lockscreen?device_id=2040059832773436 host=192.168.0.108:8000 status=200 reachable=1`；最终结果 `chain test: wifi=1 internet=1 server=1`。
+- 热点退出：`softap stopped: dhcps=0x103 mode_set=0x0 mode_now=1(STA=1) sta_restart=1`，最终 `ap state: err=0x0 mode=1 ap_active=0 softap_page=0`，证明 AP/DHCP 已停且切回 STA。
+- 原始日志保留一条 `softap ap netif missing on stop` 警告；该警告未影响实际停热点结果，后续如需要可单独清理 netif 句柄。
+- 右上角齿轮证据图片已纳入版本控制：`gear_image_button_preview.png`、`gearfix_01_gear.png`；两者此前受 `.gitignore` 的 `*.png` 规则影响未跟踪，本次强制加入，SHA256SUMS 引用可闭环。
+- 本轮只补证据归档，不修改固件源码；NYX 606 的解题卡流程仍以 `3fcb898` 推送源码为准，之前失败的串口抓取不作为通过证据。
+
 ## 2026-11-25 tour12 处理页冻结与八页重抓
 
 - 继续修复 tour11 的第 4 屏问题：根因是 `jt_process_timer_cb()` 在抓图等待期间自动从 `JT_SCREEN_PROCESS` 跳到 `JT_SCREEN_IDEA`，导致处理页抓成思路页。

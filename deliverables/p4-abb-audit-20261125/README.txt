@@ -44,3 +44,10 @@ No new source files in this update; the listed changed sources are unchanged.
 - comprehensive_routine_70inch_mipilcd.bin (final gear-fix firmware)
 - gearfix_01_gear.png (PC-camera board photo showing corrected gear)
 - SHA256SUMS.txt includes every file in this bundle; SHA256SUMS_SELF.txt records SHA256SUMS.txt itself.
+
+2026-11-25 pushed-firmware evidence closure:
+- p4_3fcb898_hotspot_chain_serial_ready.log.txt captures hotspot on/off, independent Internet probe,
+  server probe with host=..., and final chain test on pushed commit 3fcb898.
+- gear_image_button_preview.png and gearfix_01_gear.png are force-added despite the repository
+  *.png ignore rule, so every referenced evidence file is present in this commit.
+- p4_development_progress.md records the exact serial lines and the non-blocking softap netif warning.
