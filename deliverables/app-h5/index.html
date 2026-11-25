@@ -13390,7 +13390,12 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     if (!phone || !pwd) { showFormFeedback('先填手机号和密码。'); return; }
     if (!/^\d{6}$/.test(adminPwd)) { showFormFeedback('管理员密码还没输满。'); return; }
     document.getElementById('registerBtn').disabled = true;
-    api.register({ phone:phone, password:pwd, admin_password:adminPwd, code:code }).then(function(data){
+    /* 短信验证暂时关闭：验证码留空时不能把空串发给服务端。
+       服务端 register 只有「不传 code」才放行，传 "" 会返回 400 验证码格式不正确，
+       所以空验证码时整条 code 字段都不带。 */
+    var payload = { phone:phone, password:pwd, admin_password:adminPwd };
+    if (code) payload.code = code;
+    api.register(payload).then(function(data){
       showFormFeedback('');
       setAuthIdentity(data);
       /* 管理员密码随注册一并保存到服务端、与账号绑定；点「注册」后出「注册成功」提示 */
