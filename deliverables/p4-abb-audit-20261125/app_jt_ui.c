@@ -766,7 +766,7 @@ static void jt_update_question(void)
     question = jt_current_question();
     if (s_jt.idea_verdict) {
         if (!question) {
-            lv_label_set_text(s_jt.idea_verdict, "这个题做错了");
+            lv_label_set_text(s_jt.idea_verdict, "暂无解题思路");
         } else if (question->correct) {
             lv_label_set_text(s_jt.idea_verdict, "这个题做对了");
         } else {
@@ -777,8 +777,7 @@ static void jt_update_question(void)
         if (question && question->thinking[0]) {
             snprintf(body, sizeof(body), "%s", question->thinking);
         } else {
-            snprintf(body, sizeof(body), "%s\n%s\n%s",
-                     s_idea_steps[0], s_idea_steps[1], s_idea_steps[2]);
+            snprintf(body, sizeof(body), "请重新拍题，或等待判题完成后查看思路。");
         }
         lv_label_set_text(s_jt.idea_steps, body);
         jt_set_label_wrap(s_jt.idea_steps);
@@ -787,9 +786,7 @@ static void jt_update_question(void)
         if (question && question->answer[0]) {
             snprintf(body, sizeof(body), "%s", question->answer);
         } else {
-            snprintf(body, sizeof(body), "%s\n%s\n%s\n%s",
-                     s_result_chain[0], s_result_chain[1],
-                     s_result_chain[2], s_result_chain[3]);
+            snprintf(body, sizeof(body), "暂无可显示答案，请重新拍题。");
         }
         lv_label_set_text(s_jt.result_chain, body);
         jt_set_label_wrap(s_jt.result_chain);
@@ -802,6 +799,16 @@ static void jt_update_question(void)
             jt_update_cards();
         }
     }
+}
+
+static void jt_clear_finder_preview(void)
+{
+    if (!s_jt.finder_preview) {
+        return;
+    }
+    lv_img_set_src(s_jt.finder_preview, NULL);
+    memset(&s_jt.finder_preview_dsc, 0, sizeof(s_jt.finder_preview_dsc));
+    lv_obj_invalidate(s_jt.finder_preview);
 }
 
 static void jt_show_screen_raw(uint8_t index)
@@ -832,11 +839,7 @@ static void jt_show_screen_raw(uint8_t index)
         }
     } else {
         mipi_cam_set_frame_callback(NULL, NULL);
-        if (s_jt.finder_preview) {
-            lv_img_set_src(s_jt.finder_preview, NULL);
-            s_jt.finder_preview_dsc.data = NULL;
-            lv_obj_invalidate(s_jt.finder_preview);
-        }
+        jt_clear_finder_preview();
         if (s_jt.finder_status) {
             lv_obj_add_flag(s_jt.finder_status, LV_OBJ_FLAG_HIDDEN);
         }
@@ -886,15 +889,22 @@ static void jt_apply_camera_frame(void *buffer, uint32_t width,
 {
     (void)ctx;
     if (s_jt.screen != JT_SCREEN_FINDER || !s_jt.finder_preview ||
-        width != JT_S3_PREVIEW_W || height != JT_S3_PREVIEW_H) {
+        !buffer || !width || !height) {
         return;
     }
     if (!lvgl_port_lock(0)) {
         return;
     }
     s_jt.finder_preview_dsc.data = buffer;
+    s_jt.finder_preview_dsc.header.w = width;
+    s_jt.finder_preview_dsc.header.h = height;
+    s_jt.finder_preview_dsc.header.cf = LV_IMG_CF_TRUE_COLOR;
+    s_jt.finder_preview_dsc.data_size = (size_t)width * height * 2U;
+    lv_img_set_src(s_jt.finder_preview, &s_jt.finder_preview_dsc);
+    lv_obj_set_size(s_jt.finder_preview, width, height);
     lv_img_cache_invalidate_src(&s_jt.finder_preview_dsc);
     lv_obj_invalidate(s_jt.finder_preview);
+    lv_refr_now(NULL);
     if (s_jt.finder_status && lv_obj_has_flag(s_jt.finder_status, LV_OBJ_FLAG_HIDDEN)) {
         lv_obj_clear_flag(s_jt.finder_status, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text(s_jt.finder_status, "摄像头预览中");
@@ -1021,6 +1031,20 @@ static void jt_go_finder(lv_event_t *e)
     jt_show_screen(JT_SCREEN_FINDER);
 }
 
+static void jt_reset_process_visual(void)
+{
+    for (int i = 0; i < 5; i++) {
+        if (s_jt.process_stage[i]) {
+            lv_obj_set_style_bg_color(s_jt.process_stage[i], jt_panel(), 0);
+            lv_obj_set_style_text_color(s_jt.process_stage_text[i], jt_ink(), 0);
+            lv_obj_set_style_text_color(s_jt.process_stage_num[i], jt_ink(), 0);
+        }
+    }
+    if (s_jt.process_bar_fill) {
+        lv_obj_set_width(s_jt.process_bar_fill, 0);
+    }
+}
+
 static void jt_finder_shutter(lv_event_t *e)
 {
     (void)e;
@@ -1037,13 +1061,10 @@ static void jt_finder_shutter(lv_event_t *e)
         return;
     }
     ESP_LOGI(JT_UI_TAG, "finder shutter -> process");
+    jt_reset_process_visual();
     mipi_cam_request_photo();
     mipi_cam_set_frame_callback(NULL, NULL);
-    if (s_jt.finder_preview) {
-        lv_img_set_src(s_jt.finder_preview, NULL);
-        s_jt.finder_preview_dsc.data = NULL;
-        lv_obj_invalidate(s_jt.finder_preview);
-    }
+    jt_clear_finder_preview();
     if (s_jt.finder_status) {
         lv_label_set_text(s_jt.finder_status, "拍照中...");
     }
@@ -1083,13 +1104,10 @@ static void jt_finder_send(lv_event_t *e)
         return;
     }
     ESP_LOGI(JT_UI_TAG, "finder confirm -> process");
+    jt_reset_process_visual();
     mipi_cam_request_photo();
     mipi_cam_set_frame_callback(NULL, NULL);
-    if (s_jt.finder_preview) {
-        lv_img_set_src(s_jt.finder_preview, NULL);
-        s_jt.finder_preview_dsc.data = NULL;
-        lv_obj_invalidate(s_jt.finder_preview);
-    }
+    jt_clear_finder_preview();
     if (s_jt.finder_status) {
         lv_label_set_text(s_jt.finder_status, "拍照中...");
     }
@@ -1494,56 +1512,26 @@ static void jt_process_timer_cb(lv_timer_t *timer)
     if (s_jt_process_frozen) {
         return;
     }
-    static uint8_t stage;
-    static uint32_t hold;
-    static uint32_t ticks;
-
-    ticks++;
     if (s_jt.screen != JT_SCREEN_PROCESS) {
         return;
     }
-    if (stage >= 5) {
-        hold++;
-        if (hold >= 2) {
-            stage = 0;
-            hold = 0;
-            jt_show_screen(JT_SCREEN_IDEA);
-        }
+    /* PRD flow: stay on the processing screen until the real solve callback
+     * finishes. The five stages remain the prototype visual; they must not
+     * fake completion or force a jump while the request is still pending. */
+    const jt_business_solve_t *solve = jt_business_solve_cached();
+    if (!solve || solve->job_id[0] == 0) {
         return;
     }
-    if (stage == 0) {
-        stage = 0;
-        for (int i = 0; i < 5; i++) {
-            if (s_jt.process_stage[i]) {
-                lv_obj_set_style_bg_color(s_jt.process_stage[i], jt_panel(), 0);
-                lv_obj_set_style_text_color(s_jt.process_stage_text[i], jt_ink(), 0);
-                lv_obj_set_style_text_color(s_jt.process_stage_num[i], jt_ink(), 0);
-            }
+    if (solve->result == JT_RESULT_OK && solve->question_count > 0) {
+        jt_show_screen(JT_SCREEN_IDEA);
+        return;
+    }
+    if (solve->result != JT_RESULT_OK) {
+        s_jt.finder_status = NULL;
+        if (s_jt.process_stage_text[0]) {
+            lv_label_set_text(s_jt.process_stage_text[0], jt_result_to_string(solve->result));
         }
     }
-    if (s_jt.process_bar_fill) {
-        int32_t fill_w = JT_S4_BAR_W - 8;
-        lv_obj_set_width(s_jt.process_bar_fill,
-                         (int32_t)(((stage + 1) * fill_w) / 5));
-    }
-    for (int i = 0; i < 5; i++) {
-        if (!s_jt.process_stage[i]) {
-            continue;
-        }
-        if (i == stage) {
-            lv_obj_set_style_bg_color(s_jt.process_stage[i], jt_ink(), 0);
-        } else if (i < stage) {
-            lv_obj_set_style_bg_color(s_jt.process_stage[i], jt_gray(), 0);
-        } else {
-            lv_obj_set_style_bg_color(s_jt.process_stage[i], jt_panel(), 0);
-        }
-        lv_obj_set_style_text_color(s_jt.process_stage_text[i],
-                                    (i == stage) ? jt_panel() : jt_ink(), 0);
-        lv_obj_set_style_text_color(s_jt.process_stage_num[i],
-                                    (i <= stage) ? jt_panel() : jt_ink(), 0);
-    }
-    stage++;
-    (void)ticks;
 }
 
 static void jt_hide_legacy_ui(void)
@@ -1573,15 +1561,22 @@ static void jt_add_prototype_backgrounds(void)
     };
     for (uint8_t i = 0; i < JT_SCREEN_COUNT; i++) {
         lv_obj_t *page = s_jt.pages[i];
+        lv_obj_t *bg_img;
         if (!page) {
             continue;
         }
-        lv_obj_t *bg_img = lv_img_create(page);
-        lv_img_set_src(bg_img, screen_images[i]);
-        lv_obj_set_pos(bg_img, 0, 0);
-        lv_obj_set_size(bg_img, JT_UI_W, JT_UI_H);
-        lv_obj_add_flag(bg_img, LV_OBJ_FLAG_IGNORE_LAYOUT);
-        lv_obj_move_background(bg_img);
+        /* 第3屏必须显示真实摄像头帧，不能铺原型静图；否则盖镜头/挪纸时
+         * 看到的仍是固定照片。其他页面保留原型图作为底板。 */
+        if (i == JT_SCREEN_FINDER) {
+            bg_img = NULL;
+        } else {
+            bg_img = lv_img_create(page);
+            lv_img_set_src(bg_img, screen_images[i]);
+            lv_obj_set_pos(bg_img, 0, 0);
+            lv_obj_set_size(bg_img, JT_UI_W, JT_UI_H);
+            lv_obj_add_flag(bg_img, LV_OBJ_FLAG_IGNORE_LAYOUT);
+            lv_obj_move_background(bg_img);
+        }
 
         /* Prototype bitmaps already contain all static text and artwork.
          * Keep only the live value labels and input hot spots visible. */
@@ -1616,6 +1611,15 @@ static void jt_add_prototype_backgrounds(void)
                       JT_S3_BTN_W, JT_S3_BTN_H, jt_finder_shutter, NULL);
     jt_create_hotspot(s_jt.pages[JT_SCREEN_FINDER], 850, 452,
                       JT_S3_BTN_W, JT_S3_BTN_H, jt_finder_send, NULL);
+    if (s_jt.finder_shutter_btn) {
+        lv_obj_move_foreground(s_jt.finder_shutter_btn);
+    }
+    if (s_jt.finder_confirm_btn) {
+        lv_obj_move_foreground(s_jt.finder_confirm_btn);
+    }
+    if (s_jt.finder_back_btn) {
+        lv_obj_move_foreground(s_jt.finder_back_btn);
+    }
     jt_create_hotspot(s_jt.pages[JT_SCREEN_IDEA], JT_S5_HEAD_X, 20,
                       JT_S5_HEAD_W, JT_S5_HEAD_H, jt_go_home, NULL);
     jt_create_hotspot(s_jt.pages[JT_SCREEN_IDEA], JT_S5_CARD_X, 44,
@@ -1792,7 +1796,6 @@ static void jt_build_finder_screen(void)
     s_jt.finder_preview_dsc.data_size = JT_S3_PREVIEW_W * JT_S3_PREVIEW_H * 2;
 
     s_jt.finder_preview = lv_img_create(page);
-    lv_img_set_src(s_jt.finder_preview, &s_jt.finder_preview_dsc);
     lv_obj_set_pos(s_jt.finder_preview, JT_S3_PREVIEW_X, JT_S3_PREVIEW_Y);
     lv_obj_set_size(s_jt.finder_preview, JT_S3_PREVIEW_W, JT_S3_PREVIEW_H);
     jt_set_no_scroll(s_jt.finder_preview);

@@ -1,3 +1,8 @@
+## 2026-11-25 业务页真实状态修正
+
+- 处理页取消 2.5 秒无条件演示跳页：现在只有 `jt_business_solve_cached()` 收到真实成功结果且 `question_count>0` 时进入思路页；失败保留在处理页并显示结果枚举，不再假装完成。证据：`build_business_truthful_states.log.txt`、`flash_business_truthful_states.log.txt`、`p4_process_no_fake_jump2.log.txt`。
+- 思路页/结果页无真实题意时不回退到固定“做错了/固定算式”，改为“暂无解题思路/暂无可显示答案”，避免失败场景伪装业务成功。
+- 真机验证 `page 4` 后保持 10 秒无自动跳页；固件 `0xb187b0`，app 分区剩余 8%。
 # P4 开发进度记录
 
 ## 2026-11-25 9080 纠错：/solve 上传鉴权与全流程断点推进
