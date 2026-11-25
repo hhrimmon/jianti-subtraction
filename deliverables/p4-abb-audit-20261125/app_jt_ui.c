@@ -1023,9 +1023,11 @@ void app_jt_ui_debug_freeze_process(bool freeze)
 void app_jt_ui_debug_print_status(void)
 {
     const jt_business_solve_t *solve = jt_business_solve_cached();
-    printf("screen=%u frozen=%d solve_job=%s solve_result=%d solve_questions=%d\n",
+    printf("screen=%u frozen=%d stream=%d frame=%d solve_job=%s solve_result=%d solve_questions=%d\n",
            (unsigned)s_jt.screen,
            (int)s_jt_process_frozen,
+           (int)camera_stream_ready,
+           (int)preview_frame_ready,
            (solve && solve->job_id[0]) ? solve->job_id : "-",
            solve ? (int)solve->result : -1,
            solve ? solve->question_count : -1);
