@@ -1,0 +1,1380 @@
+Executing action: all (aliases: build)
+Running ninja in directory D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build
+Executing "ninja all"...
+[1/28] Performing build step for 'bootloader'
+
+[1/1] C:\Windows\system32\cmd.exe /C "cd /D D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build\bootloader && D:\AItools\projects\jt2.0\_work\esp32p4\idf_py\Scripts\python.exe D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/partition_table/check_sizes.py --offset 0x10000 bootloader 0x2000 D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/bootloader/bootloader.bin"
+
+
+Bootloader binary size 0x6400 bytes. 0x7c00 bytes (55%) free.
+
+
+
+[2/28] No install step for 'bootloader'
+
+[3/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/JT/jt_business.c.obj
+
+[4/28] Completed 'bootloader'
+
+[5/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_calendar.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_calendar.h:19,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_calendar.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[6/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_timer.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_timer.h:19,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_timer.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[7/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MIPI_CAM/mipi_cam.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MIPI_CAM/mipi_cam.h:30,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MIPI_CAM/mipi_cam.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+
+==================================================================================
+
+   '
+
+   13 | #pragma message("\n" \
+
+      |         ^~~~~~~
+
+[8/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_usb_otg.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_usb_otg.h:19,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_usb_otg.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[9/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_camera.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_camera.h:19,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_camera.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[10/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/main.c:17:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/lvgl_demo.h:13,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/main.c:19:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/main.c:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/SPILCD/spilcd.h:31:9: warning: 'LCD_RST_PIN' redefined
+   31 | #define LCD_RST_PIN         GPIO_NUM_22
+      |         ^~~~~~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/main.c:14:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/LCD/lcd.h:23:9: note: this is the location of the previous definition
+   23 | #define LCD_RST_PIN      (GPIO_NUM_22)
+      |         ^~~~~~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[11/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_calculator.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_calculator.h:19,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_calculator.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_calculator.c: In function 'event_cb':
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_calculator.c:244:24: warning: comparison between pointer and integer
+  244 |             if (txt[0] != NULL)
+      |                        ^~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h: At top level:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[12/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/lvgl_demo.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TOUCH/gt9xxx.h:21,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TOUCH/touch.h:17,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/lvgl_demo.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/lvgl_demo.c:1:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/lvgl_demo.h:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[13/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_jt_ui.c.obj
+
+FAILED: esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_jt_ui.c.obj 
+
+D:\AItools\projects\jt2.0\_work\esp32p4\idf_tools\tools\riscv32-esp-elf\esp-15.2.0_20251204\riscv32-esp-elf\bin\riscv32-esp-elf-gcc.exe -DCJSON_CIRCULAR_LIMIT=10000 -DCJSON_NESTING_LIMIT=1000 -DCONFIG_WIFI_RMT_AMPDU_RX_ENABLED=1 -DCONFIG_WIFI_RMT_AMPDU_TX_ENABLED=1 -DCONFIG_WIFI_RMT_DYNAMIC_RX_BUFFER_NUM=32 -DCONFIG_WIFI_RMT_DYNAMIC_RX_MGMT_BUF=0 -DCONFIG_WIFI_RMT_DYNAMIC_TX_BUFFER_NUM=32 -DCONFIG_WIFI_RMT_ESPNOW_MAX_ENCRYPT_NUM=7 -DCONFIG_WIFI_RMT_MGMT_SBUF_NUM=32 -DCONFIG_WIFI_RMT_NVS_ENABLED=1 -DCONFIG_WIFI_RMT_RX_BA_WIN=6 -DCONFIG_WIFI_RMT_RX_MGMT_BUF_NUM_DEF=5 -DCONFIG_WIFI_RMT_SOFTAP_BEACON_MAX_LEN=752 -DCONFIG_WIFI_RMT_STATIC_RX_BUFFER_NUM=10 -DCONFIG_WIFI_RMT_STA_DISCONNECTED_PM_ENABLE=1 -DCONFIG_WIFI_RMT_TX_BUFFER_TYPE=1 -DESP_PLATFORM -DIDF_VER=\"v6.0.2\" -DLV_CONF_INCLUDE_SIMPLE -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/config -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/IMAGE -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MIPI_CAM -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HID_MSC -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/JT -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_video/private_include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_libc/platform_include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/freertos/config/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/freertos/config/include/freertos -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/freertos/config/riscv/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/freertos/FreeRTOS-Kernel/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/freertos/FreeRTOS-Kernel/portable/riscv/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/freertos/FreeRTOS-Kernel/portable/riscv/include/freertos -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/freertos/esp_additions/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/include/soc -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/ldo/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/debug_probe/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/etm/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/mspi_timing_tuning/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/mspi_timing_tuning/tuning_scheme_impl/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/power_supply/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/modem/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/port/esp32p4/. -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/port/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/port/esp32p4/private_include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hw_support/mspi_timing_tuning/port/esp32p4/. -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/heap/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/heap/tlsf -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/log/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/soc/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/soc/esp32p4 -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/soc/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/soc/esp32p4/register/hw_ver3 -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/hal/platform_port/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/hal/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/hal/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_rom/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_rom/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_rom/esp32p4/include/esp32p4 -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_rom/esp32p4 -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_common/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_system/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_system/port/soc -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_system/port/include/riscv -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_system/port/include/private -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_stdio/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/riscv/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_gpio/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_gpio/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_usb/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_usb/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_pmu/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_pmu/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_ana_conv/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_ana_conv/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_dma/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_dma/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/include/apps -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/lwip/src/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/port/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/port/freertos/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/port/esp32xx/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/port/esp32xx/include/arch -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/lwip/port/esp32xx/include/sys -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/LED -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/LCD -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYIIC -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TOUCH -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311 -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/LEDC -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYI2S -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/SDMMC -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/RTC -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/KEY -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/SPILCD -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/touch_sensor/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_i2c/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_i2c/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_twai/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_twai/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_touch_sens/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_touch_sens/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_lcd/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_lcd/interface -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_lcd/rgb/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_lcd/dsi/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_gpio/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_i2c/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_spi/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_pm/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_gpspi/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_gpspi/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_dma/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_parlio/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_parlio/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_parlio/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_lcd/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_lcd/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/lvgl__lvgl -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/lvgl__lvgl/src -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/lvgl__lvgl/examples -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/lvgl__lvgl/demos -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_timer/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/fatfs/diskio -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/fatfs/src -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/fatfs/vfs -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/wear_levelling/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_partition/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_blockdev/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/sdmmc/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_sd/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_sd/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_sdmmc/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_sdmmc/legacy/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_sd_intf/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_sdspi/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_touch_sens/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_touch_sens/hw_ver3/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_ledc/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_ledc/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_ledc/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_uart/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_uart/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_uart/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/vfs/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_i2s/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_i2s/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_i2s/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_codec_dev/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_codec_dev/interface -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_codec_dev/device/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_lcd_st7796/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/Middlewares/PICTURE -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/Middlewares/MYFATFS -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_jpeg/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_jpeg/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_jpeg/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_ppa/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_ppa/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_ppa/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_gptimer/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_timg/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_timg/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_usb_serial_jtag/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/spiffs/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_wifi_remote/idf_v6.0/include/injected -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_wifi/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_wifi/wifi_apps/nan_app/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_event/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_netif/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_wifi_remote/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_wifi_remote/idf_v6.0/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_http_client/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__cjson/cJSON -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_cam_sensor/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_cam_sensor/sensors/ov5647/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_sccb_intf/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_sccb_intf/interface -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_sccb_intf/sccb_i2c/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_tinyusb/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__tinyusb/src -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_video/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_cam/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_cam/interface -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_cam/csi/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_cam/isp_dvp/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_cam/dvp/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_driver_isp/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_cam/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_hal_cam/esp32p4/include -ID:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/esp_mm/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_h264/interface/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_h264/sw/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_h264/port/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__esp_h264/hw/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__usb_host_msc/include -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__usb_host_msc/include/usb -ID:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__usb/include @"D:/AItools/projects/jt2.0/_work/esp32p4/p4b/build/toolchain/cflags" -fdiagnostics-color=always -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-error=extra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -O2 -fmacro-prefix-map=D:/AItools/projects/jt2.0/_work/esp32p4/p4b=. -fmacro-prefix-map=D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -std=gnu23 -Wno-old-style-declaration -fzero-init-padding-bits=all -fno-malloc-dce -DESP_LCD_ST7796_VER_MAJOR=1 -DESP_LCD_ST7796_VER_MINOR=5 -DESP_LCD_ST7796_VER_PATCH=0 -DESP_CAM_SENSOR_VER_MAJOR=0 -DESP_CAM_SENSOR_VER_MINOR=5 -DESP_CAM_SENSOR_VER_PATCH=5 -DCFG_TUSB_MCU=OPT_MCU_ESP32P4 -DESP_VIDEO_VER_MAJOR=0 -DESP_VIDEO_VER_MINOR=5 -DESP_VIDEO_VER_PATCH=1 -MD -MT esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_jt_ui.c.obj -MF esp-idf\main\CMakeFiles\__idf_main.dir\APP\MAIN_UI\app_jt_ui.c.obj.d -o esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_jt_ui.c.obj -c D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:9:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c: In function 'app_jt_ui_debug_run_chain_test':
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1007:5: error: implicit declaration of function 'jt_run_chain_test' [-Wimplicit-function-declaration]
+ 1007 |     jt_run_chain_test(NULL);
+      |     ^~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c: In function 'app_jt_ui_debug_softap':
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1012:5: error: implicit declaration of function 'jt_show_softap' [-Wimplicit-function-declaration]
+ 1012 |     jt_show_softap(show);
+      |     ^~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c: At top level:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1167:13: warning: conflicting types for 'jt_show_softap'; have 'void(_Bool)'
+ 1167 | static void jt_show_softap(bool show)
+      |             ^~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1167:13: error: static declaration of 'jt_show_softap' follows non-static declaration
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1012:5: note: previous implicit declaration of 'jt_show_softap' with type 'void(_Bool)'
+ 1012 |     jt_show_softap(show);
+      |     ^~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1327:13: warning: conflicting types for 'jt_run_chain_test'; have 'void(lv_event_t *)' {aka 'void(struct _lv_event_t *)'}
+ 1327 | static void jt_run_chain_test(lv_event_t *e)
+      |             ^~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1327:13: error: static declaration of 'jt_run_chain_test' follows non-static declaration
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1007:5: note: previous implicit declaration of 'jt_run_chain_test' with type 'void(lv_event_t *)' {aka 'void(struct _lv_event_t *)'}
+ 1007 |     jt_run_chain_test(NULL);
+      |     ^~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1347:6: error: redefinition of 'app_jt_ui_debug_softap'
+ 1347 | void app_jt_ui_debug_softap(bool start)
+      |      ^~~~~~~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1010:6: note: previous definition of 'app_jt_ui_debug_softap' with type 'void(_Bool)'
+ 1010 | void app_jt_ui_debug_softap(bool show)
+      |      ^~~~~~~~~~~~~~~~~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+      |             ^~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+   64 | static bool check_game_over(void);
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:1051:13: warning: 'jt_go_process' defined but not used [-Wunused-function]
+ 1051 | static void jt_go_process(lv_event_t *e)
+      |             ^~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:646:16: warning: 'jt_advanced_count' defined but not used [-Wunused-function]
+  646 | static uint8_t jt_advanced_count(void)
+      |                ^~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:569:18: warning: 'jt_create_head_icon_button' defined but not used [-Wunused-function]
+  569 | static lv_obj_t *jt_create_head_icon_button(lv_obj_t *parent, const lv_img_dsc_t *icon,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:483:18: warning: 'jt_create_symbol_button' defined but not used [-Wunused-function]
+  483 | static lv_obj_t *jt_create_symbol_button(lv_obj_t *parent, const char *symbol,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:334:25: warning: 'jt_font_memo' defined but not used [-Wunused-function]
+  334 | static const lv_font_t *jt_font_memo(void)
+      |                         ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:329:25: warning: 'jt_font_small' defined but not used [-Wunused-function]
+  329 | static const lv_font_t *jt_font_small(void)
+      |                         ^~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:324:25: warning: 'jt_font_lock_time' defined but not used [-Wunused-function]
+  324 | static const lv_font_t *jt_font_lock_time(void)
+      |                         ^~~~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_jt_ui.c:319:25: warning: 'jt_font_lock_brand' defined but not used [-Wunused-function]
+  319 | static const lv_font_t *jt_font_lock_brand(void)
+
+      |                         ^~~~~~~~~~~~~~~~~~
+
+[14/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_pic.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_pic.h:21,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_pic.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[15/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_main_ui.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.c: In function 'lv_app_main_ui_init':
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.c:425:11: warning: unused variable 'weekdays' [-Wunused-variable]
+  425 |     char *weekdays[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+      |           ^~~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h: At top level:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[16/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/HANDLE/handle.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.c:1:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.c: In function 'lv_scr_event_cb':
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.c:271:16: warning: unused variable 'obj' [-Wunused-variable]
+  271 |     lv_obj_t * obj = lv_event_get_target(event);
+      |                ^~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h: At top level:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+      |             ^~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[17/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_file.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_file.h:20,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_file.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_file.c: In function 'lv_btn_close_event':
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_file.c:91:16: warning: unused variable 'obj' [-Wunused-variable]
+   91 |     lv_obj_t * obj = lv_event_get_target(event);
+      |                ^~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_file.c: In function 'lv_animation':
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_file.c:314:29: warning: cast between incompatible function types from 'void (*)(struct _lv_obj_t *, lv_coord_t)' {aka 'void (*)(struct _lv_obj_t *, short int)'} to 'void (*)(void *, int32_t)' {aka 'void (*)(void *, long int)'} [-Wcast-function-type]
+  314 |     lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_x);  /* ���ö������� var */
+      |                             ^
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h: At top level:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[18/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_brush.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_brush.h:15,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_brush.c:8:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[19/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_2048.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:20,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+
+      |  ^~~~~~~
+
+[20/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_music.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_music.h:19,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_music.c:14:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+[21/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/JT/jt_client.c.obj
+
+[22/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_wifi.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_wifi.h:20,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_wifi.c:13:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+      |             ^~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+   64 | static bool check_game_over(void);
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_wifi.c:422:13: warning: 'clear_status_label' defined but not used [-Wunused-function]
+
+  422 | static void clear_status_label(TimerHandle_t xTimer)
+
+      |             ^~~~~~~~~~~~~~~~~~
+
+[23/28] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/APP/MAIN_UI/app_video_ui.c.obj
+
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/managed_components/espressif__es8311/include/es8311.h:12,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/MYES8311/myes8311.h:25,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:8,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_main_ui.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_video_ui.h:19,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_video_ui.c:14:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/i2c/include/driver/i2c.h:13:9: note: '#pragma message: 
+================================ CRITICAL WARNING ================================
+This legacy I2C driver (driver/i2c.h) is officially END-OF-LIFE (EOL) as of ESP-IDF v6.0.
+
+1. NO SUPPORT: ESP-IDF will not provide updates, bug fixes, or security patches timely.
+2. PLANNED REMOVAL: This driver WILL BE REMOVED in ESP-IDF v7.0 (next major release).
+3. ACTION REQUIRED: Migrate to 'driver/i2c_master.h' or 'driver/i2c_slave.h' immediately.
+   - If you are a library maintainer, please update your code.
+   - If you are using 3rd-party libraries, contact the authors for updates.
+
+4. SUPPRESS WARNING: Set Kconfig 'CONFIG_I2C_SUPPRESS_DEPRECATE_WARN=y' to silent
+   this warning. However, by doing so, YOU ASSUME ALL RISKS including potential
+   security vulnerabilities, system instability, and future incompatibility.
+
+For API reference of the new I2C driver, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2c.html
+For other items about migration, see: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/migration-guides/index.html
+==================================================================================
+   '
+   13 | #pragma message("\n" \
+      |         ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/components/BSP/TWAI/my_esp_twai.h:18,
+                 from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:11:
+D:/AItools/projects/jt2.0/_work/esp32p4/idf/esp-idf-6.0.2/components/driver/twai/include/driver/twai.h:17:2: warning: #warning "The legacy TWAI driver is deprecated, please use esp_twai.h" [-Wcpp]
+   17 | #warning "The legacy TWAI driver is deprecated, please use esp_twai.h"
+      |  ^~~~~~~
+In file included from D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/HANDLE/handle.h:23:
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:52:13: warning: 'game_start' declared 'static' but never defined [-Wunused-function]
+   52 | static void game_start(lv_event_t *e);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:53:13: warning: 'game_exit' declared 'static' but never defined [-Wunused-function]
+   53 | static void game_exit(lv_event_t *e);
+      |             ^~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:54:13: warning: 'game_reset' declared 'static' but never defined [-Wunused-function]
+   54 | static void game_reset(void);
+      |             ^~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:55:13: warning: 'move_obj_cb' declared 'static' but never defined [-Wunused-function]
+   55 | static void move_obj_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:56:13: warning: 'set_x_cb' declared 'static' but never defined [-Wunused-function]
+   56 | static void set_x_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:57:13: warning: 'set_y_cb' declared 'static' but never defined [-Wunused-function]
+   57 | static void set_y_cb(void *var, int32_t v);
+      |             ^~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:58:13: warning: 'lv_myanim_creat' declared 'static' but never defined [-Wunused-function]
+   58 | static void lv_myanim_creat(void *var, lv_anim_exec_xcb_t exec_cb, uint32_t time, uint32_t delay, uint32_t playback_time,
+      |             ^~~~~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:60:16: warning: 'color_index' declared 'static' but never defined [-Wunused-function]
+   60 | static int32_t color_index(int32_t num);
+      |                ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:61:13: warning: 'move_done_cb' declared 'static' but never defined [-Wunused-function]
+   61 | static void move_done_cb(lv_anim_t *a);
+      |             ^~~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:62:13: warning: 'released_cb' declared 'static' but never defined [-Wunused-function]
+   62 | static void released_cb(lv_event_t *e);
+      |             ^~~~~~~~~~~
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:63:13: warning: 'new_cube_creat' declared 'static' but never defined [-Wunused-function]
+
+   63 | static void new_cube_creat(int32_t i, int32_t j);
+
+      |             ^~~~~~~~~~~~~~
+
+D:/AItools/projects/jt2.0/_work/esp32p4/p4b/main/APP/MAIN_UI/app_2048.h:64:13: warning: 'check_game_over' declared 'static' but never defined [-Wunused-function]
+
+   64 | static bool check_game_over(void);
+
+      |             ^~~~~~~~~~~~~~~
+
+ninja: build stopped: subcommand failed.
+
+ninja failed with exit code 1, output of the command is in the D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build\log\idf_py_stderr_output_27516 and D:\AItools\projects\jt2.0\_work\esp32p4\p4b\build\log\idf_py_stdout_output_27516

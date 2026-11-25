@@ -14,3 +14,15 @@ Build/flash evidence (full text, .log.txt to avoid Git LFS pointer files):
 build_abb_camera_final.log.txt + flash_abb_camera_final.log.txt
 build_abb_settings_log.log.txt + flash_abb_settings_log.log.txt
 build_abb_softap_chain.log.txt + flash_abb_softap_chain.log.txt
+
+Reaudit evidence (full text):
+abb_audit_boot_id.log.txt
+abb_audit_camera_serial_evidence.log.txt
+abb_audit_chain_only.log.txt
+abb_audit_chain_serial_evidence.log.txt
+abb_audit_nyx_rework_serial.log.txt
+build_abb_reaudit_console.log.txt
+build_abb_reaudit_console2.log.txt
+flash_abb_reaudit_console2.log.txt
+
+No new source files in this update; the listed changed sources are unchanged.

@@ -1,0 +1,4 @@
+[0;32mI (45954) JT_CLIENT: internet probe http://www.baidu.com status=200 reachable=1[0m
+[0;32mI (46008) JT_CLIENT: server probe http://192.168.0.108:8000/lockscreen?device_id=2040059832773436 status=200 reachable=1[0m
+[0;32mI (46009) JT_UI: chain test: wifi=1 internet=1 server=1[0m
+chain=done

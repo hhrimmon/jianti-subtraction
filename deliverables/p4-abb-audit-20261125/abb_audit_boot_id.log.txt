@@ -1,0 +1,140 @@
+ESP-ROM:esp32p4-eco7-20260109
+Build:Jan  9 2026
+rst:0x1 (POWERON),boot:0x31f (SPI_FAST_FLASH_BOOT)
+SPI mode:DIO, clock div:1
+load:0x4ffb60d0,len:0x1a40
+load:0x4ffab2c0,len:0x1194
+load:0x4ffadfc0,len:0x37d0
+entry 0x4ffab2ca
+[0;32mI (26) boot: ESP-IDF v6.0.2 2nd stage bootloader[0m
+[0;32mI (26) boot: compile time Nov 24 2026 03:56:06[0m
+[0;32mI (26) boot: Multicore bootloader[0m
+[0;32mI (30) boot: chip revision: v3.2[0m
+[0;32mI (33) boot: efuse block revision: v1.2[0m
+[0;32mI (37) qio_mode: Enabling default flash chip QIO[0m
+[0;32mI (43) boot.esp32p4: SPI Speed      : 80MHz[0m
+[0;32mI (48) boot.esp32p4: SPI Mode       : QIO[0m
+[0;32mI (52) boot.esp32p4: SPI Flash Size : 16MB[0m
+[0;32mI (57) boot: Enabling RNG early entropy source...[0m
+[0;32mI (63) boot: Partition Table:[0m
+[0;32mI (66) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (73) boot:  0 nvs              WiFi data        01 02 00011000 00006000[0m
+[0;32mI (81) boot:  1 phy_init         RF data          01 01 00017000 00001000[0m
+[0;32mI (88) boot:  2 factory          factory app      00 00 00020000 00c00000[0m
+[0;32mI (96) boot:  3 storage          Unknown data     01 82 00c20000 00100000[0m
+[0;32mI (104) boot: End of partition table[0m
+[0;32mI (108) esp_image: segment 0: paddr=00020020 vaddr=48130020 size=9cee68h (10284648) map[0m
+[0;32mI (1437) esp_image: segment 1: paddr=009eee90 vaddr=30100000 size=00204h (   516) load[0m
+[0;32mI (1438) esp_image: segment 2: paddr=009ef09c vaddr=30100210 size=00048h (    72) load[0m
+[0;32mI (1444) esp_image: segment 3: paddr=009ef0ec vaddr=4ff20000 size=00f2ch (  3884) load[0m
+[0;32mI (1453) esp_image: segment 4: paddr=009f0020 vaddr=48000020 size=1288e0h (1214688) map[0m
+[0;32mI (1617) esp_image: segment 5: paddr=00b18908 vaddr=4ff20f2c size=19ca4h (105636) load[0m
+[0;32mI (1634) esp_image: segment 6: paddr=00b325b4 vaddr=4ff3ac00 size=050dch ( 20700) load[0m
+[0;32mI (1638) esp_image: segment 7: paddr=00b37698 vaddr=50108080 size=00030h (    48) load[0m
+[0;32mI (1646) boot: Loaded app from partition at offset 0x20000[0m
+[0;32mI (1646) boot: Disabling RNG early entropy source...[0m
+[0;32mI (1665) hex_psram: vendor id    : 0x0d (AP)[0m
+[0;32mI (1666) hex_psram: Latency      : 0x01 (Fixed)[0m
+[0;32mI (1666) hex_psram: DriveStr.    : 0x00 (25 Ohm)[0m
+[0;32mI (1669) hex_psram: dev id       : 0x03 (generation 4)[0m
+[0;32mI (1675) hex_psram: density      : 0x07 (256 Mbit)[0m
+[0;32mI (1681) hex_psram: good-die     : 0x06 (Pass)[0m
+[0;32mI (1686) hex_psram: SRF          : 0x02 (Slow Refresh)[0m
+[0;32mI (1692) hex_psram: BurstType    : 0x00 ( Wrap)[0m
+[0;32mI (1697) hex_psram: BurstLen     : 0x03 (2048 Byte)[0m
+[0;32mI (1702) hex_psram: BitMode      : 0x01 (X16 Mode)[0m
+[0;32mI (1708) hex_psram: Readlatency  : 0x06 (18 cycles@Fixed)[0m
+[0;32mI (1714) hex_psram: DriveStrength: 0x00 (1/1)[0m
+[0;32mI (1719) MSPI Timing: Enter psram timing tuning[0m
+I esp_psram: Found 32MB PSRAM device
+I esp_psram: Speed: 250MHz
+[0;32mI (2338) mmu_psram: .rodata xip on psram[0m
+[0;32mI (2394) mmu_psram: .text xip on psram[0m
+[0;32mI (2395) hex_psram: psram CS IO is dedicated[0m
+[0;32mI (2395) cpu_start: Multicore app[0m
+[0;32mI (2407) cpu_start: GPIO 38 and 37 are used as console UART I/O pins[0m
+[0;32mI (2407) cpu_start: Pro cpu start user code[0m
+[0;32mI (2408) cpu_start: cpu freq: 400000000 Hz[0m
+[0;32mI (2413) app_init: Application information:[0m
+[0;32mI (2417) app_init: Project name:     comprehensive_routine_70inch_mi[0m
+[0;32mI (2424) app_init: App version:      1[0m
+[0;32mI (2429) app_init: Compile time:     Nov 24 2026 09:25:47[0m
+[0;32mI (2435) app_init: ELF file SHA256:  0ebd6e858...[0m
+[0;32mI (2440) app_init: ESP-IDF:          v6.0.2[0m
+[0;32mI (2445) efuse_init: Min chip rev:     v3.1[0m
+[0;32mI (2450) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (2455) efuse_init: Chip rev:         v3.2[0m
+[0;32mI (2460) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (2467) heap_init: At 4FF6A900 len 000506C0 (321 KiB): RETENT_RAM[0m
+[0;32mI (2474) heap_init: At 4FFBAFC0 len 00004BF0 (18 KiB): RAM[0m
+[0;32mI (2480) heap_init: At 501080B0 len 00007F50 (31 KiB): RTCRAM[0m
+[0;32mI (2487) heap_init: At 30100258 len 00001DA8 (7 KiB): SPM[0m
+[0;32mI (2493) esp_psram: Adding pool of 21504K of PSRAM memory to heap allocator[0m
+[0;32mI (2500) esp_psram: Adding pool of 29K of PSRAM memory gap generated due to end address alignment of irom to the heap allocator[0m
+[0;32mI (2513) esp_psram: Adding pool of 4K of PSRAM memory gap generated due to end address alignment of drom to the heap allocator[0m
+[0;33mW (2525) spi_flash: Detected GigaDevice flash chip but using generic driver. For optimal functionality, enable `SPI_FLASH_SUPPORT_GD_CHIP` in menuconfig[0m
+[0;32mI (2539) spi_flash: detected chip: generic[0m
+[0;32mI (2544) spi_flash: flash io: qio[0m
+[0;32mI (2548) eh_mcu_transport: transport_init: probing bus backend[0m
+[0;32mI (2554) eh_sdio: transport[host]: SDIO 4-bit 40000 kHz CLK=54 CMD=53 D0=49 D1=50 D2=51 D3=52 RESET=19[0m
+[0;32mI (2564) eh_sdio: sdio_data_to_rx_buf_task started[0m
+[0;32mI (2565) eh_mcu_transport: transport_init: bus backend up[0m
+[0;32mI (2565) main_task: Started on CPU0[0m
+[0;33mW (2576) eh_sdio: Reset co-processor using GPIO[19][0m
+[0;32mI (2586) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations[0m
+[0;32mI (2594) main_task: Calling app_main()[0m
+[0;31mE (2626) sdmmc_common: sdmmc_init_ocr: send_op_cond (1) returned 0x107[0m
+[0;31mE (2627) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).[0m
+[0;31mE (2630) SD_HOST: sd_host_del_sdmmc_controller(353): host controller with slot registered[0m
+[0;31mE (2638) vfs_fat_sdmmc: esp_vfs_fat_sdmmc_sdcard_init failed (0x107).[0m
+[0;31mE (2644) sdmmc: Failed to initialize the card (ESP_ERR_TIMEOUT). Make sure SD card lines have pull-up resistors in place.[0m
+[0;32mI (2676) main_twai: twai ok[0m
+[0;32mI (2676) main_twai: twai ok[0m
+[0;32mI (2676) main_twai: twai ok[0m
+[0;32mI (2776) mipi_lcd: MIPI DSI PHY Powered on[0m
+[0;32mI (2977) mipi_lcd: mipilcd_id:0x79007 [0m
+[0;32mI (3139) eh_host_port_sdio: Function 0 Blocksize: 512[0m
+[0;32mI (3140) eh_host_port_sdio: Function 1 Blocksize: 512[0m
+[0;32mI (3240) eh_sdio: Card init success, TRANSPORT_RX_ACTIVE[0m
+[0;32mI (3265) eh_sdio: SDIO Host operating in STREAMING MODE[0m
+[0;32mI (3265) eh_sdio: Open data path at slave[0m
+[0;32mI (3265) eh_sdio: Starting SDIO process rx task[0m
+[0;32mI (3294) eh_init_evt: slave chip id: 0x0d (esp32c6)[0m
+[0;32mI (3295) eh_init_evt: capabilities: 0x01[0m
+[0;32mI (3295) eh_init_evt: Features supported are:[0m
+[0;32mI (3301) eh_init_evt: 	 * WLAN over SDIO[0m
+[0;32mI (3304) eh_init_evt: extended capabilities: 0x00024010[0m
+[0;32mI (3309) eh_init_evt: Extended Features supported:[0m
+[0;32mI (3315) eh_init_evt: 	 * WLAN[0m
+[0;32mI (3318) eh_init_evt: SDIO buf-config: e2h mode=0 bufsz=15872B, h2e mode=0 bufsz=15872B[0m
+[0;33mW (3327) eh_init_evt: unknown PRIV TLV 0x1c[0m
+[0;32mI (3332) eh_init_evt: RPC version negotiated: V2[0m
+[0;32mI (3338) eh_init_evt: esp-hosted fw versions: host=3.0.4 coprocessor=3.1.0[0m
+[0;33mW (3347) eh_init_evt: minor version mismatch — update host firmware[0m
+[0;32mI (3353) eh_init_evt: SDIO SW_AGGR negotiated (e2h=15872B h2e=15872B)[0m
+[0;32mI (3361) eh_init_evt: SDIO mode: slave=streaming host=streaming[0m
+[0;32mI (3367) eh_init_evt: chip=0x0d (esp32c6) fw=0x00030100 caps=0x01 ext=0x00024010[0m
+[0;32mI (3376) eh_auto_init: auto_init: found 1 descriptor(s)[0m
+[0;32mI (3382) eh_auto_init: auto_init: initialising 'wifi' (priority 150)[0m
+[0;32mI (5171) ES8311: Work in Slave mode[0m
+[0;32mI (5174) I2S_IF: STD: TX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: STEREO, slot_mask: 0x3[0m
+[0;32mI (5175) I2S_IF: STD: TX, sample_rate_hz: 16000, mclk_multiple: 256, clk_src: 0[0m
+[0;32mI (5184) I2S_IF: STD: RX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: STEREO, slot_mask: 0x3[0m
+[0;32mI (5192) I2S_IF: STD: RX, sample_rate_hz: 16000, mclk_multiple: 256, clk_src: 0[0m
+[0;32mI (5216) Adev_Codec: Open codec device OK[0m
+[0;32mI (5216) LVGL: Starting LVGL task[0m
+[0;31mE (5217) lcd_panel: esp_lcd_panel_swap_xy(60): swap_xy is not supported by this panel[0m
+[0;31mE (5223) lcd_panel: esp_lcd_panel_mirror(53): mirror is not supported by this panel[0m
+[0;32mI (6174) GT9XXX: CTP:911[0m
+[0;32mI (6190) JT_UI: Initializing JianTi v114 native-widget UI[0m
+[0;32mI (6190) JT_UI: device id=2040059832773436 source=compile-time-default[0m
+[0;32mI (6432) JT_UI: JianTi v114 native-widget UI ready[0m
+[0;32mI (6432) JT_UI: lock screen waiting for network[0m
+[0;32mI (6433) JT_UI: JianTi launcher enabled over initialized display[0m
+[0;32mI (6563) JT_CLIENT: wifi driver initialized[0m
+[0;32mI (6566) eh_wifi: set_config iface=STA ssid="rimmon" (6 bytes)[0m
+[0;32mI (6683) eh_wifi: rx RPC WifiEventNoArgs id=2[0m
+[0;32mI (6938) esp_wifi_remote: esp_wifi_internal_reg_rxcb: sta: 0x480b0c2e[0m
+[0;33mW (7665) JT_CLIENT: network not ready after 1000 ms[0m
+[0;32mI (8001) esp_netif_handlers: sta ip: 192.168.0.105, mask: 255.255.255.0, gw: 192.168.0.1[0m
+[0;32mI (8001) JT_CLIENT: got IP: 192.168.0.105[0m

@@ -1,0 +1,30 @@
+[0;32mI (17643) WIFI_APP: WiFi module initialized[0m
+[0;32mI (17643) WIFI_APP: WiFi event handlers registered[0m
+[0;32mI (17673) eh_wifi: set_config iface=AP ssid="JianTi-2040059832773436" (23 bytes)[0m
+[0;32mI (17692) eh_wifi: rx RPC WifiEventNoArgs id=12[0m
+[0;32mI (17694) JT_UI: softap started: JianTi-2040059832773436[0m
+softap=1
+[0;32mI (17706) eh_wifi: rx RPC WifiEventNoArgs id=2[0m
+[0;32mI (17718) esp_wifi_remote: esp_wifi_internal_reg_rxcb: sta: 0x480b0c2e[0m
+[0;32mI (17719) WIFI_APP: WiFi station connected to AP[0m
+[0;32mI (17733) eh_wifi: rx RPC WifiEventNoArgs id=13[0m
+[0;32mI (17748) eh_wifi: rx RPC WifiEventNoArgs id=12[0m
+[0;33mW (18119) JT_UI: softap ap netif missing on stop[0m
+[0;32mI (18184) eh_wifi: rx RPC StaDisconnected ssid="rimmon" reason=8 rssi=-56[0m
+[0;32mI (18184) eh_wifi: rx RPC WifiEventNoArgs id=3[0m
+[0;33mW (18185) JT_CLIENT: wifi disconnected, reason=8[0m
+[0;32mI (18188) eh_wifi: rx RPC WifiEventNoArgs id=13[0m
+[0;33mW (18191) WIFI_APP: WiFi station disconnected, reason=8[0m
+[0;32mI (18198) JT_UI: softap stopped: dhcps=0x103 mode_set=0x0 mode_now=1(STA=1)[0m
+[0;32mI (18204) WIFI_APP: WiFi station stopped[0m
+softap=0
+[0;32mI (18228) eh_wifi: rx RPC WifiEventNoArgs id=2[0m
+[0;32mI (18233) WIFI_APP: WiFi station started[0m
+[0;32mI (18238) eh_wifi: set_config iface=STA ssid="rimmon" (6 bytes)[0m
+[0;32mI (18249) WIFI_APP: STA connect requested, ssid=rimmon[0m
+[0;32mI (18550) esp_wifi_remote: esp_wifi_internal_reg_rxcb: sta: 0x480b0c2e[0m
+[0;32mI (18551) WIFI_APP: WiFi station connected to AP[0m
+[0;32mI (19599) esp_netif_handlers: sta ip: 192.168.0.105, mask: 255.255.255.0, gw: 192.168.0.1[0m
+[0;32mI (19599) JT_CLIENT: got IP: 192.168.0.105[0m
+[0;32mI (19602) WIFI_APP: WiFi got IP: 192.168.0.105[0m
+[0;32mI (19608) WIFI_APP: WiFi connectivity confirmed: IP event received[0m

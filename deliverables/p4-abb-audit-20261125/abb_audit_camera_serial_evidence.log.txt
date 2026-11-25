@@ -1,0 +1,19 @@
+[0;32mI (52680) JT_UI: finder start: camera_ready=0[0m
+[0;32mI (52680) mipi_lcd: MIPI DSI PHY Powered on[0m
+[0;32mI (52699) mipi_cam: storage total=956561 used=351651 bytes[0m
+[0;32mI (52699) mipi_cam: preview buffers aligned: line=128 size=1228800[0m
+[0;32mI (52704) ov5647: Detected Camera sensor PID=0x5647[0m
+[0;32mI (52755) app_video: version: 0.5.1[0m
+[0;32mI (52755) app_video: driver:  MIPI-CSI[0m
+[0;32mI (52755) app_video: card:    MIPI-CSI[0m
+[0;32mI (52758) app_video: bus:     esp32p4:MIPI-CSI[0m
+[0;32mI (52764) app_video: width=1024 height=600[0m
+[0;32mI (52767) app_video: Capture RGB 5-6-5 format[0m
+[0;32mI (52973) JT_UI: finder camera init err=0x0 ready=0[0m
+[0;32mI (53071) app_video: Camera Start[0m
+page=2
+[0;32mI (53747) mipi_cam: PHOTO SAVED /storage/PICTURE/PHOTO003.jpg size=12644[0m
+[0;32mI (56043) mipi_cam: fps: 16.838617[0m
+[0;32mI (58443) mipi_cam: fps: 20.835209[0m
+[0;32mI (60829) mipi_cam: fps: 20.956250[0m
+[0;32mI (63229) mipi_cam: fps: 20.835886[0m
