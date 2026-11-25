@@ -7,8 +7,9 @@ read-only status queries over >10 seconds. `page 4` is intentionally not used
 because its debug handler sets `s_jt_process_frozen=true`, so it cannot prove
 the real no-fake-jump behaviour.
 
-The generated log is self-checking: it must contain the real confirm entry
-line, an initial `screen=4`, and a final `screen=4` after >=10 seconds.
+The generated log is self-checking: it must contain the real shutter/confirm
+entry line, an initial `screen=3` (zero-based PROCESS screen), and a final
+`screen=3` after >=10 seconds. `frozen=0` proves the debug freeze was not used.
 """
 
 import argparse
@@ -22,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", default="COM4")
     parser.add_argument("--baud", type=int, default=115200)
-    parser.add_argument("--duration", type=float, default=12.0)
+    parser.add_argument("--duration", type=float, default=14.0)
     parser.add_argument("--interval", type=float, default=2.0)
     parser.add_argument("--finder-timeout", type=float, default=25.0)
     parser.add_argument("output")
@@ -86,30 +87,43 @@ def main():
             return
         emit("READY_CONFIRMED " + ready_buffer.decode("utf-8", "replace").strip())
         consume(0.5)
-        # `page 2` is the debug CLI form that routes through jt_page_cmd();
-        # for HOME it calls jt_go_finder(), which runs mipi_cam_init().
-        for cmd in (b"freeze 0\r", b"page 2\r"):
+        # Always return to the lock screen first. A previous capture can leave
+        # `stream/frame` set while the UI is on some non-finder screen, which
+        # would otherwise make the finder-ready test accept stale state.
+        for cmd in (b"freeze 0\r", b"page 0\r"):
             ser.write(cmd)
             ser.flush()
             emit("UART_TX " + cmd.decode("ascii").strip())
             time.sleep(0.5)
             consume(1.0)
 
+        # `page 2` is the debug CLI form that routes through jt_page_cmd();
+        # for HOME it calls jt_go_finder(), which runs mipi_cam_init().
+        ser.write(b"page 2\r")
+        ser.flush()
+        emit("UART_TX page 2")
+        time.sleep(0.5)
+        consume(1.0)
+
         # Wait until the camera stream and the first preview frame are ready;
         # shutter/confirm are intentionally gated on both in the firmware.
         finder_deadline = time.monotonic() + args.finder_timeout
-        finder_buffer = b""
         finder_ready = False
         while time.monotonic() < finder_deadline:
             ser.write(b"status\r")
             ser.flush()
             emit("UART_TX finder readiness status")
-            finder_buffer += consume(0.8)
-            if b"stream=1 frame=1" in finder_buffer and b"screen=2" in finder_buffer:
+            finder_buffer = consume(0.8)
+            finder_status_lines = [
+                line for line in finder_buffer.decode("utf-8", "replace").splitlines()
+                if "screen=" in line
+            ]
+            if finder_status_lines and all(
+                    "screen=2" in line and "stream=1 frame=1" in line
+                    for line in finder_status_lines):
                 finder_ready = True
             if finder_ready:
                 break
-            finder_buffer = finder_buffer[-4096:]
             time.sleep(0.4)
         if not finder_ready:
             emit("FINDER_READY_TIMEOUT")
@@ -150,7 +164,7 @@ def main():
                         if ("finder shutter -> process" in line or
                                 "finder confirm -> process" in line):
                             process_entered = True
-                        if first_process_at is None and "screen=4" in line:
+                        if first_process_at is None and "screen=3" in line:
                             first_process_at = time.monotonic()
             now = time.monotonic()
             if now >= next_poll:
@@ -165,7 +179,7 @@ def main():
             if ("finder shutter -> process" in line or
                     "finder confirm -> process" in line):
                 process_entered = True
-            if first_process_at is None and "screen=4" in line:
+            if first_process_at is None and "screen=3" in line:
                 first_process_at = time.monotonic()
 
         held_seconds = 0.0
@@ -178,7 +192,7 @@ def main():
                 break
         ok = (process_entered and first_process_at is not None and
               held_seconds >= 10.0 and last_process_status is not None and
-              "screen=4" in last_process_status and "frozen=0" in last_process_status)
+              "screen=3" in last_process_status and "frozen=0" in last_process_status)
         emit("VALIDATION process_entered=%s held_seconds=%.2f last_status=%s ok=%s" % (
             process_entered, held_seconds, last_process_status, ok))
         emit("CAPTURE_END status=%s" % ("PASS" if ok else "FAIL"))

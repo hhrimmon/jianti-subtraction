@@ -806,8 +806,13 @@ static void jt_clear_finder_preview(void)
     if (!s_jt.finder_preview) {
         return;
     }
+    /* The preview descriptor lives in static storage and is reused by every
+     * camera frame.  Clear the image cache before blanking the widget so a
+     * pending draw cannot decode a zeroed descriptor as an indexed image. */
+    lv_img_cache_invalidate_src(&s_jt.finder_preview_dsc);
     lv_img_set_src(s_jt.finder_preview, NULL);
     memset(&s_jt.finder_preview_dsc, 0, sizeof(s_jt.finder_preview_dsc));
+    s_jt.finder_preview_dsc.header.cf = LV_IMG_CF_TRUE_COLOR;
     lv_obj_invalidate(s_jt.finder_preview);
 }
 
@@ -895,6 +900,7 @@ static void jt_apply_camera_frame(void *buffer, uint32_t width,
     if (!lvgl_port_lock(0)) {
         return;
     }
+    lv_img_cache_invalidate_src(&s_jt.finder_preview_dsc);
     s_jt.finder_preview_dsc.data = buffer;
     s_jt.finder_preview_dsc.header.w = width;
     s_jt.finder_preview_dsc.header.h = height;
@@ -902,7 +908,6 @@ static void jt_apply_camera_frame(void *buffer, uint32_t width,
     s_jt.finder_preview_dsc.data_size = (size_t)width * height * 2U;
     lv_img_set_src(s_jt.finder_preview, &s_jt.finder_preview_dsc);
     lv_obj_set_size(s_jt.finder_preview, width, height);
-    lv_img_cache_invalidate_src(&s_jt.finder_preview_dsc);
     lv_obj_invalidate(s_jt.finder_preview);
     lv_refr_now(NULL);
     if (s_jt.finder_status && lv_obj_has_flag(s_jt.finder_status, LV_OBJ_FLAG_HIDDEN)) {

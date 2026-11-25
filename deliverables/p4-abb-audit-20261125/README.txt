@@ -66,3 +66,27 @@ No new source files in this update; the listed changed sources are unchanged.
 - Injected current family session token and added HTTP error status/body logs; built build_auth_token_fix.log and flashed flash_auth_token_fix.log.
 - p4_auth_fix_shutter.log: PHOTO011.jpg 70336 bytes, solve async start, then result=3 questions=0.
 - Server job-00591dc7dc31 received image_bytes=70336 and failed with no_question; upload/auth path PASS, recognition/content remains.
+
+2026-11-25 process-page 10s hold closure:
+- DSI direct mode was disabled in lvgl_demo.c after the first real process entry
+  reset in lv_draw_sw_buffer_copy/refr_sync_areas. Logs:
+  build_lvgl_direct_off_20261125.log, flash_lvgl_direct_off_20261125.log,
+  p4_process_hold_10s_direct_off_try1.log.txt, p4_process_hold_10s_direct_off_pass.log.txt.
+- The remaining LVGL crash was narrowed to the finder preview image cache:
+  `jt_clear_finder_preview()` blanked the widget and zeroed the static
+  lv_img_dsc_t without invalidating the cache first. The fix invalidates the
+  old src before blanking/zeroing and restores TRUE_COLOR as the safe cf.
+- build_lvgl_cache_fix_20261125.log and flash_lvgl_cache_fix_20261125.log cover
+  the final build/flash. The final firmware ELF SHA256 short code is a6e4a5cfc.
+- capture_process_hold_real.py now returns the UI to lock screen first, waits
+  for the current finder page to report `screen=2 stream=1 frame=1`, sends the
+  real shutter handler, polls read-only status every 2s, and validates
+  `screen=3 frozen=0` for at least 10s. `screen=3` is the zero-based index for
+  ABB's page 4; `frozen=0` proves the debug freeze path was not used.
+- p4_process_hold_10s_cache_fix_retry.log.txt is the accepted capture:
+  `finder shutter -> process`, repeated `screen=3 frozen=0 ...`, final
+  `VALIDATION process_entered=True held_seconds=11.77 ... ok=True`,
+  `CAPTURE_END status=PASS`.
+- p4_process_hold_10s_cache_fix.log.txt and
+  p4_process_hold_10s_cache_fix_pass.log.txt are retained as truthful failed
+  attempts (9.78s hold window and stale console/state interference).

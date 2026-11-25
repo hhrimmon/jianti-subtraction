@@ -1,0 +1,92 @@
+[2026-11-25 23:26:58.042 t=+004.02s] CAPTURE_START port=COM4 baud=115200 duration=12.0s interval=2.0s
+[2026-11-25 23:26:58.042 t=+004.02s] UART_TX readiness status
+[2026-11-25 23:26:59.267 t=+005.23s] UART_TX readiness status
+[2026-11-25 23:26:59.292 t=+005.27s] READY_CONFIRMED [0;32mI (5172) ES8311: Work in Slave mode[0m
+[0;32mI (5175) I2S_IF: STD: TX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: STEREO, slot_mask: 0x3[0m
+[0;32mI (5176) I2S_IF: STD: TX, sample_rate_hz: 16000, mclk_multiple: 256, clk_src: 0[0m
+[0;32mI (5185) I2S_IF: STD: RX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: STEREO, slot_mask: 0x3[0m
+[0;32mI (5193) I2S_IF: STD: RX, sample_rate_hz: 16000, mclk_multiple: 256, clk_src: 0[0m
+[0;32mI (5217) Adev_Codec: Open codec device OK[0m
+[0;32mI (5217) LVGL: Starting LVGL task[0m
+[0;31mE (5218) lcd_panel: esp_lcd_panel_swap_xy(60): swap_xy is not supported by this panel[0m
+screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0
+[0;31mE (5224) lcd_panel: es
+[2026-11-25 23:26:59.502 t=+005.47s] UART_RX p_lcd_panel_mirror(53): mirror is not supported by this panel[0m
+[2026-11-25 23:26:59.907 t=+005.88s] UART_TX freeze 0
+[2026-11-25 23:27:00.473 t=+006.44s] UART_RX freeze=0
+[2026-11-25 23:27:00.473 t=+006.44s] UART_RX [0;32mI (6181) GT9XXX: CTP:911[0m
+[2026-11-25 23:27:00.473 t=+006.44s] UART_RX [0;32mI (6197) JT_UI: Initializing JianTi v114 native-widget UI[0m
+[2026-11-25 23:27:00.473 t=+006.44s] UART_RX [0;32mI (6197) JT_UI: device id=2040059832773436 source=compile-time-default[0m
+[2026-11-25 23:27:00.473 t=+006.44s] UART_RX [0;32mI (6420) JT_UI: JianTi v114 native-widget UI read
+[2026-11-25 23:27:00.609 t=+006.58s] UART_RX y[0m
+[2026-11-25 23:27:00.609 t=+006.58s] UART_RX [0;32mI (6420) JT_UI: lock screen waiting for network[0m
+[2026-11-25 23:27:00.609 t=+006.58s] UART_RX [0;32mI (6421) JT_UI: JianTi launcher enabled over initialized display[0m
+[2026-11-25 23:27:00.609 t=+006.58s] UART_RX [0;32mI (6551) JT_CLIENT: wifi driver initialized[0m
+[2026-11-25 23:27:00.609 t=+006.58s] UART_RX [0;32mI (6554) eh_wifi: set_config iface=STA ssid="rimm
+[2026-11-25 23:27:00.938 t=+006.91s] UART_RX on" (6 bytes)[0m
+[2026-11-25 23:27:00.938 t=+006.91s] UART_RX [0;32mI (6671) eh_wifi: rx RPC WifiEventNoArgs id=2[0m
+[2026-11-25 23:27:01.233 t=+007.20s] UART_RX [0;32mI (6972) esp_wifi_remote: esp_wifi_internal_reg_rxcb: sta: 0x480b173e[0m
+[2026-11-25 23:27:01.436 t=+007.41s] UART_TX page 2
+[2026-11-25 23:27:01.937 t=+007.91s] UART_RX [0;32mI (7493) JT_UI: finder start: camera_ready=0[0m
+[2026-11-25 23:27:01.937 t=+007.91s] UART_RX [0;32mI (7493) mipi_lcd: MIPI DSI PHY Powered on[0m
+[2026-11-25 23:27:01.937 t=+007.91s] UART_RX [0;32mI (7512) mipi_cam: storage total=956561 used=678704 bytes[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7513) mipi_cam: preview buffers aligned: line=128 size=1228800[
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX 0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7517) ov5647: Detected Camera sensor PID=0x5647[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7568) app_video: version: 0.5.1[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7568) app_video: driver:  MIPI-CSI[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7568) app_video: card:    MIPI-CSI[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7571) app_video: bus:     esp32p
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX 4:MIPI-CSI[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7577) app_video: width=1024 height=600[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7580) app_video: Capture RGB 5-6-5 format[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;33mW (7654) JT_CLIENT: network not ready after 1000 ms[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [0;32mI (7786) JT_UI: finder camera init err=0x0 ready=0[0m
+[2026-11-25 23:27:01.938 t=+007.91s] UART_RX [
+[2026-11-25 23:27:02.261 t=+008.23s] UART_RX 0;32mI (7820) app_video: Camera Start[0m
+[2026-11-25 23:27:02.261 t=+008.23s] UART_RX page=2
+[2026-11-25 23:27:02.261 t=+008.23s] UART_RX [0;32mI (7999) esp_netif_handlers: sta ip: 192.168.0.105, mask: 255.255.255.0, gw: 192.168.0.1[0m
+[2026-11-25 23:27:02.261 t=+008.23s] UART_RX [0;32mI (7999) JT_CLIENT: got IP: 192.168.0.105[0m
+[2026-11-25 23:27:02.707 t=+008.67s] UART_RX [0;32mI (8562) mipi_cam: PHOTO SAVED /storage/PICTURE/PHOTO015.jpg size=12644[0m
+[2026-11-25 23:27:02.707 t=+008.67s] UART_RX [0;32mI (8563) mipi_cam: submit photo: jpeg_size=12644[0m
+[2026-11-25 23:27:02.707 t=+008.67s] UART_RX [0;32mI (8566) mipi_cam: solve async start[0m
+[2026-11-25 23:27:02.707 t=+008.67s] UART_RX [0;32mI (8654) JT_CLIENT: lock screen GET http://192.168.0.10
+[2026-11-25 23:27:02.892 t=+008.86s] UART_RX 8:8000/lockscreen?device_id=2040059832773436[0m
+[2026-11-25 23:27:02.892 t=+008.86s] UART_RX [0;32mI (8822) JT_CLIENT: lock screen response status=200 bytes=66[0m
+[2026-11-25 23:27:02.892 t=+008.86s] UART_RX [0;32mI (8823) JT_CLIENT: lock screen time synced from HTTP Date: Wed, 25 Nov 2026 15:27:02 GMT[0m
+[2026-11-25 23:27:02.892 t=+008.86s] UART_RX [0;32mI (8827) JT_CLIENT: lock
+[2026-11-25 23:27:02.911 t=+008.88s] UART_RX screen data city= temp= memo_len=21 synced=1 date=Wed, 25 Nov 2026 15:27:02 GMT[0m
+[2026-11-25 23:27:02.911 t=+008.88s] UART_RX [0;32mI (8839) JT_BIZ: lock screen refresh result=ok http=200 temp=--- memo_len=21 date=Wed, 25 Nov 2026 15:27:02 GMT[0m
+[2026-11-25 23:27:02.911 t=+008.88s] UART_RX [0;32mI (8847) JT_UI: lock screen fetch compl
+[2026-11-25 23:27:03.117 t=+009.08s] UART_RX ete at 8847 ms[0m
+[2026-11-25 23:27:03.117 t=+009.08s] UART_TX finder readiness status
+[2026-11-25 23:27:03.334 t=+009.30s] UART_RX screen=2 frozen=0 stream=1 frame=1 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:27:03.942 t=+009.91s] FINDER_READY_CONFIRMED screen=2 frozen=0 stream=1 frame=1 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:27:03.942 t=+009.91s] UART_TX pre-confirm status
+[2026-11-25 23:27:04.443 t=+010.41s] UART_TX shutter
+[2026-11-25 23:27:04.443 t=+010.41s] ENTER_PROCESS_SENT
+[2026-11-25 23:27:04.757 t=+010.72s] UART_RX screen=2 frozen=0 stream=1 frame=1 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:27:04.757 t=+010.72s] UART_RX [0;32mI (10398) JT_UI: finder shutter -> process[0m
+[2026-11-25 23:27:04.757 t=+010.72s] UART_RX shutter=done
+[2026-11-25 23:27:05.831 t=+011.80s] UART_RX [0;32mI (11573) mipi_cam: solve done: result=3 questions=0[0m
+[2026-11-25 23:27:06.299 t=+012.27s] UART_RX [0;32mI (12019) mipi_cam: PHOTO SAVED /storage/PICTURE/PHOTO016.jpg size=73530[0m
+[2026-11-25 23:27:06.299 t=+012.27s] UART_RX [0;32mI (12019) mipi_cam: submit photo: jpeg_size=73530[0m
+[2026-11-25 23:27:06.299 t=+012.27s] UART_RX [0;32mI (12022) mipi_cam: solve async start[0m
+[2026-11-25 23:27:06.583 t=+012.55s] UART_RX [0;32mI (12324) mipi_cam: fps: 11.107031[0m
+[2026-11-25 23:27:06.583 t=+012.55s] UART_TX poll status (read-only)
+[2026-11-25 23:27:06.800 t=+012.77s] UART_RX screen=3 frozen=0 stream=1 frame=1 solve_job=job-98a785182f19 solve_result=3 solve_questions=0
+[2026-11-25 23:27:08.625 t=+014.59s] UART_TX poll status (read-only)
+[2026-11-25 23:27:08.985 t=+014.95s] UART_RX screen=3 frozen=0 stream=1 frame=1 solve_job=job-98a785182f19 solve_result=3 solve_questions=0
+[2026-11-25 23:27:08.985 t=+014.95s] UART_RX [0;32mI (14722) mipi_cam: fps: 20.849926[0m
+[2026-11-25 23:27:10.325 t=+016.30s] UART_RX [0;32mI (16071) mipi_cam: solve done: result=3 questions=0[0m
+[2026-11-25 23:27:10.734 t=+016.70s] UART_TX poll status (read-only)
+[2026-11-25 23:27:10.953 t=+016.92s] UART_RX screen=3 frozen=0 stream=1 frame=1 solve_job=job-13a37d5d4f40 solve_result=3 solve_questions=0
+[2026-11-25 23:27:11.385 t=+017.34s] UART_RX [0;32mI (17128) mipi_cam: fps: 20.780490[0m
+[2026-11-25 23:27:12.806 t=+018.77s] UART_TX poll status (read-only)
+[2026-11-25 23:27:13.026 t=+018.98s] UART_RX screen=3 frozen=0 stream=1 frame=1 solve_job=job-13a37d5d4f40 solve_result=3 solve_questions=0
+[2026-11-25 23:27:13.789 t=+019.75s] UART_RX [0;32mI (19527) mipi_cam: fps: 20.838812[0m
+[2026-11-25 23:27:14.817 t=+020.78s] UART_TX poll status (read-only)
+[2026-11-25 23:27:15.037 t=+021.00s] UART_RX screen=3 frozen=0 stream=1 frame=1 solve_job=job-13a37d5d4f40 solve_result=3 solve_questions=0
+[2026-11-25 23:27:16.179 t=+022.14s] UART_RX [0;32mI (21912) mipi_cam: fps: 20.967482[0m
+[2026-11-25 23:27:16.584 t=+022.55s] VALIDATION process_entered=True held_seconds=9.78 last_status=screen=3 frozen=0 stream=1 frame=1 solve_job=job-13a37d5d4f40 solve_result=3 solve_questions=0 ok=False
+[2026-11-25 23:27:16.585 t=+022.55s] CAPTURE_END status=FAIL

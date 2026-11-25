@@ -1,0 +1,228 @@
+[2026-11-25 23:22:58.198 t=+004.02s] CAPTURE_START port=COM4 baud=115200 duration=14.0s interval=2.0s
+[2026-11-25 23:22:58.198 t=+004.02s] UART_TX readiness status
+[2026-11-25 23:22:58.421 t=+004.23s] READY_CONFIRMED screen=3 frozen=0 stream=1 frame=1 solve_job=job-37403754b365 solve_result=3 solve_questions=0
+[2026-11-25 23:22:59.041 t=+004.84s] UART_TX freeze 0
+[2026-11-25 23:22:59.755 t=+005.56s] UART_RX freeze=0
+[2026-11-25 23:22:59.987 t=+005.80s] UART_RX [0;32mI (43617) mipi_cam: fps: 20.835920[0m
+[2026-11-25 23:23:00.599 t=+006.41s] UART_TX page 2
+[2026-11-25 23:23:01.301 t=+007.11s] UART_RX [0;32mI (44554) JT_UI: finder start: camera_ready=1[0m
+[2026-11-25 23:23:01.301 t=+007.11s] UART_RX [0;32mI (44555) mipi_cam: camera already running[0m
+[2026-11-25 23:23:01.301 t=+007.11s] UART_RX [0;32mI (44555) JT_UI: finder camera init err=0x0 ready=1[0m
+[2026-11-25 23:23:01.301 t=+007.11s] UART_RX page=2
+[2026-11-25 23:23:02.115 t=+007.92s] UART_TX finder readiness status
+[2026-11-25 23:23:02.333 t=+008.14s] UART_RX screen=2 frozen=0 stream=1 frame=1 solve_job=job-37403754b365 solve_result=3 solve_questions=0
+[2026-11-25 23:23:02.945 t=+008.75s] FINDER_READY_CONFIRMED screen=2 frozen=0 stream=1 frame=1 solve_job=job-37403754b365 solve_result=3 solve_questions=0
+[2026-11-25 23:23:02.945 t=+008.75s] UART_TX pre-confirm status
+[2026-11-25 23:23:03.446 t=+009.25s] UART_TX shutter
+[2026-11-25 23:23:03.446 t=+009.25s] ENTER_PROCESS_SENT
+[2026-11-25 23:23:03.609 t=+009.42s] UART_RX screen=2 frozen=0 stream=1 frame=1 solve_job=job-37403754b365 solve_result=3 solve_questions=0
+[2026-11-25 23:23:03.609 t=+009.42s] UART_RX [0;32mI (47292) JT_UI: finder shutter -> process[0m
+[2026-11-25 23:23:03.609 t=+009.42s] UART_RX Guru Meditation Error: Core  0 panic'ed (Load access fault). Exception was unhandled.
+[2026-11-25 23:23:03.632 t=+009.44s] UART_RX Core  0 register dump:
+[2026-11-25 23:23:03.632 t=+009.44s] UART_RX MEPC    : 0x48044eca  RA      : 0x48044e84  SP      : 0x4ffbee30  GP      : 0x4ff3b400
+[2026-11-25 23:23:03.632 t=+009.44s] UART_RX TP      : 0x4ffbf3e0  T0      : 0x4ff5a9f0  T1      : 0x00000004  T2      : 0xffffffff
+[2026-11-25 23:23:03.654 t=+009.47s] UART_RX S0/FP   : 0x00000200  S1      : 0x0004a840  A0      : 0x4ff57d40  A1      : 0x4863ad6c
+[2026-11-25 23:23:03.654 t=+009.47s] UART_RX A2      : 0x00000010  A3      : 0x000000ed  A4      : 0x00000400  A5      : 0x4ff595ec
+[2026-11-25 23:23:03.654 t=+009.47s] UART_RX A6      : 0x4ff5a1ec  A7      : 0x00000004  S2      : 0x4ff595ec  S3      : 0x4ffbee98
+[2026-11-25 23:23:03.676 t=+009.48s] UART_RX S4      : 0x4ffbef68  S5      : 0x4ffbeeb8  S6      : 0x00000005  S7      : 0x00000254
+[2026-11-25 23:23:03.676 t=+009.48s] UART_RX S8      : 0x00000254  S9      : 0x4ffbef60  S10     : 0x00000400  S11     : 0x00000000
+[2026-11-25 23:23:03.676 t=+009.48s] UART_RX T3      : 0x00000000  T4      : 0x4ff57d40  T5      : 0x0000000f  T6      : 0x00000004
+[2026-11-25 23:23:03.699 t=+009.52s] UART_RX MSTATUS : 0x00011881  MTVEC   : 0x4ff20003  MCAUSE  : 0x00000005  MTVAL   : 0x0000000c
+[2026-11-25 23:23:03.699 t=+009.52s] UART_RX MHARTID : 0x00000000
+[2026-11-25 23:23:03.699 t=+009.52s] UART_RX Stack memory:
+[2026-11-25 23:23:03.699 t=+009.52s] UART_RX 4ffbee30: 0x4ff57d40 0x00000000 0x4ff47a68 0x00000004 0x00000400 0x4ff595ec 0x00000004 0x00000000
+[2026-11-25 23:23:03.720 t=+009.53s] UART_RX 4ffbee50: 0x00000400 0x4ffbef60 0x00000253 0x00000253 0x00000005 0x4ffbeeb8 0x4ffbef68 0x4ffbee98
+[2026-11-25 23:23:03.720 t=+009.53s] UART_RX 4ffbee70: 0x4ff595ec 0x4ffbef70 0x4ff482b8 0x480423b6 0x00000000 0x48a4ab64 0x4ff47a68 0x00000000
+[2026-11-25 23:23:03.720 t=+009.53s] UART_RX 4ffbee90: 0x00000000 0x025703ff 0x02540000 0x025403ff 0x00000000 0x00ff0000 0x4ff482b8 0x4898bd44
+[2026-11-25 23:23:03.743 t=+009.55s] UART_RX 4ffbeeb0: 0x00000000 0x4ffbee68 0x02540000 0x025403ff 0x00000000 0x00000000 0x00000000 0x00000258
+[2026-11-25 23:23:03.743 t=+009.55s] UART_RX 4ffbeed0: 0x4ff562b4 0x00000400 0x4ff562b4 0x00000000 0x00000000 0x00000000 0x00000000 0x00000258
+[2026-11-25 23:23:03.765 t=+009.58s] UART_RX 4ffbeef0: 0x4ff562b4 0x00000400 0x4ff562b4 0x4ffbf048 0x00000000 0x00000000 0x00000000 0x00000258
+[2026-11-25 23:23:03.765 t=+009.58s] UART_RX 4ffbef10: 0x4ff562b4 0x00000000 0x4ff482b8 0x00000000 0x00000257 0x000003ff 0x00000400 0x48053e22
+[2026-11-25 23:23:03.765 t=+009.58s] UART_RX 4ffbef30: 0x48137000 0x4ff4d388 0x4ff4d388 0x00000257 0x00000000 0x00000000 0x00000000 0x000003ff
+[2026-11-25 23:23:03.788 t=+009.59s] UART_RX 4ffbef50: 0x4ffbef78 0x012c0200 0x00000000 0x025703ff 0x00000000 0x025703ff 0x00000000 0x025703ff
+[2026-11-25 23:23:03.788 t=+009.59s] UART_RX 4ffbef70: 0x01000000 0x012c0200 0xff000000 0x00000000 0x00000000 0x00000001 0x00000000 0x000200ff
+[2026-11-25 23:23:03.788 t=+009.59s] UART_RX 4ffbef90: 0x00000000 0x48a4ab64 0x00ff0000 0x4816be80 0x48137000 0x48137000 0x00000002 0x4ffbf048
+[2026-11-25 23:23:03.810 t=+009.62s] UART_RX 4ffbefb0: 0x00000001 0x4ffbf0a8 0x00000009 0x4ff482b8 0x4ff562b4 0x4ffbf014 0x00000000 0x48036ef6
+[2026-11-25 23:23:03.810 t=+009.62s] UART_RX 4ffbefd0: 0x00000000 0x00000000 0x00000000 0x4ffbf014 0x00000000 0x00000000 0x00000000 0x48036fd0
+[2026-11-25 23:23:03.832 t=+009.64s] UART_RX 4ffbeff0: 0x00000000 0x00000000 0x00000000 0x00000000 0x4ff562b4 0x4ff562b4 0x00000000 0x480370e8
+[2026-11-25 23:23:03.832 t=+009.64s] UART_RX 4ffbf010: 0x4ff4d388 0x4ff562b4 0x4ff562b4 0x00000015 0x00000000 0x4ff482b8 0x4ff8b9c4 0x4ffbf060
+[2026-11-25 23:23:03.832 t=+009.64s] UART_RX 4ffbf030: 0x00000000 0x00000000 0x00000000 0x48040a8c 0x00000000 0x00000000 0x00000000 0x025703ff
+[2026-11-25 23:23:03.854 t=+009.66s] UART_RX 4ffbf050: 0x00000000 0x025703ff 0x00000009 0x480370e8 0x4ff49110 0x4ff4d388 0x4ff4d388 0x4ffbf098
+[2026-11-25 23:23:03.854 t=+009.66s] UART_RX 4ffbf070: 0x00000001 0x4ffbf0f8 0x4ff8b9c4 0x4ff482b8 0x4ff4d388 0x00000000 0x00000000 0x48040a50
+[2026-11-25 23:23:03.877 t=+009.69s] UART_RX 4ffbf090: 0x00000000 0x00000000 0x00000000 0x025703ff 0x00000000 0x025703ff 0x00000000 0x025703ff
+[2026-11-25 23:23:03.877 t=+009.69s] UART_RX 4ffbf0b0: 0x4ff48d70 0x4ff49110 0x4ff49110 0x4ffbf0e8 0x00000001 0x4ffbf148 0x0000000a 0x4ff482b8
+[2026-11-25 23:23:03.877 t=+009.69s] UART_RX 4ffbf0d0: 0x4ff49110 0x4ff4d388 0x00000009 0x48040a50 0x4ff3c3c8 0x00000000 0x00000000 0x025703ff
+[2026-11-25 23:23:03.898 t=+009.70s] UART_RX 4ffbf0f0: 0x00000000 0x025703ff 0x00000000 0x025703ff 0x00004e09 0x4ff48d70 0x4ff48d70 0x4ffbf138
+[2026-11-25 23:23:03.898 t=+009.70s] UART_RX 4ffbf110: 0x00000001 0x4ff8ba48 0x00000001 0x4ff482b8 0x4ff48d70 0x4ff49110 0x00000000 0x48040a50
+[2026-11-25 23:23:03.921 t=+009.73s] UART_RX 4ffbf130: 0x4ff6a000 0x4ffbf2a0 0x00000000 0x025703ff 0x00000000 0x025703ff 0x00000000 0x025703ff
+[2026-11-25 23:23:03.921 t=+009.73s] UART_RX 4ffbf150: 0x00000000 0x4ffbf188 0x4ff8ba14 0x00000000 0x00000000 0x00000030 0x4ff482b8 0x4ff48d70
+[2026-11-25 23:23:03.921 t=+009.73s] UART_RX 4ffbf170: 0x4ff6a000 0x4ff482b8 0x4ff48d1c 0x48040f7a 0x4ff3c3c8 0x00000009 0x4ffbf2a0 0x00000000
+[2026-11-25 23:23:03.943 t=+009.75s] UART_RX 4ffbf190: 0x4ff6a000 0x4ff482b8 0x4ffbf2a0 0x48041058 0x4ffbf23c 0x00000000 0x01a2004a 0x01df0171
+[2026-11-25 23:23:03.943 t=+009.75s] UART_RX 4ffbf1b0: 0x00000027 0x00000116 0x4ff4be88 0x00000000 0x00000000 0x483f294c 0x4ff4be38 0x4803bdcc
+[2026-11-25 23:23:03.943 t=+009.75s] UART_RX 4ffbf1d0: 0x00000001 0x4ff4be38 0x4ffbf258 0x4ffbf208 0x48137000 0x48137000 0x019d0045 0x01e40176
+[2026-11-25 23:23:03.974 t=+009.78s] UART_RX 4ffbf1f0: 0x48137000 0x00000000 0x4ff4be38 0x4803be1e 0x00000000 0x4ff4be38 0x01a2004a 0x01df0171
+[2026-11-25 23:23:03.974 t=+009.78s] UART_RX 4ffbf210: 0x00000000 0x483f294c 0x4ff4be38 0x4805448e 0x00000006 0x00000000 0x4ffbf2c0 0x4ff40fa4
+[2026-11-25 23:23:03.974 t=+009.78s] UART_RX ELF file SHA256: 6ba4f3bc7
+[2026-11-25 23:23:03.974 t=+009.78s] UART_RX Rebooting...
+[2026-11-25 23:23:03.993 t=+009.80s] UART_RX ESP-ROM:esp32p4-eco7-20260109
+[2026-11-25 23:23:03.993 t=+009.80s] UART_RX Build:Jan  9 2026
+[2026-11-25 23:23:03.994 t=+009.80s] UART_RX rst:0xc (SW_CPU_RESET),boot:0x31f (SPI_FAST_FLASH_BOOT)
+[2026-11-25 23:23:03.996 t=+009.81s] UART_RX Core0 Saved PC:0x4ff20ae6
+[2026-11-25 23:23:03.996 t=+009.81s] UART_RX Core1 Saved PC:0x4805378c
+[2026-11-25 23:23:03.996 t=+009.81s] UART_RX SPI mode:DIO, clock div:1
+[2026-11-25 23:23:03.996 t=+009.81s] UART_RX load:0x4ffb60d0,len:0x1a40
+[2026-11-25 23:23:03.996 t=+009.81s] UART_RX load:0x4ffab2c0,len:0x1194
+[2026-11-25 23:23:03.996 t=+009.81s] UART_RX load:0x4ffadfc0,len:0x37d0
+[2026-11-25 23:23:04.017 t=+009.83s] UART_RX entry 0x4ffab2ca
+[2026-11-25 23:23:04.017 t=+009.83s] UART_RX [0;32mI (33) boot: ESP-IDF v6.0.2 2nd stage bootloader[0m
+[2026-11-25 23:23:04.017 t=+009.83s] UART_RX [0;32mI (33) boot: compile time Nov 24 2026 03:56:06[0m
+[2026-11-25 23:23:04.017 t=+009.83s] UART_RX [0;32mI (34) boot: Multicore bootloader[0m
+[2026-11-25 23:23:04.017 t=+009.83s] UART_RX [0;32mI (37) boot: chip revision: v3.2[0m
+[2026-11-25 23:23:04.039 t=+009.84s] UART_RX [0;32mI (40) boot: efuse block revision: v1.2[0m
+[2026-11-25 23:23:04.039 t=+009.84s] UART_RX [0;32mI (45) qio_mode: Enabling default flash chip QIO[0m
+[2026-11-25 23:23:04.039 t=+009.84s] UART_RX [0;32mI (50) boot.esp32p4: SPI Speed      : 80MHz[0m
+[2026-11-25 23:23:04.039 t=+009.84s] UART_RX [0;32mI (55) boot.esp32p4: SPI Mode       : QIO[0m
+[2026-11-25 23:23:04.039 t=+009.84s] UART_RX [0;32mI (59) boot.esp32p4: SPI Flash Size : 16MB[0m
+[2026-11-25 23:23:04.062 t=+009.88s] UART_RX [0;32mI (64) boot: Enabling RNG early entropy source...[0m
+[2026-11-25 23:23:04.062 t=+009.88s] UART_RX [0;32mI (70) boot: Partition Table:[0m
+[2026-11-25 23:23:04.062 t=+009.88s] UART_RX [0;32mI (73) boot: ## Label            Usage          Type ST Offset   Length[0m
+[2026-11-25 23:23:04.083 t=+009.89s] UART_RX [0;32mI (80) boot:  0 nvs              WiFi data        01 02 00011000 00006000[0m
+[2026-11-25 23:23:04.083 t=+009.89s] UART_RX [0;32mI (88) boot:  1 phy_init         RF data          01 01 00017000 00001000[0m
+[2026-11-25 23:23:04.083 t=+009.89s] UART_RX [0;32mI (95) boot:  2 factory          factory app      00 00 00020000 00c00000[0m
+[2026-11-25 23:23:04.304 t=+010.11s] UART_RX [0;32mI (103) boot:  3 storage          Unknown data     01 82 00c20000 00100000[0m
+[2026-11-25 23:23:04.304 t=+010.11s] UART_RX [0;32mI (111) boot: End of partition table[0m
+[2026-11-25 23:23:04.304 t=+010.11s] UART_RX [0;32mI (115) esp_image: segment 0: paddr=00020020 vaddr=48130020 size=9cf480h (10286208) map[0m
+[2026-11-25 23:23:05.170 t=+010.98s] UART_RX [0;32mI (1186) esp_image: segment 1: paddr=009ef4a8 vaddr=30100000 size=00204h (   516) load[0m
+[2026-11-25 23:23:05.170 t=+010.98s] UART_RX [0;32mI (1188) esp_image: segment 2: paddr=009ef6b4 vaddr=30100210 size=00048h (    72) load[0m
+[2026-11-25 23:23:05.318 t=+011.12s] UART_RX [0;32mI (1193) esp_image: segment 3: paddr=009ef704 vaddr=4ff20000 size=00914h (  2324) load[0m
+[2026-11-25 23:23:05.318 t=+011.12s] UART_RX [0;32mI (1202) esp_image: segment 4: paddr=009f0020 vaddr=48000020 size=1293e0h (1217504) map[0m
+[2026-11-25 23:23:05.318 t=+011.12s] UART_RX [0;32mI (1336) esp_image: segment 5: paddr=00b19408 vaddr=4ff20914 size=1a2bch (107196) load[0m
+[2026-11-25 23:23:05.340 t=+011.16s] UART_RX [0;32mI (1350) esp_image: segment 6: paddr=00b336cc vaddr=4ff3ac00 size=051dch ( 20956) load[0m
+[2026-11-25 23:23:05.340 t=+011.16s] UART_RX [0;32mI (1354) esp_image: segment 7: paddr=00b388b0 vaddr=50108080 size=00030h (    48) load[0m
+[2026-11-25 23:23:05.340 t=+011.16s] UART_RX [0;32mI (1362) boot: Loaded app from partition at offset 0x20000[0m
+[2026-11-25 23:23:05.366 t=+011.17s] UART_RX [0;32mI (1363) boot: Disabling RNG early entropy source...[0m
+[2026-11-25 23:23:05.366 t=+011.17s] UART_RX [0;32mI (1382) hex_psram: vendor id    : 0x0d (AP)[0m
+[2026-11-25 23:23:05.366 t=+011.17s] UART_RX [0;32mI (1382) hex_psram: Latency      : 0x01 (Fixed)[0m
+[2026-11-25 23:23:05.366 t=+011.17s] UART_RX [0;32mI (1383) hex_psram: DriveStr.    : 0x00 (25 Ohm)[0m
+[2026-11-25 23:23:05.388 t=+011.20s] UART_RX [0;32mI (1386) hex_psram: dev id       : 0x03 (generation 4)[0m
+[2026-11-25 23:23:05.388 t=+011.20s] UART_RX [0;32mI (1392) hex_psram: density      : 0x07 (256 Mbit)[0m
+[2026-11-25 23:23:05.388 t=+011.20s] UART_RX [0;32mI (1397) hex_psram: good-die     : 0x06 (Pass)[0m
+[2026-11-25 23:23:05.388 t=+011.20s] UART_RX [0;32mI (1403) hex_psram: SRF          : 0x02 (Slow Refresh)[0m
+[2026-11-25 23:23:05.410 t=+011.22s] UART_RX [0;32mI (1408) hex_psram: BurstType    : 0x00 ( Wrap)[0m
+[2026-11-25 23:23:05.410 t=+011.22s] UART_RX [0;32mI (1414) hex_psram: BurstLen     : 0x03 (2048 Byte)[0m
+[2026-11-25 23:23:05.410 t=+011.22s] UART_RX [0;32mI (1419) hex_psram: BitMode      : 0x01 (X16 Mode)[0m
+[2026-11-25 23:23:05.410 t=+011.22s] UART_RX [0;32mI (1425) hex_psram: Readlatency  : 0x06 (18 cycles@Fixed)[0m
+[2026-11-25 23:23:05.767 t=+011.58s] UART_RX [0;32mI (1431) hex_psram: DriveStrength: 0x00 (1/1)[0m
+[2026-11-25 23:23:05.767 t=+011.58s] UART_RX [0;32mI (1436) MSPI Timing: Enter psram timing tuning[0m
+[2026-11-25 23:23:05.767 t=+011.58s] UART_RX I esp_psram: Found 32MB PSRAM device
+[2026-11-25 23:23:05.767 t=+011.58s] UART_RX I esp_psram: Speed: 250MHz
+[2026-11-25 23:23:05.767 t=+011.58s] UART_TX poll status (read-only)
+[2026-11-25 23:23:06.089 t=+011.91s] UART_RX [0;32mI (2052) mmu_psram: .rodata xip on psram[0m
+[2026-11-25 23:23:06.089 t=+011.91s] UART_RX [0;32mI (2107) mmu_psram: .text xip on psram[0m
+[2026-11-25 23:23:06.089 t=+011.91s] UART_RX [0;32mI (2109) hex_psram: psram CS IO is dedicated[0m
+[2026-11-25 23:23:06.089 t=+011.91s] UART_RX [0;32mI (2109) cpu_start: Multicore app[0m
+[2026-11-25 23:23:06.111 t=+011.92s] UART_RX [0;32mI (2121) cpu_start: GPIO 38 and 37 are used as console UART I/O pins[0m
+[2026-11-25 23:23:06.111 t=+011.92s] UART_RX [0;32mI (2121) cpu_start: Pro cpu start user code[0m
+[2026-11-25 23:23:06.111 t=+011.92s] UART_RX [0;32mI (2122) cpu_start: cpu freq: 400000000 Hz[0m
+[2026-11-25 23:23:06.111 t=+011.92s] UART_RX [0;32mI (2126) app_init: Application information:[0m
+[2026-11-25 23:23:06.133 t=+011.94s] UART_RX [0;32mI (2131) app_init: Project name:     comprehensive_routine_70inch_mi[0m
+[2026-11-25 23:23:06.133 t=+011.94s] UART_RX [0;32mI (2138) app_init: App version:      1[0m
+[2026-11-25 23:23:06.133 t=+011.94s] UART_RX [0;32mI (2143) app_init: Compile time:     Nov 24 2026 09:25:47[0m
+[2026-11-25 23:23:06.133 t=+011.94s] UART_RX [0;32mI (2149) app_init: ELF file SHA256:  6ba4f3bc7...[0m
+[2026-11-25 23:23:06.155 t=+011.97s] UART_RX [0;32mI (2154) app_init: ESP-IDF:          v6.0.2[0m
+[2026-11-25 23:23:06.155 t=+011.97s] UART_RX [0;32mI (2159) efuse_init: Min chip rev:     v3.1[0m
+[2026-11-25 23:23:06.155 t=+011.97s] UART_RX [0;32mI (2164) efuse_init: Max chip rev:     v3.99 [0m
+[2026-11-25 23:23:06.155 t=+011.97s] UART_RX [0;32mI (2169) efuse_init: Chip rev:         v3.2[0m
+[2026-11-25 23:23:06.178 t=+011.98s] UART_RX [0;32mI (2174) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[2026-11-25 23:23:06.178 t=+011.98s] UART_RX [0;32mI (2181) heap_init: At 4FF6A900 len 000506C0 (321 KiB): RETENT_RAM[0m
+[2026-11-25 23:23:06.178 t=+011.98s] UART_RX [0;32mI (2188) heap_init: At 4FFBAFC0 len 00004BF0 (18 KiB): RAM[0m
+[2026-11-25 23:23:06.178 t=+011.98s] UART_RX [0;32mI (2194) heap_init: At 501080B0 len 00007F50 (31 KiB): RTCRAM[0m
+[2026-11-25 23:23:06.200 t=+012.02s] UART_RX [0;32mI (2201) heap_init: At 30100258 len 00001DA8 (7 KiB): SPM[0m
+[2026-11-25 23:23:06.200 t=+012.02s] UART_RX [0;32mI (2207) esp_psram: Adding pool of 21504K of PSRAM memory to heap allocator[0m
+[2026-11-25 23:23:06.222 t=+012.03s] UART_RX [0;32mI (2214) esp_psram: Adding pool of 27K of PSRAM memory gap generated due to end address alignment of irom to the heap allocator[0m
+[2026-11-25 23:23:06.222 t=+012.03s] UART_RX [0;32mI (2226) esp_psram: Adding pool of 2K of PSRAM memory gap generated due to end address alignment of drom to the heap allocator[0m
+[2026-11-25 23:23:06.244 t=+012.05s] UART_RX [0;33mW (2239) spi_flash: Detected GigaDevice flash chip but using generic driver. For optimal functionality, enable `SPI_FLASH_SUPPORT_GD_CHIP` in menuconfig[0m
+[2026-11-25 23:23:06.244 t=+012.05s] UART_RX [0;32mI (2253) spi_flash: detected chip: generic[0m
+[2026-11-25 23:23:06.244 t=+012.05s] UART_RX [0;32mI (2258) spi_flash: flash io: qio[0m
+[2026-11-25 23:23:06.244 t=+012.05s] UART_RX [0;32mI (2262) eh_mcu_transport: transport_init: probing bus backend[0m
+[2026-11-25 23:23:06.267 t=+012.08s] UART_RX [0;32mI (2268) eh_sdio: transport[host]: SDIO 4-bit 40000 kHz CLK=54 CMD=53 D0=49 D1=50 D2=51 D3=52 RESET=19[0m
+[2026-11-25 23:23:06.267 t=+012.08s] UART_RX [0;32mI (2278) eh_sdio: sdio_data_to_rx_buf_task started[0m
+[2026-11-25 23:23:06.267 t=+012.08s] UART_RX [0;32mI (2278) eh_mcu_transport: transport_init: bus backend up[0m
+[2026-11-25 23:23:06.289 t=+012.09s] UART_RX [0;32mI (2278) main_task: Started on CPU0[0m
+[2026-11-25 23:23:06.289 t=+012.09s] UART_RX [0;33mW (2290) eh_sdio: Reset co-processor using GPIO[19][0m
+[2026-11-25 23:23:06.289 t=+012.09s] UART_RX [0;32mI (2299) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations[0m
+[2026-11-25 23:23:06.289 t=+012.09s] UART_RX [0;32mI (2308) main_task: Calling app_main()[0m
+[2026-11-25 23:23:06.319 t=+012.12s] UART_RX screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:23:06.319 t=+012.12s] UART_RX [0;31mE (2340) sdmmc_common: sdmmc_init_ocr: send_op_cond (1) returned 0x107[0m
+[2026-11-25 23:23:06.319 t=+012.12s] UART_RX [0;31mE (2341) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).[0m
+[2026-11-25 23:23:06.341 t=+012.16s] UART_RX [0;31mE (2344) SD_HOST: sd_host_del_sdmmc_controller(353): host controller with slot registered[0m
+[2026-11-25 23:23:06.341 t=+012.16s] UART_RX [0;31mE (2352) vfs_fat_sdmmc: esp_vfs_fat_sdmmc_sdcard_init failed (0x107).[0m
+[2026-11-25 23:23:06.821 t=+012.62s] UART_RX [0;31mE (2358) sdmmc: Failed to initialize the card (ESP_ERR_TIMEOUT). Make sure SD card lines have pull-up resistors in place.[0m
+[2026-11-25 23:23:06.822 t=+012.62s] UART_RX [0;32mI (2390) main_twai: twai ok[0m
+[2026-11-25 23:23:06.822 t=+012.62s] UART_RX [0;32mI (2390) main_twai: twai ok[0m
+[2026-11-25 23:23:06.822 t=+012.62s] UART_RX [0;32mI (2390) main_twai: twai ok[0m
+[2026-11-25 23:23:06.822 t=+012.62s] UART_RX [0;32mI (2490) mipi_lcd: MIPI DSI PHY Powered on[0m
+[2026-11-25 23:23:06.822 t=+012.62s] UART_RX [0;32mI (2691) mipi_lcd: mipilcd_id:0x79007 [0m
+[2026-11-25 23:23:06.945 t=+012.75s] UART_RX [0;32mI (2853) eh_host_port_sdio: Function 0 Blocksize: 512[0m
+[2026-11-25 23:23:06.945 t=+012.75s] UART_RX [0;32mI (2854) eh_host_port_sdio: Function 1 Blocksize: 512[0m
+[2026-11-25 23:23:06.945 t=+012.75s] UART_RX [0;32mI (2954) eh_sdio: Card init success, TRANSPORT_RX_ACTIVE[0m
+[2026-11-25 23:23:06.987 t=+012.80s] UART_RX [0;32mI (2978) eh_sdio: SDIO Host operating in STREAMING MODE[0m
+[2026-11-25 23:23:06.987 t=+012.80s] UART_RX [0;32mI (2978) eh_sdio: Open data path at slave[0m
+[2026-11-25 23:23:06.987 t=+012.80s] UART_RX [0;32mI (2978) eh_sdio: Starting SDIO process rx task[0m
+[2026-11-25 23:23:06.987 t=+012.80s] UART_RX [0;32mI (3008) eh_init_evt: slave chip id: 0x0d (esp32c6)[0m
+[2026-11-25 23:23:06.987 t=+012.80s] UART_RX [0;32mI (3009) eh_init_evt: capabilities: 0x01[0m
+[2026-11-25 23:23:07.009 t=+012.81s] UART_RX [0;32mI (3009) eh_init_evt: Features supported are:[0m
+[2026-11-25 23:23:07.009 t=+012.81s] UART_RX [0;32mI (3015) eh_init_evt: 	 * WLAN over SDIO[0m
+[2026-11-25 23:23:07.009 t=+012.81s] UART_RX [0;32mI (3018) eh_init_evt: extended capabilities: 0x00024010[0m
+[2026-11-25 23:23:07.009 t=+012.81s] UART_RX [0;32mI (3023) eh_init_evt: Extended Features supported:[0m
+[2026-11-25 23:23:07.032 t=+012.84s] UART_RX [0;32mI (3029) eh_init_evt: 	 * WLAN[0m
+[2026-11-25 23:23:07.032 t=+012.84s] UART_RX [0;32mI (3035) eh_init_evt: SDIO buf-config: e2h mode=0 bufsz=15872B, h2e mode=0 bufsz=15872B[0m
+[2026-11-25 23:23:07.032 t=+012.84s] UART_RX [0;33mW (3043) eh_init_evt: unknown PRIV TLV 0x1c[0m
+[2026-11-25 23:23:07.032 t=+012.84s] UART_RX [0;32mI (3046) eh_init_evt: RPC version negotiated: V2[0m
+[2026-11-25 23:23:07.054 t=+012.86s] UART_RX [0;32mI (3052) eh_init_evt: esp-hosted fw versions: host=3.0.4 coprocessor=3.1.0[0m
+[2026-11-25 23:23:07.054 t=+012.86s] UART_RX [0;33mW (3061) eh_init_evt: minor version mismatch — update host firmware[0m
+[2026-11-25 23:23:07.054 t=+012.86s] UART_RX [0;32mI (3067) eh_init_evt: SDIO SW_AGGR negotiated (e2h=15872B h2e=15872B)[0m
+[2026-11-25 23:23:07.074 t=+012.89s] UART_RX [0;32mI (3075) eh_init_evt: SDIO mode: slave=streaming host=streaming[0m
+[2026-11-25 23:23:07.074 t=+012.89s] UART_RX [0;32mI (3081) eh_init_evt: chip=0x0d (esp32c6) fw=0x00030100 caps=0x01 ext=0x00024010[0m
+[2026-11-25 23:23:07.074 t=+012.89s] UART_RX [0;32mI (3090) eh_auto_init: auto_init: found 1 descriptor(s)[0m
+[2026-11-25 23:23:07.290 t=+013.09s] UART_RX [0;32mI (3096) eh_auto_init: auto_init: initialising 'wifi' (priority 150)[0m
+[2026-11-25 23:23:07.900 t=+013.70s] UART_TX poll status (read-only)
+[2026-11-25 23:23:08.120 t=+013.92s] UART_RX screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:23:08.870 t=+014.69s] UART_RX [0;32mI (4885) ES8311: Work in Slave mode[0m
+[2026-11-25 23:23:08.870 t=+014.69s] UART_RX [0;32mI (4888) I2S_IF: STD: TX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: STEREO, slot_mask: 0x3[0m
+[2026-11-25 23:23:08.870 t=+014.69s] UART_RX [0;32mI (4889) I2S_IF: STD: TX, sample_rate_hz: 16000, mclk_multiple: 256, clk_src: 0[0m
+[2026-11-25 23:23:08.897 t=+014.70s] UART_RX [0;32mI (4898) I2S_IF: STD: RX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: STEREO, slot_mask: 0x3[0m
+[2026-11-25 23:23:08.897 t=+014.70s] UART_RX [0;32mI (4906) I2S_IF: STD: RX, sample_rate_hz: 16000, mclk_multiple: 256, clk_src: 0[0m
+[2026-11-25 23:23:09.130 t=+014.94s] UART_RX [0;32mI (4930) Adev_Codec: Open codec device OK[0m
+[2026-11-25 23:23:09.130 t=+014.94s] UART_RX [0;32mI (4930) LVGL: Starting LVGL task[0m
+[2026-11-25 23:23:09.130 t=+014.94s] UART_RX [0;31mE (4931) lcd_panel: esp_lcd_panel_swap_xy(60): swap_xy is not supported by this panel[0m
+[2026-11-25 23:23:09.130 t=+014.94s] UART_RX [0;31mE (4937) lcd_panel: esp_lcd_panel_mirror(53): mirror is not supported by this panel[0m
+[2026-11-25 23:23:10.081 t=+015.89s] UART_RX [0;32mI (5888) GT9XXX: CTP:911[0m
+[2026-11-25 23:23:10.081 t=+015.89s] UART_RX [0;32mI (5904) JT_UI: Initializing JianTi v114 native-widget UI[0m
+[2026-11-25 23:23:10.081 t=+015.89s] UART_RX [0;32mI (5904) JT_UI: device id=2040059832773436 source=compile-time-default[0m
+[2026-11-25 23:23:10.081 t=+015.89s] UART_TX poll status (read-only)
+[2026-11-25 23:23:10.112 t=+015.92s] UART_RX screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:23:10.112 t=+015.92s] UART_RX [0;32mI (6133) JT_UI: JianTi v114 native-widget UI ready[0m
+[2026-11-25 23:23:10.112 t=+015.92s] UART_RX [0;32mI (6133) JT_UI: lock screen waiting for network[0m
+[2026-11-25 23:23:10.564 t=+016.38s] UART_RX [0;32mI (6134) JT_UI: JianTi launcher enabled over initialized display[0m
+[2026-11-25 23:23:10.564 t=+016.38s] UART_RX [0;32mI (6264) JT_CLIENT: wifi driver initialized[0m
+[2026-11-25 23:23:10.564 t=+016.38s] UART_RX [0;32mI (6267) eh_wifi: set_config iface=STA ssid="rimmon" (6 bytes)[0m
+[2026-11-25 23:23:10.564 t=+016.38s] UART_RX [0;32mI (6385) eh_wifi: rx RPC WifiEventNoArgs id=2[0m
+[2026-11-25 23:23:10.860 t=+016.67s] UART_RX [0;32mI (6686) esp_wifi_remote: esp_wifi_internal_reg_rxcb: sta: 0x480b170e[0m
+[2026-11-25 23:23:11.547 t=+017.36s] UART_RX [0;33mW (7368) JT_CLIENT: network not ready after 1000 ms[0m
+[2026-11-25 23:23:11.890 t=+017.70s] UART_RX [0;32mI (7705) esp_netif_handlers: sta ip: 192.168.0.105, mask: 255.255.255.0, gw: 192.168.0.1[0m
+[2026-11-25 23:23:11.890 t=+017.70s] UART_RX [0;32mI (7705) JT_CLIENT: got IP: 192.168.0.105[0m
+[2026-11-25 23:23:12.093 t=+017.91s] UART_TX poll status (read-only)
+[2026-11-25 23:23:12.312 t=+018.12s] UART_RX screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:23:12.545 t=+018.36s] UART_RX [0;32mI (8368) JT_CLIENT: lock screen GET http://192.168.0.108:8000/lockscreen?device_id=2040059832773436[0m
+[2026-11-25 23:23:12.650 t=+018.45s] UART_RX [0;32mI (8665) JT_CLIENT: lock screen response status=200 bytes=63[0m
+[2026-11-25 23:23:12.650 t=+018.45s] UART_RX [0;32mI (8665) JT_CLIENT: lock screen time synced from HTTP Date: Wed, 25 Nov 2026 15:23:12 GMT[0m
+[2026-11-25 23:23:12.873 t=+018.69s] UART_RX [0;32mI (8671) JT_CLIENT: lock screen data city= temp= memo_len=18 synced=1 date=Wed, 25 Nov 2026 15:23:12 GMT[0m
+[2026-11-25 23:23:12.873 t=+018.69s] UART_RX [0;32mI (8680) JT_BIZ: lock screen refresh result=ok http=200 temp=--- memo_len=18 date=Wed, 25 Nov 2026 15:23:12 GMT[0m
+[2026-11-25 23:23:12.873 t=+018.69s] UART_RX [0;32mI (8692) JT_UI: lock screen fetch complete at 8692 ms[0m
+[2026-11-25 23:23:14.304 t=+020.11s] UART_TX poll status (read-only)
+[2026-11-25 23:23:14.522 t=+020.33s] UART_RX screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:23:16.349 t=+022.16s] UART_TX poll status (read-only)
+[2026-11-25 23:23:16.568 t=+022.38s] UART_RX screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:23:17.609 t=+023.42s] VALIDATION process_entered=True held_seconds=0.00 last_status=screen=0 frozen=0 stream=0 frame=0 solve_job=- solve_result=0 solve_questions=0 ok=False
+[2026-11-25 23:23:17.610 t=+023.42s] CAPTURE_END status=FAIL
