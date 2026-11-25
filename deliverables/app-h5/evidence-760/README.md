@@ -80,6 +80,9 @@ BIND_SCAN JianTi-4000000000000202 409
 ### 15_g2_health_raw_0210_0310.txt
 补 ABB msg579 / NYX msg581 G2：把 02:05 与 03:10 两次生产验证日志的 `/health` 验证行**原文**落库。v92_.log（mtime 02:05:34）A1 行 `model_connected=True test_mode=True`；v93_.log（mtime 03:10:17）A1 行 `model_connected=True test_mode=True`。02:55 落在两次 True 读数之间，说明当时仍是 test_mode，mock 答案与上传照片无关，非 App 发错图/串题。注意：这是验证日志原文行，不是连续每分钟采样；03:10 恰在 v9.3 部署当口，但该日志 A1 仍为 True。事后查询生产 `/health` = v9.3.0 `test_mode:false`。
 
+### 16_official_lockscreen_memo_temp.png
+补 NYX msg660：DNS 修复后真机验证官方服锁屏。`GET http://solve.mhq-ai.xyz:8000/lockscreen` 返回 200 `{"city":"新加坡","temperature":24,"memo":"只做这一次"}`；App force-stop 重开后锁屏实测显示 **温度 24°C** + MEMO「你现在比以往任何时候都清楚」（服务端当时返回的最新 MEMO 已轮换，与首次 curl 值不同，属正常 8s 轮换），不再是 503 空值。证明官方服锁屏链路恢复正常。
+
 ## SHA256
 e666f66d6c4b25c8a3fa587f300e5bbd3218a4c3e987b7944446111f45213f5b  01_realcamera_decoded.png
 ddf05ea613b30114ba3c4771e96b38d7ed05d5043ddb0b5476beb610bf683b50  02_bindscan_201.py
@@ -96,3 +99,4 @@ b3159c9c5e4d19825ea342a611c49b22567d1ac068de9fdb13606b37e1243e51  11_lockscreen_
 e44981b47b45ece66304e0171550928f2bf8a625c5e2f25fb8ed723232e1351c  13_server_connected_after_restart.png
 cfde75c2e9d7a56172f595b293c952c664aafa690b5de9d9d23bd9b5b3661b5d9  14_lockscreen_memo_after_restart.png
 ca86809091f1aa69fcd800053c3f378e63ba7129493643043750dd86350ecea2  15_g2_health_raw_0210_0310.txt
+494856c9878f8b5b23ba4b178d5807144e9dac54a57eee176ca987c369127b1a  16_official_lockscreen_memo_temp.png
