@@ -29,7 +29,7 @@ static const char *TAG = "JT_CLIENT";
 #endif
 
 #ifndef JT_AUTH_TOKEN
-#define JT_AUTH_TOKEN ""
+#define JT_AUTH_TOKEN "880583b2025e8116dcf48266f899322d8a4f553ba0fe8c9d"
 #endif
 
 #define JT_POLL_INTERVAL_MS 1000
@@ -631,6 +631,8 @@ static bool jt_solve_worker(const uint8_t *jpeg, size_t jpeg_size,
         return false;
     }
     if (status != 200 && status != 202) {
+        ESP_LOGE(TAG, "solve upload HTTP error: status=%d body=%s",
+                 status, resp.data ? resp.data : "");
         jt_parse_error(&resp, out, JT_RESULT_HTTP_ERROR);
         jt_response_free(&resp);
         return false;
@@ -656,6 +658,8 @@ static bool jt_solve_worker(const uint8_t *jpeg, size_t jpeg_size,
             return false;
         }
         if (poll_status != 200) {
+            ESP_LOGE(TAG, "solve poll HTTP error: status=%d body=%s",
+                     poll_status, poll_resp.data ? poll_resp.data : "");
             jt_parse_error(&poll_resp, out, JT_RESULT_HTTP_ERROR);
             jt_response_free(&poll_resp);
             return false;
