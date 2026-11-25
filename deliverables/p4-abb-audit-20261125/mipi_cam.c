@@ -35,6 +35,7 @@ static int photo_msg_timer = 0;           /* 提示持续帧数 */
 static bool photo_request = false;        /* BOOT 键/启动验收拍照请求 */
 static bool storage_mounted = false;
 static volatile bool jt_solve_busy = false;
+static volatile bool preview_frame_ready = false;
 static void *preview_buffers[2] = {NULL, NULL};
 static void *preview_allocs[2] = {NULL, NULL};
 static uint8_t preview_write_index = 0;
@@ -48,6 +49,8 @@ static void jt_solve_done_cb(const jt_solve_result_t *result, void *user_ctx)
     if (!result) {
         return;
     }
+    ESP_LOGI(mipi_cam_tag, "solve done: result=%d questions=%d",
+             (int)result->result, result->question_count);
     jt_business_on_solve_result(result);
     if (result->result == JT_RESULT_OK && result->question_count > 0) {
         const jt_question_t *q = &result->questions[0];
@@ -63,6 +66,7 @@ static void jt_solve_done_cb(const jt_solve_result_t *result, void *user_ctx)
 
 static void jt_submit_photo(const uint8_t *jpeg, uint32_t jpeg_size)
 {
+    ESP_LOGI(mipi_cam_tag, "submit photo: jpeg_size=%u", (unsigned)jpeg_size);
     if (jpeg_size > 8 * 1024 * 1024) {
         snprintf(photo_status_msg, sizeof(photo_status_msg), "JPG Too Big");
         photo_msg_timer = 60;
@@ -72,10 +76,12 @@ static void jt_submit_photo(const uint8_t *jpeg, uint32_t jpeg_size)
     jt_solve_busy = true;
     snprintf(photo_status_msg, sizeof(photo_status_msg), "SOLVING...");
     photo_msg_timer = 120;
+    ESP_LOGI(mipi_cam_tag, "solve async start");
     if (!jt_client_solve_async(jpeg, jpeg_size, jt_solve_done_cb, NULL)) {
         jt_solve_busy = false;
         snprintf(photo_status_msg, sizeof(photo_status_msg), "Task Fail");
         photo_msg_timer = 60;
+        ESP_LOGE(mipi_cam_tag, "solve async failed to start");
     }
 }
 
@@ -437,6 +443,7 @@ static void lcd_cam_task(void *arg)
             preview_buffers[preview_write_index] = draw_buffer;
             draw_buffer = preview_buffers[preview_write_index ? 0 : 1];
             portEXIT_CRITICAL(&preview_mux);
+            preview_frame_ready = true;
             if (frame_callback) {
                 frame_callback(draw_buffer, lcddev.width, lcddev.height, frame_callback_ctx);
             }
@@ -448,12 +455,24 @@ static void lcd_cam_task(void *arg)
         }
 
         if (photo_request && !jt_solve_busy) {
-            photo_request = false;
             uint16_t pic_width  = lcddev.width;
             uint16_t pic_height = lcddev.height;
-            uint16_t *photo_buffer = (uint16_t *)piclib_mem_malloc(pic_width * pic_height * sizeof(uint16_t));
+            uint16_t *photo_buffer = NULL;
+
+            if (!camera_stream_ready || !preview_frame_ready ||
+                !preview_buffers[0] || !preview_buffers[1]) {
+                vTaskDelay(pdMS_TO_TICKS(50));
+                continue;
+            }
+
+            photo_request = false;
+            photo_buffer = (uint16_t *)piclib_mem_malloc(pic_width * pic_height * sizeof(uint16_t));
             if (photo_buffer != NULL) {
-                memcpy(photo_buffer, draw_buffer, pic_width * pic_height * sizeof(uint16_t));
+                void *latest_frame = NULL;
+                portENTER_CRITICAL(&preview_mux);
+                latest_frame = preview_buffers[preview_write_index];
+                portEXIT_CRITICAL(&preview_mux);
+                memcpy(photo_buffer, latest_frame, pic_width * pic_height * sizeof(uint16_t));
                 mirror_image(photo_buffer, pic_width, pic_height);
                 save_jpeg_photo(photo_buffer, pic_width, pic_height);
                 piclib_mem_free(photo_buffer);
@@ -508,6 +527,15 @@ void mipi_cam_stop(void)
 
 void mipi_cam_request_photo(void)
 {
+    if (!camera_stream_ready || !preview_frame_ready ||
+        !preview_buffers[0] || !preview_buffers[1]) {
+        ESP_LOGW(mipi_cam_tag,
+                 "photo request ignored: stream_ready=%d frame_ready=%d preview0=%p preview1=%p",
+                 (int)camera_stream_ready, (int)preview_frame_ready,
+                 preview_buffers[0], preview_buffers[1]);
+        return;
+    }
+
     photo_request = true;
 }
 

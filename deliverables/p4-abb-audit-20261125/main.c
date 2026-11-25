@@ -138,6 +138,18 @@ static void jt_uart_page_task(void *arg)
             len = 0;
             continue;
         }
+        if (!strcmp(line, "shutter")) {
+            app_jt_ui_debug_finder_shutter();
+            printf("shutter=done\n");
+            len = 0;
+            continue;
+        }
+        if (!strcmp(line, "confirm")) {
+            app_jt_ui_debug_finder_confirm();
+            printf("confirm=done\n");
+            len = 0;
+            continue;
+        }
             for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
                 if (!strcmp(line, commands[i])) {
                     char *argv[] = { "page", (char *)pages[i] };

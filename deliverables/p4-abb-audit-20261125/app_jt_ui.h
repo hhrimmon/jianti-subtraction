@@ -36,6 +36,10 @@ void app_jt_ui_debug_chain_test(void);
 /** Capture/debug only: report the live SoftAP state from the UART console. */
 void app_jt_ui_debug_ap_state(void);
 
+/** Flow/debug only: invoke the same handler as the finder shutter/confirm buttons. */
+void app_jt_ui_debug_finder_shutter(void);
+void app_jt_ui_debug_finder_confirm(void);
+
 #ifdef __cplusplus
 }
 #endif

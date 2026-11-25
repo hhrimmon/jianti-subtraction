@@ -1,5 +1,15 @@
 # P4 开发进度记录
 
+## 2026-11-25 NYX 639/640：就绪判断修复、全流程断点与审计补件
+
+- 按 639 修复快门取帧就绪判断：快门/确认按钮在 `camera_stream_ready=0` 时不取帧、不切页；取帧只从最新完成的 `preview_buffers[preview_write_index]` 复制；离开 finder 前 detach `lv_img` 数据源并停预览回调。
+- 新增最小 UART 调试命令 `shutter`/`confirm`，只调用屏幕按钮同一个 `jt_finder_shutter()`/`jt_finder_send()` 回调，不增加业务视觉页面。
+- 编译通过：`build_prd_flow_readyguard.log.txt`，固件 `0xb184b0`，app 分区剩余 8%；烧录通过：`flash_prd_flow_readyguard.log.txt`，三段 `Hash of data verified`。
+- 全流程运行：`p4_prd_flow_wait_ready2.log.txt`。OV5647 `PID=0x5647`、`1024x600 RGB565`、`Camera Start` 后，`PHOTO SAVED /storage/PICTURE/PHOTO008.jpg size=12644`，`submit photo: jpeg_size=12644`，`solve async start`，`solve done: result=2 questions=0`，随后稳定 `fps 20.8`，无重启。
+- 按 `jt_client.h` 枚举，`result=2` 为 `JT_RESULT_SERVER_ERROR`；当前断点从“快门空缓冲崩溃”推进为“服务端判题返回 server_error/questions=0”。发网关 PASS，收回结果 PASS 但业务失败；显示思路/扣卡未发生。
+- 按 640 补审计材料：`jt_business.c/.h` 入 audit 文件夹；`cardflowfix_05_after.png`、`ideacardfix_05_dupfix2.png`、`p4_prd_flow_02_finder_20261125.png` 强制入库；第 5 屏卡片热区已在当前 `app_jt_ui.c` 的 `jt_add_prototype_backgrounds()` 中存在（同 pattern 调 `jt_use_card`）。
+- 真机照片 `p4_prd_flow_02_finder_20261125.png` 确认拍摄页显示真实纸面算式，不是假题图；串口与照片共同证明摄像头链路已实际调用。
+
 ## 2026-11-25 3fcb898 热点/三段链路证据闭环
 
 - 在已推送的 `3fcb898` 固件上重新抓取热点启停和连通测试串口证据，原始日志：`p4_3fcb898_hotspot_chain_serial_ready.log.txt`。

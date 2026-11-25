@@ -51,3 +51,11 @@ No new source files in this update; the listed changed sources are unchanged.
 - gear_image_button_preview.png and gearfix_01_gear.png are force-added despite the repository
   *.png ignore rule, so every referenced evidence file is present in this commit.
 - p4_development_progress.md records the exact serial lines and the non-blocking softap netif warning.
+
+2026-11-25 NYX 639/640 evidence:
+- build_prd_flow_readyguard.log.txt and flash_prd_flow_readyguard.log.txt cover the camera readiness fix.
+- p4_prd_flow_wait_ready2.log.txt is the pushed-firmware-style serial capture: camera started,
+  PHOTO008.jpg saved, JPEG submitted, solve callback returned result=2 questions=0, no reboot.
+- p4_prd_flow_02_finder_20261125.png shows the live MIPI preview with a real paper question.
+- app_jt_ui.c/.h, main.c, mipi_cam.c and jt_business.c/.h are refreshed from the current firmware tree.
+- cardflowfix_05_after.png, ideacardfix_05_dupfix2.png and the finder photo are force-added despite *.png ignore.

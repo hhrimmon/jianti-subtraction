@@ -832,6 +832,11 @@ static void jt_show_screen_raw(uint8_t index)
         }
     } else {
         mipi_cam_set_frame_callback(NULL, NULL);
+        if (s_jt.finder_preview) {
+            lv_img_set_src(s_jt.finder_preview, NULL);
+            s_jt.finder_preview_dsc.data = NULL;
+            lv_obj_invalidate(s_jt.finder_preview);
+        }
         if (s_jt.finder_status) {
             lv_obj_add_flag(s_jt.finder_status, LV_OBJ_FLAG_HIDDEN);
         }
@@ -1022,8 +1027,21 @@ static void jt_finder_shutter(lv_event_t *e)
     if (s_jt.screen != JT_SCREEN_FINDER) {
         return;
     }
+    if (!camera_stream_ready) {
+        ESP_LOGW(JT_UI_TAG, "finder shutter ignored: camera not ready");
+        if (s_jt.finder_status) {
+            lv_label_set_text(s_jt.finder_status, "摄像头启动中，请稍候");
+        }
+        return;
+    }
     ESP_LOGI(JT_UI_TAG, "finder shutter -> process");
     mipi_cam_request_photo();
+    mipi_cam_set_frame_callback(NULL, NULL);
+    if (s_jt.finder_preview) {
+        lv_img_set_src(s_jt.finder_preview, NULL);
+        s_jt.finder_preview_dsc.data = NULL;
+        lv_obj_invalidate(s_jt.finder_preview);
+    }
     if (s_jt.finder_status) {
         lv_label_set_text(s_jt.finder_status, "拍照中...");
     }
@@ -1053,13 +1071,36 @@ static void jt_finder_send(lv_event_t *e)
     if (s_jt.screen != JT_SCREEN_FINDER) {
         return;
     }
+    if (!camera_stream_ready) {
+        ESP_LOGW(JT_UI_TAG, "finder confirm ignored: camera not ready");
+        if (s_jt.finder_status) {
+            lv_label_set_text(s_jt.finder_status, "摄像头启动中，请稍候");
+        }
+        return;
+    }
     ESP_LOGI(JT_UI_TAG, "finder confirm -> process");
     mipi_cam_request_photo();
+    mipi_cam_set_frame_callback(NULL, NULL);
+    if (s_jt.finder_preview) {
+        lv_img_set_src(s_jt.finder_preview, NULL);
+        s_jt.finder_preview_dsc.data = NULL;
+        lv_obj_invalidate(s_jt.finder_preview);
+    }
     if (s_jt.finder_status) {
         lv_label_set_text(s_jt.finder_status, "拍照中...");
     }
     jt_set_finder_state(JT_FINDER_LIVE);
     jt_show_screen(JT_SCREEN_PROCESS);
+}
+
+void app_jt_ui_debug_finder_shutter(void)
+{
+    jt_finder_shutter(NULL);
+}
+
+void app_jt_ui_debug_finder_confirm(void)
+{
+    jt_finder_send(NULL);
 }
 
 static void jt_set_finder_state(jt_finder_state_t state)
@@ -1573,6 +1614,8 @@ static void jt_add_prototype_backgrounds(void)
                       JT_S3_BTN_W, JT_S3_BTN_H, jt_finder_send, NULL);
     jt_create_hotspot(s_jt.pages[JT_SCREEN_IDEA], JT_S5_HEAD_X, 20,
                       JT_S5_HEAD_W, JT_S5_HEAD_H, jt_go_home, NULL);
+    jt_create_hotspot(s_jt.pages[JT_SCREEN_IDEA], JT_S5_CARD_X, 44,
+                      JT_S5_CARD_W, JT_S5_CARD_H, jt_use_card, NULL);
     jt_create_hotspot(s_jt.pages[JT_SCREEN_IDEA], 35, 512, 166, 84,
                       jt_prev_question, NULL);
     jt_create_hotspot(s_jt.pages[JT_SCREEN_IDEA], 823, 512, 166, 84,
