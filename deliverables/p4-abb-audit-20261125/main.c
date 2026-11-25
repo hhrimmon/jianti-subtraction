@@ -150,6 +150,11 @@ static void jt_uart_page_task(void *arg)
             len = 0;
             continue;
         }
+        if (!strcmp(line, "screen") || !strcmp(line, "status")) {
+            app_jt_ui_debug_print_status();
+            len = 0;
+            continue;
+        }
             for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
                 if (!strcmp(line, commands[i])) {
                     char *argv[] = { "page", (char *)pages[i] };

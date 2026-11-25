@@ -1020,6 +1020,17 @@ void app_jt_ui_debug_freeze_process(bool freeze)
     s_jt_process_frozen = freeze;
 }
 
+void app_jt_ui_debug_print_status(void)
+{
+    const jt_business_solve_t *solve = jt_business_solve_cached();
+    printf("screen=%u frozen=%d solve_job=%s solve_result=%d solve_questions=%d\n",
+           (unsigned)s_jt.screen,
+           (int)s_jt_process_frozen,
+           (solve && solve->job_id[0]) ? solve->job_id : "-",
+           solve ? (int)solve->result : -1,
+           solve ? solve->question_count : -1);
+}
+
 static void jt_go_finder(lv_event_t *e)
 {
     (void)e;

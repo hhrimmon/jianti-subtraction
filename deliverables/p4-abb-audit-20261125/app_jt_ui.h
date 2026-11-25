@@ -40,6 +40,9 @@ void app_jt_ui_debug_ap_state(void);
 void app_jt_ui_debug_finder_shutter(void);
 void app_jt_ui_debug_finder_confirm(void);
 
+/** Debug only: print current screen and solve cache state; no page changes. */
+void app_jt_ui_debug_print_status(void);
+
 #ifdef __cplusplus
 }
 #endif

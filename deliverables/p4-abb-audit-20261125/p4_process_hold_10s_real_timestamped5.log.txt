@@ -1,0 +1,25 @@
+[2026-11-25 23:11:22.018 t=+004.00s] CAPTURE_START port=COM4 baud=115200 duration=12.0s interval=2.0s
+[2026-11-25 23:11:22.018 t=+004.00s] UART_TX readiness status
+[2026-11-25 23:11:22.230 t=+004.22s] READY_CONFIRMED screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:22.230 t=+004.22s] UART_TX freeze 0
+[2026-11-25 23:11:22.731 t=+004.72s] UART_TX shutter
+[2026-11-25 23:11:28.732 t=+010.72s] UART_TX pre-confirm status
+[2026-11-25 23:11:29.234 t=+011.22s] UART_TX confirm
+[2026-11-25 23:11:29.234 t=+011.22s] ENTER_PROCESS_SENT
+[2026-11-25 23:11:29.244 t=+011.22s] UART_RX freeze=0
+[2026-11-25 23:11:29.244 t=+011.22s] UART_RX [0;33mW (148585) JT_UI: finder shutter ignored: stream_ready=0 frame_ready=0[0m
+[2026-11-25 23:11:29.245 t=+011.23s] UART_RX shutter=done
+[2026-11-25 23:11:29.245 t=+011.23s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:29.245 t=+011.23s] UART_RX [0;33mW (155087) JT_UI: finder confirm ignored: stream_ready=0 frame_ready=0[0m
+[2026-11-25 23:11:29.459 t=+011.44s] UART_RX confirm=done
+[2026-11-25 23:11:31.309 t=+013.30s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:31.525 t=+013.50s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:33.384 t=+015.36s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:33.601 t=+015.58s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:35.465 t=+017.45s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:35.679 t=+017.66s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:37.546 t=+019.53s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:37.761 t=+019.75s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:39.585 t=+021.56s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:39.803 t=+021.78s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:41.426 t=+023.41s] CAPTURE_END

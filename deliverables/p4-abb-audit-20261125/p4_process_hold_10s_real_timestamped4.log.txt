@@ -1,0 +1,22 @@
+[2026-11-25 23:10:57.239 t=+004.00s] CAPTURE_START port=COM4 baud=115200 duration=12.0s interval=2.0s
+[2026-11-25 23:10:57.240 t=+004.00s] UART_TX readiness status
+[2026-11-25 23:10:57.455 t=+004.22s] READY_CONFIRMED screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:10:57.456 t=+004.22s] UART_TX freeze 0
+[2026-11-25 23:10:57.956 t=+004.72s] UART_TX page 3
+[2026-11-25 23:10:58.457 t=+005.22s] UART_TX confirm
+[2026-11-25 23:10:58.958 t=+005.72s] ENTER_PROCESS_SENT
+[2026-11-25 23:10:59.170 t=+005.94s] UART_RX freeze=0
+[2026-11-25 23:10:59.170 t=+005.94s] UART_RX page=3
+[2026-11-25 23:10:59.170 t=+005.94s] UART_RX [0;33mW (124311) JT_UI: finder confirm ignored: stream_ready=0 frame_ready=0[0m
+[2026-11-25 23:10:59.170 t=+005.94s] UART_RX confirm=done
+[2026-11-25 23:11:00.997 t=+007.77s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:01.215 t=+007.98s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:03.057 t=+009.81s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:03.274 t=+010.03s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:05.111 t=+011.88s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:05.328 t=+012.09s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:07.192 t=+013.95s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:07.409 t=+014.17s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:09.232 t=+016.00s] UART_TX poll screen (read-only)
+[2026-11-25 23:11:09.452 t=+016.22s] UART_RX screen=2 frozen=0 solve_job=- solve_result=0 solve_questions=0
+[2026-11-25 23:11:11.072 t=+017.83s] CAPTURE_END
