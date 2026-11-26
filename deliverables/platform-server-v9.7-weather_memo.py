@@ -129,11 +129,26 @@ def _local_ip_lookup(ip: str) -> str:
 
 
 def _online_ip_lookup(ip: str) -> str:
-    """在线后备（本地库查不到才走）：ip-api.com 免费口，不记 IP 不落盘。"""
+    """在线后备（本地库查不到才走）：ip-api.com 免费口，不记 IP 不落盘。
+
+    根因（NYX 1022，2026-11-27）：ip-api.com 只认路径里的 IP
+    （GET /json/<ip>），?ip= 查询参数会被忽略、按调用方（服务器
+    自己）的 IP 定位——43 在新加坡，所以不管谁问都返新加坡 25℃。
+    改成把终端源 IP 放进路径，并核对返回的 query 回显就是该 IP，
+    对不上（接口又悄悄按调用方定位）一律返空，绝不拿服务器城市冒充。
+    """
     try:
-        url = IP_FALLBACK_URL + "?" + urllib.parse.urlencode({"ip": ip, "lang": "zh-CN"})
+        ip = (ip or "").strip()
+        if not ip:
+            return ""
+        url = (IP_FALLBACK_URL + "/" + urllib.parse.quote(ip, safe="")
+               + "?" + urllib.parse.urlencode({"lang": "zh-CN"}))
         with urllib.request.urlopen(url, timeout=HTTP_TIMEOUT) as r:
             data = json.loads(r.read().decode("utf-8"))
+        if data.get("status") != "success":
+            return ""
+        if str(data.get("query", "")) != ip:
+            return ""                  # 回显不是该 IP -> 不拿别人的城市冒充
         city = data.get("city") or ""
         return city if isinstance(city, str) else ""
     except Exception:

@@ -221,6 +221,55 @@ def main() -> int:
     check("预热：lockscreen 内网IP -> 城市空串（不编城市）",
           weather_memo.lockscreen_payload("192.168.1.5")["city"] == "")
 
+    # ---- 10. 回归（NYX 1022）：在线后备必须把 IP 放进路径，不能用 ?ip= ----
+    # ip-api.com 忽略 ?ip=、按调用方（服务器）IP 定位，曾导致全员返新加坡。
+    import json as _json
+    import urllib.request as _urlreq
+
+    _seen_urls = []
+
+    class _FakeResp:
+        def __init__(self, payload):
+            self._payload = payload
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def read(self):
+            return _json.dumps(self._payload, ensure_ascii=False).encode("utf-8")
+
+    _orig_urlopen = _urlreq.urlopen
+    weather_memo._online_ip_lookup = orig_online  # 恢复真函数，只挡 urlopen
+    try:
+        def _fake_urlopen_ok(url, timeout=None):
+            _seen_urls.append(url)
+            return _FakeResp({"status": "success", "query": "8.8.8.8",
+                              "city": "Ashburn"})
+
+        _urlreq.urlopen = _fake_urlopen_ok
+        weather_memo._ip_cache.clear()
+        city10 = weather_memo._online_ip_lookup("8.8.8.8")
+        check("回归：在线查询 URL 是 /json/<ip> 路径形式",
+              bool(_seen_urls) and _seen_urls[-1].startswith(
+                  "http://ip-api.com/json/8.8.8.8?"),
+              f"got {_seen_urls[-1] if _seen_urls else None!r}")
+        check("回归：query 回显一致时返回该 IP 的城市",
+              city10 == "Ashburn", f"got {city10!r}")
+        # query 回显是调用方 IP（旧 ?ip= 写法下的症状）-> 返空，不冒充
+        _urlreq.urlopen = lambda url, timeout=None: _FakeResp(
+            {"status": "success", "query": "43.156.81.191", "city": "新加坡"})
+        check("回归：query 回显不是该 IP -> 返空（不拿服务器城市冒充）",
+              weather_memo._online_ip_lookup("8.8.8.8") == "")
+        _urlreq.urlopen = lambda url, timeout=None: _FakeResp(
+            {"status": "fail", "query": "8.8.8.8", "city": "Ashburn"})
+        check("回归：status 非 success -> 返空",
+              weather_memo._online_ip_lookup("8.8.8.8") == "")
+    finally:
+        _urlreq.urlopen = _orig_urlopen
+
     weather_memo._online_ip_lookup = orig_online
     weather_memo._local_ip_lookup = orig_local
 
