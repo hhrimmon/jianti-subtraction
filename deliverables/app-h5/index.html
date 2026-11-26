@@ -77,7 +77,6 @@
   .date-md{font-size:8.8889dvh;font-weight:800;line-height:1.05;white-space:nowrap;}
   .date-week{font-size:5.8667dvh;font-weight:700;color:var(--ink-2);line-height:1.25;}
   .temp-line{display:flex;align-items:baseline;flex-wrap:wrap;gap:0.3556dvh 2.8444dvh;border-top:0.6222dvh solid var(--line);padding-top:1.7778dvh;}
-  .temp-label{font-size:5.5111dvh;font-weight:700;letter-spacing:.3em;color:#696969;}
   .temp-line .temp{font-size:7.8222dvh;font-weight:800;color:#272727;white-space:nowrap;line-height:1.2;}
   .memo-box{padding:2.1333dvh 5.6889dvh;display:flex;flex-direction:column;justify-content:center;gap:1.4222dvh;}
   .memo-tag{font-size:5.5111dvh;font-weight:700;letter-spacing:.3em;color:#696969;border-bottom:0.6222dvh solid var(--line);padding-bottom:1.0667dvh;line-height:1.25;}
@@ -98,7 +97,7 @@
 
   /* ---------- 第3屏 拍摄：板子原版取景器 ---------- */
   .finder{background:#000;color:#f2f2f2;}
-  .vf-view{flex:1;padding:2.4889dvh 2.4889dvh 2.1333dvh;position:relative;display:flex;min-height:0;}
+  .vf-view{position:absolute;inset:0;padding:0;display:flex;min-height:0;}
   .paper{flex:1;background:#ececec;color:#232323;padding:3.9111dvh 6.7556dvh;position:relative;overflow:hidden;border-radius:3.5556dvh;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 14.2222dvh,rgba(0,0,0,.16) 14.2222dvh,rgba(0,0,0,.16) 14.6667dvh);}
   .paper .q-tag{font-size:5.8667dvh;font-weight:700;color:#6a6a6a;letter-spacing:.2em;}
   .paper .q{font-size:9.6dvh;font-weight:800;line-height:1.5;margin-top:2.4889dvh;}
@@ -124,8 +123,8 @@
   .cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4;}
   .cam-flash.on{opacity:.85;transition:none;}
   .cam-flash{transition:opacity .45s ease;}
-  .vf-bar{display:flex;align-items:center;justify-content:space-between;padding:2.8444dvh 11.5556dvh 4.2667dvh;flex:none;}
-  .vf-btn{width:23.4667dvh;height:23.4667dvh;min-height:0;border-radius:50%;border:none;background:#f7f7f7;color:#111;display:flex;align-items:center;justify-content:center;padding:0;flex:none;}
+  .vf-bar{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:2.8444dvh 11.5556dvh 4.2667dvh;pointer-events:none;}
+  .vf-btn{width:23.4667dvh;height:23.4667dvh;min-height:0;border-radius:50%;border:none;background:#f7f7f7;color:#111;display:flex;align-items:center;justify-content:center;padding:0;flex:none;pointer-events:auto;}
   .vf-btn svg{width:52%;height:52%;display:block;}
   .vf-btn:active{transform:scale(.93);}
   .vf-shutter i{width:17.4222dvh;height:17.4222dvh;border-radius:50%;border:1.0667dvh solid #111;display:block;}
@@ -854,7 +853,7 @@
               <div class="date-md num" data-md>11月14日</div>
               <div class="date-week" data-week>星期六</div>
             </div>
-            <div class="temp-line"><span class="temp-label">温度</span><span class="temp num">---°C</span></div>
+            <div class="temp-line"><span class="temp num">---°C</span></div>
           </div>
           <div class="box memo-box">
             <div class="memo-tag">MEMO</div>
@@ -12191,11 +12190,13 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   }
   /* v5.10 msg273：锁屏第1屏温度/MEMO 走 GET /lockscreen，服务端下发。
      断网/失败不清屏，保留上一次成功取到的值（不回退成 ---）。 */
-  var lastLockTemp = null, lastLockMemo = null;
+  var lastLockTemp = null, lastLockCondition = '', lastLockMemo = null;
   var lockMemos = [], lockMemoIndex = 0;
   function paintLockTemp(){
     var t = document.querySelector('.temp');
-    if (t) t.textContent = lastLockTemp == null ? '---°C' : (/^-?\d+(\.\d+)?$/.test(String(lastLockTemp)) ? lastLockTemp + '°C' : String(lastLockTemp));
+    if (!t) return;
+    var tempText = lastLockTemp == null ? '---°C' : (/^-?\d+(\.\d+)?$/.test(String(lastLockTemp)) ? lastLockTemp + '°C' : String(lastLockTemp));
+    t.textContent = tempText + (lastLockCondition ? ' ' + lastLockCondition : '');
   }
   function paintLockMemo(){
     var m = document.querySelector('.memo-text');
@@ -12212,6 +12213,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     api.lockscreen().then(function(data){
       var temperature = data && data.temperature != null ? data.temperature : null;
       if (temperature != null && temperature !== '') { lastLockTemp = temperature; }
+      var condition = data && data.condition != null ? String(data.condition).trim().slice(0, 5) : '';
+      lastLockCondition = condition;
       paintLockTemp();
       var memos = [];
       var list = data && Array.isArray(data.memos) ? data.memos : [];
