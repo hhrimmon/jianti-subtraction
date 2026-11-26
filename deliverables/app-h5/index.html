@@ -123,6 +123,8 @@
   .cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4;}
   .cam-flash.on{opacity:.85;transition:none;}
   .cam-flash{transition:opacity .45s ease;}
+  /* 974/v5.13：第3屏顶字「拍题中」——取景与冻结态都显示，顶部居中，字高≥屏宽4.4%(横屏约10.5dvh) */
+  .shooting-tag{position:absolute;top:2.2dvh;left:0;right:0;z-index:5;text-align:center;font-size:10.5dvh;font-weight:700;color:#fff;letter-spacing:.16em;text-shadow:0 .6dvh 1.8dvh rgba(0,0,0,.8);pointer-events:none;}
   .vf-bar{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:2.8444dvh 11.5556dvh 4.2667dvh;pointer-events:none;}
   .vf-btn{width:23.4667dvh;height:23.4667dvh;min-height:0;border-radius:50%;border:none;background:#f7f7f7;color:#111;display:flex;align-items:center;justify-content:center;padding:0;flex:none;pointer-events:auto;}
   .vf-btn svg{width:52%;height:52%;display:block;}
@@ -901,6 +903,7 @@
         </div>
         <video class="finder-video" id="finderVideo" playsinline autoplay muted hidden></video>
         <canvas class="finder-still" id="finderStill" hidden></canvas>
+        <div class="shooting-tag">拍题中</div>
         <div class="cam-flash" id="camFlash"></div>
       </div>
       <div class="vf-bar">
