@@ -98,7 +98,8 @@
   /* ---------- 第3屏 拍摄：板子原版取景器 ---------- */
   .finder{background:#000;color:#f2f2f2;}
   .vf-view{position:absolute;inset:0;padding:0;display:flex;min-height:0;}
-  .paper{flex:1;background:#ececec;color:#232323;padding:3.9111dvh 6.7556dvh;position:relative;overflow:hidden;border-radius:3.5556dvh;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 14.2222dvh,rgba(0,0,0,.16) 14.2222dvh,rgba(0,0,0,.16) 14.6667dvh);}
+  /* v5.16：第3屏取景器只显示摄像头实时画面，不放假题目。下面静态纸仅作为无摄像头权限时的兜底占位， remains hidden once video is available. */
+  .paper{display:none;flex:1;background:#ececec;color:#232323;padding:3.9111dvh 6.7556dvh;position:relative;overflow:hidden;border-radius:3.5556dvh;}
   .paper .q-tag{font-size:5.8667dvh;font-weight:700;color:#6a6a6a;letter-spacing:.2em;}
   .paper .q{font-size:9.6dvh;font-weight:800;line-height:1.5;margin-top:2.4889dvh;}
   .paper .hand{font-family:"Segoe Print","Bradley Hand","PingFang SC",cursive;font-size:8.7111dvh;color:#232323;margin-top:2.8444dvh;transform:rotate(-1.2deg);}
@@ -234,8 +235,11 @@
   /* 设备ID二维码整屏页：与 soft AP 页同一套整屏弹出做法；码内容＝JianTi-2864190752386419（JianTi- 前缀＋16 位设备 ID；第1位类型码＋后15位设备号；类型码：1嵌入式、2安卓、3苹果、4鸿蒙，0为其他／未知，5–9预留；能探知型号／类型／系统就带上类型码，探不到按 App 类型兜底：APK＝安卓、苹果＝iOS、其他＝嵌入式及其他；全探不到类型码记 0），手机扫它绑定终端；码下不再重复显示设备ID数字 */
   .device-qr-page{position:absolute;inset:0;z-index:5;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.5556dvh;text-align:center;padding:5.3333dvh 8.8889dvh;}
   .device-qr-page[hidden]{display:none;}
+  .device-qr-title{font-size:11.3778dvh;font-weight:800;line-height:1.15;}
+  .device-qr-desc{font-size:6.0444dvh;font-weight:600;color:var(--ink-2);line-height:1.5;margin:0;}
   .device-qr-code{width:60.4444dvh;height:60.4444dvh;flex:none;background:#fff;border:0.9778dvh solid var(--ink);border-radius:4.2667dvh;padding:3.2dvh;}
   .device-qr-code svg{width:100%;height:100%;display:block;}
+  .device-qr-id{font-size:6.0444dvh;font-weight:700;color:var(--ink-2);}
   .device-qr-page button{border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:4.2667dvh;font-size:6.4dvh;font-weight:800;padding:0 5.3333dvh;height:11.3778dvh;min-height:0;}
   .device-qr-page button:active{transform:scale(.96);}
 
@@ -996,8 +1000,7 @@
         <div class="settings-grid">
           <div class="box set-box">
             <div class="set-title">网络连接</div>
-            <div class="set-line"><span>SSID</span><b id="ssidValue">---</b></div>
-            <div class="set-line"><span>信号强弱</span><b id="signalValue">---</b></div>
+            <div class="set-line"><span>网络状态</span><b id="networkStatus">网络未连接</b></div>
             <button type="button" id="configWifiBtn" class="config-wifi-btn">配置 Wi-Fi</button>
           </div>
           <div class="box set-box">
@@ -1030,7 +1033,10 @@
           <button type="button" id="softApClose">返回设置</button>
         </div>
         <div class="device-qr-page" id="deviceQrPage" hidden>
+          <div class="device-qr-title">设备二维码</div>
+          <p class="device-qr-desc">扫码绑定设备，请将二维码对准板子摄像头</p>
           <div class="device-qr-code"><svg viewBox="0 0 33 33" role="img" aria-label="设备二维码，内容是 JianTi-2864190752386419"><rect width="33" height="33" fill="#ffffff"/><path transform="translate(4 4)" fill="#111111" d="M0 0h7v1h-7zM9 0h2v1h-2zM15 0h2v1h-2zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM12 1h2v1h-2zM15 1h2v1h-2zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM9 2h1v1h-1zM11 2h2v1h-2zM14 2h3v1h-3zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM11 3h1v1h-1zM15 3h2v1h-2zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM11 4h2v1h-2zM15 4h1v1h-1zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h9v1h-9zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h7v1h-7zM9 7h1v1h-1zM15 7h1v1h-1zM0 8h1v1h-1zM3 8h1v1h-1zM5 8h2v1h-2zM8 8h4v1h-4zM13 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM12 9h3v1h-3zM18 9h2v1h-2zM21 9h1v1h-1zM23 9h2v1h-2zM1 10h3v1h-3zM5 10h2v1h-2zM9 10h2v1h-2zM16 10h6v1h-6zM23 10h2v1h-2zM0 11h3v1h-3zM4 11h1v1h-1zM8 11h1v1h-1zM11 11h4v1h-4zM16 11h1v1h-1zM18 11h2v1h-2zM23 11h1v1h-1zM0 12h2v1h-2zM4 12h3v1h-3zM9 12h2v1h-2zM13 12h2v1h-2zM18 12h2v1h-2zM1 13h1v1h-1zM4 13h1v1h-1zM7 13h3v1h-3zM11 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM23 13h2v1h-2zM0 14h1v1h-1zM3 14h2v1h-2zM6 14h1v1h-1zM8 14h4v1h-4zM14 14h1v1h-1zM16 14h1v1h-1zM18 14h1v1h-1zM20 14h1v1h-1zM24 14h1v1h-1zM1 15h1v1h-1zM4 15h1v1h-1zM8 15h4v1h-4zM13 15h1v1h-1zM15 15h1v1h-1zM17 15h1v1h-1zM19 15h1v1h-1zM23 15h2v1h-2zM0 16h2v1h-2zM3 16h1v1h-1zM6 16h1v1h-1zM9 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM16 16h6v1h-6zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h2v1h-2zM16 17h1v1h-1zM20 17h1v1h-1zM0 18h7v1h-7zM9 18h4v1h-4zM14 18h3v1h-3zM18 18h1v1h-1zM20 18h1v1h-1zM22 18h3v1h-3zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h3v1h-3zM12 19h1v1h-1zM14 19h3v1h-3zM20 19h1v1h-1zM22 19h1v1h-1zM24 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM10 20h1v1h-1zM12 20h2v1h-2zM16 20h5v1h-5zM24 20h1v1h-1zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM8 21h2v1h-2zM11 21h1v1h-1zM14 21h1v1h-1zM17 21h1v1h-1zM20 21h3v1h-3zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM10 22h1v1h-1zM12 22h3v1h-3zM16 22h2v1h-2zM19 22h3v1h-3zM24 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM13 23h1v1h-1zM16 23h1v1h-1zM20 23h2v1h-2zM0 24h7v1h-7zM8 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM14 24h1v1h-1zM16 24h4v1h-4zM23 24h2v1h-2z"/></svg></div>
+          <div class="device-qr-id num">设备号：2864 1907 5238 6419</div>
           <button type="button" id="deviceQrClose">关闭</button>
         </div>
       </div>
@@ -11830,69 +11836,6 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   /* --- 真实接口适配层：官方地址写死不显示；自有 IP 由第16屏设置填入后才切换 --- */
   var DEFAULT_BASE_URL = 'http://solve.mhq-ai.xyz:8000';
   var baseURL = DEFAULT_BASE_URL;
-  /* 本地演示模式：APK 内未部署服务端，所有接口在本地直接返回演示数据，不发任何网络请求。
-     这样登录进管理页后不会被外网 401 顶回登录页，也不会连那个没部署的地址。
-     将来要接真服务端时，把这里改成 false 即可。 */
-  var LOCAL_MODE = false;
-  function localResponse(method, path){
-    var p = String(path || '').split('?')[0];
-    var table = {
-      '/config/environment': { temperature:'26°C', memo:'今日事今日毕', ssid:'JT-DEMO', wifi_ssid:'JT-DEMO', signal:'-52 dBm' },
-      '/config/server': { custom_ip:'', ip:'', server_mode:'local', mode:'local' },
-      '/auth/login': { token:'local-demo-token', role:'admin', member_no:1 },
-      '/auth/admin-password/verify': { ok:true },
-      '/cards/check': { balance:5, daily_total:5, advance_ratio:1, advanced:0, advance_limit:5 },
-      '/cards/rules': { daily_total:5, advance_ratio:1 },
-      '/records': {
-        items:[
-          { date:'2026-11-18', time:'09:12:33', source:'终端 1', description:'拍题识别成功', count:1 },
-          { date:'2026-11-18', time:'08:40:10', source:'成员 1', description:'解题卡预支领取', count:1 },
-          { date:'2026-11-17', time:'21:05:47', source:'终端 1', description:'拍题识别成功', count:2 }
-        ],
-        summary:{ photo_success:12, thinking_count:8, cards_used:20 }
-      },
-      '/applications': { items:[] },
-      '/family': {
-        family_group_id:'10086', admin_member_no:1,
-        members:[ { phone:'18601109233', member_no:1, role:'admin', status:'管理员', type:'2' } ]
-      },
-      '/terminals': { terminals:[ { device_id:'2000000000000001', name:'本机终端', type:'2' } ] },
-      '/models': {
-        active_model_id:'lite',
-        items:[
-          { model_id:'lite', model_name:'JT Lite 2.0', is_default:true, selected:true },
-          { model_id:'deepseek', model_name:'DeepSeek-V4.1-Flash' },
-          { model_id:'qwen', model_name:'千问 Qwen 3.8' },
-          { model_id:'doubao', model_name:'豆包 Seed-2.1-Turbo' },
-          { model_id:'kimi', model_name:'Kimi-K3.1-Pro' }
-        ]
-      },
-      '/usage': {
-        total_cost:12.50,
-        items:[
-          { model:'JT Lite 2.0', calls:12, cost:1.20 },
-          { model:'DeepSeek-V4.1-Flash', calls:8, cost:4.80 },
-          { model:'千问 Qwen 3.8', calls:5, cost:2.50 },
-          { model:'豆包 Seed-2.1-Turbo', calls:3, cost:2.10 },
-          { model:'Kimi-K3.1-Pro', calls:1, cost:1.90 }
-        ]
-      }
-    };
-    var data = {};
-    if (p === '/solve') data = { job_id:'local-job' };
-    else if (p.indexOf('/solve/') === 0) data = {
-      job_id:'local-job', status:'done', stage_index:5,
-      questions:[
-        { question_id:'L1', question_index:0, correct:false, thinking:['先把括号算清楚','(−3)+5×(−2)−(−4)','= −3 −10 +4 = −9'], process:['乘法优先：5×(−2)=−10','减去负数等于加正数：−(−4)=+4'], unlocked:true, answer:'−9' },
-        { question_id:'L2', question_index:1, correct:true, thinking:['通分后合并同类项'], process:['分母相同直接相加'], unlocked:true, answer:'1' },
-        { question_id:'L3', question_index:2, correct:false, thinking:['先移项再求解'], process:['两边同减常数项'], unlocked:true, answer:'x=3' },
-        { question_id:'L4', question_index:3, correct:true, thinking:['代入公式计算'], process:['按运算符优先级'], unlocked:true, answer:'12' },
-        { question_id:'L5', question_index:4, correct:false, thinking:['画图辅助理解'], process:['找出已知条件'], unlocked:true, answer:'45°' }
-      ]
-    };
-    else if (table[p]) data = table[p];
-    return JSON.parse(JSON.stringify(data));
-  }
   var authToken = '';
   var terminalToken = '';
   /* 登录（B16）返回的 role / member_no 缓存一份：GET /family 顶层不给这两项，
@@ -11950,10 +11893,6 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   }
   function request(method, path, opts){
     opts = opts || {};
-    /* 本地演示模式：所有接口在本地直接返回数据，不发网络请求、不触发 401 踢回登录页 */
-    if (LOCAL_MODE) {
-      return Promise.resolve(localResponse(method, path));
-    }
     var headers = {};
     var body;
     if (opts.rawBody) {
@@ -12174,22 +12113,20 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     Array.prototype.forEach.call(document.querySelectorAll('.srv, .guide-srv'), function(el){
       el.innerHTML = '<i></i>' + (ok ? '服务器已连接' : '服务器未连接');
     });
+    applyNetInfo({ connected: !!ok });
   }
   function normalizeTerminalId(input){
     return String(input || '').replace(/\s/g, '');
   }
   function formatDeviceId(id){ return String(id || '').replace(/(\d{4})(?=\d)/g, '$1 '); }
-  /* 设置屏网络信息：SSID 与信号强弱只认服务端下发的真实值，未联网／查不到显示 ---，
-     不用演示值；SSID 只显前 8 位 */
-  var ssidValue = document.getElementById('ssidValue');
-  var signalValue = document.getElementById('signalValue');
+  /* v5.15/v156：设置页只显示网络状态两态，不显示 SSID/信号 */
+  var networkStatusEl = document.getElementById('networkStatus');
   function applyNetInfo(data){
-    var env = (data && (data.environment || data.config)) || {};
-    var ssid = (data && (data.ssid || data.wifi_ssid)) || env.ssid || env.wifi_ssid || '';
-    var signal = data && data.signal != null ? data.signal : (data && data.signal_strength != null ? data.signal_strength : null);
-    if (signal == null) signal = env.signal != null ? env.signal : (env.signal_strength != null ? env.signal_strength : null);
-    if (ssidValue) ssidValue.textContent = ssid ? String(ssid).slice(0, 8) : '---';
-    if (signalValue) signalValue.textContent = signal == null || signal === '' ? '---' : String(signal);
+    var ok = false;
+    if (data && typeof data.connected === 'boolean') ok = data.connected;
+    else if (data && typeof data.online === 'boolean') ok = data.online;
+    else if (data && typeof data.ok === 'boolean') ok = data.ok;
+    if (networkStatusEl) networkStatusEl.textContent = ok ? '网络已连接' : '网络未连接';
   }
   /* v5.10 msg273：锁屏第1屏温度/MEMO 走 GET /lockscreen，服务端下发。
      断网/失败不清屏，保留上一次成功取到的值（不回退成 ---）。 */
@@ -12575,7 +12512,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
             qOpened = {};
             renderQuestion();
             renderResult();
-            goTo(4);
+            setTimeout(function(){ goTo(4); }, 0);
           });
           return;
         }
@@ -12625,7 +12562,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   }
   function finderActive(){
     return !!(finderStream && finderStream.getVideoTracks().some(function(t){ return t.readyState === 'live'; })
-      && finderVideo && finderVideo.videoWidth > 0);
+      && finderVideo && finderVideo.videoWidth > 0 && current === 2);
   }
   function startFinderCamera(){
     if (!finderVideo) return;
