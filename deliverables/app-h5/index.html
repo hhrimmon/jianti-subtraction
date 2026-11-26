@@ -12565,7 +12565,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
           finishWhenStagesShown(function(){
             if (!activeJob || activeJob.jobId !== jobId || current !== 3) return;
             clearWaiting();
-            setQuestions(items);
+            setQuestions(items, data && data.answer_status);
             lastSolvedJobId = jobId;
             activeJob = null;
             qi = 0;
@@ -12894,7 +12894,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   /* --- 第5/6屏 五道题（与板子稿同一套数据） --- */
   var QUESTIONS = [];
   var currentQuestionKey = '';
-  function setQuestions(items){
+  function setQuestions(items, topAnswerStatus){
+    var topStatus = topAnswerStatus != null ? String(topAnswerStatus) : '';
     QUESTIONS = (items || []).map(function(item, index){
       var thinking = item && (item.thinking != null ? item.thinking : item.idea);
       var steps = Array.isArray(thinking) ? thinking : (thinking != null ? [String(thinking)] : []);
@@ -12903,6 +12904,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
         question_id:item && (item.question_id || item.questionId),
         question_index:item && (item.question_index != null ? item.question_index : (item.index != null ? item.index : index)),
         correct:!!(item && item.correct),
+        answerStatus:String(item && item.answer_status != null ? item.answer_status : topStatus),
         thinking:steps,
         idea:steps,
         process:Array.isArray(process) ? process : [],
@@ -12928,7 +12930,11 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     if (!q) return;
     var index = (q.question_index != null ? parseInt(q.question_index, 10) + 1 : qi + 1);
     recognizeLine.textContent = '共' + QUESTIONS.length + '题第' + index + '题 · 思路';
-    verdictLine.textContent = q.correct ? '这个题做对了' : '这个题做错了';
+    if (q.answerStatus === 'unanswered') {
+      verdictLine.textContent = '无对错 · 只给思路';
+    } else {
+      verdictLine.textContent = q.correct ? '这个题做对了' : '这个题做错了';
+    }
     if (testDataBanner) testDataBanner.hidden = !q.mockResult;
     ideaList.innerHTML = '';
     q.thinking.forEach(function(step){
