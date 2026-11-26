@@ -1,0 +1,14 @@
+﻿=== 834-1 local + 43 health (2026-11-27 04:26:57) ===
+[43 official] version=9.7.0 model_connected=True test_mode=False
+[43 official lockscreen] {"city":"新加坡","temperature":25,"condition":"雾","memo":"向别人倾诉"}
+[localhost:8000] version=9.7.0 model_connected=True test_mode=True
+[192.168.0.108] unreachable from dev PC
+
+=== 834-4 login after LOCAL_ACCOUNT removal ===
+source grep: no LOCAL_ACCOUNT token in index.html (fully removed)
+api.login() direct server call, no local fallback
+POST /auth/login phone=13800000003 -> HTTP 200, token present, role 用户
+
+=== 834-2 connectivity false-alarm ===
+setServerChip shared by home .srv and settings .guide-srv; boot health probe + probeServer step3 both sync chip
+real device: home top-right shows 服务器已连接
