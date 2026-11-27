@@ -235,11 +235,9 @@
   /* 设备ID二维码整屏页：与 soft AP 页同一套整屏弹出做法；码内容＝JianTi-2864190752386419（JianTi- 前缀＋16 位设备 ID；第1位类型码＋后15位设备号；类型码：1嵌入式、2安卓、3苹果、4鸿蒙，0为其他／未知，5–9预留；能探知型号／类型／系统就带上类型码，探不到按 App 类型兜底：APK＝安卓、苹果＝iOS、其他＝嵌入式及其他；全探不到类型码记 0），手机扫它绑定终端；码下不再重复显示设备ID数字 */
   .device-qr-page{position:absolute;inset:0;z-index:5;background:var(--screen);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.5556dvh;text-align:center;padding:5.3333dvh 8.8889dvh;}
   .device-qr-page[hidden]{display:none;}
-  .device-qr-title{font-size:11.3778dvh;font-weight:800;line-height:1.15;}
-  .device-qr-desc{font-size:6.0444dvh;font-weight:600;color:var(--ink-2);line-height:1.5;margin:0;}
-  .device-qr-code{width:60.4444dvh;height:60.4444dvh;flex:none;background:#fff;border:0.9778dvh solid var(--ink);border-radius:4.2667dvh;padding:3.2dvh;}
+  /* v156：二维码页只留码＋关闭，码下不重复显示设备号；底色＋黑码，不用白底 */
+  .device-qr-code{width:60.4444dvh;height:60.4444dvh;flex:none;background:var(--screen);border:0.9778dvh solid var(--ink);border-radius:4.2667dvh;padding:3.2dvh;}
   .device-qr-code svg{width:100%;height:100%;display:block;}
-  .device-qr-id{font-size:6.0444dvh;font-weight:700;color:var(--ink-2);}
   .device-qr-page button{border:0.8dvh solid var(--ink);background:var(--ink);color:#f4f4f4;border-radius:4.2667dvh;font-size:6.4dvh;font-weight:800;padding:0 5.3333dvh;height:11.3778dvh;min-height:0;}
   .device-qr-page button:active{transform:scale(.96);}
 
@@ -1033,10 +1031,7 @@
           <button type="button" id="softApClose">返回设置</button>
         </div>
         <div class="device-qr-page" id="deviceQrPage" hidden>
-          <div class="device-qr-title">设备二维码</div>
-          <p class="device-qr-desc">扫码绑定设备，请将二维码对准板子摄像头</p>
-          <div class="device-qr-code"><svg viewBox="0 0 33 33" role="img" aria-label="设备二维码，内容是 JianTi-2864190752386419"><rect width="33" height="33" fill="#ffffff"/><path transform="translate(4 4)" fill="#111111" d="M0 0h7v1h-7zM9 0h2v1h-2zM15 0h2v1h-2zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM12 1h2v1h-2zM15 1h2v1h-2zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM9 2h1v1h-1zM11 2h2v1h-2zM14 2h3v1h-3zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM11 3h1v1h-1zM15 3h2v1h-2zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM11 4h2v1h-2zM15 4h1v1h-1zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h9v1h-9zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h7v1h-7zM9 7h1v1h-1zM15 7h1v1h-1zM0 8h1v1h-1zM3 8h1v1h-1zM5 8h2v1h-2zM8 8h4v1h-4zM13 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM12 9h3v1h-3zM18 9h2v1h-2zM21 9h1v1h-1zM23 9h2v1h-2zM1 10h3v1h-3zM5 10h2v1h-2zM9 10h2v1h-2zM16 10h6v1h-6zM23 10h2v1h-2zM0 11h3v1h-3zM4 11h1v1h-1zM8 11h1v1h-1zM11 11h4v1h-4zM16 11h1v1h-1zM18 11h2v1h-2zM23 11h1v1h-1zM0 12h2v1h-2zM4 12h3v1h-3zM9 12h2v1h-2zM13 12h2v1h-2zM18 12h2v1h-2zM1 13h1v1h-1zM4 13h1v1h-1zM7 13h3v1h-3zM11 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM23 13h2v1h-2zM0 14h1v1h-1zM3 14h2v1h-2zM6 14h1v1h-1zM8 14h4v1h-4zM14 14h1v1h-1zM16 14h1v1h-1zM18 14h1v1h-1zM20 14h1v1h-1zM24 14h1v1h-1zM1 15h1v1h-1zM4 15h1v1h-1zM8 15h4v1h-4zM13 15h1v1h-1zM15 15h1v1h-1zM17 15h1v1h-1zM19 15h1v1h-1zM23 15h2v1h-2zM0 16h2v1h-2zM3 16h1v1h-1zM6 16h1v1h-1zM9 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM16 16h6v1h-6zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h2v1h-2zM16 17h1v1h-1zM20 17h1v1h-1zM0 18h7v1h-7zM9 18h4v1h-4zM14 18h3v1h-3zM18 18h1v1h-1zM20 18h1v1h-1zM22 18h3v1h-3zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h3v1h-3zM12 19h1v1h-1zM14 19h3v1h-3zM20 19h1v1h-1zM22 19h1v1h-1zM24 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM10 20h1v1h-1zM12 20h2v1h-2zM16 20h5v1h-5zM24 20h1v1h-1zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM8 21h2v1h-2zM11 21h1v1h-1zM14 21h1v1h-1zM17 21h1v1h-1zM20 21h3v1h-3zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM10 22h1v1h-1zM12 22h3v1h-3zM16 22h2v1h-2zM19 22h3v1h-3zM24 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM13 23h1v1h-1zM16 23h1v1h-1zM20 23h2v1h-2zM0 24h7v1h-7zM8 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM14 24h1v1h-1zM16 24h4v1h-4zM23 24h2v1h-2z"/></svg></div>
-          <div class="device-qr-id num">设备号：2864 1907 5238 6419</div>
+          <div class="device-qr-code"><svg viewBox="0 0 33 33" role="img" aria-label="设备二维码，内容是 JianTi-2864190752386419"><rect width="33" height="33" fill="#e9e9e9"/><path transform="translate(4 4)" fill="#111111" d="M0 0h7v1h-7zM9 0h2v1h-2zM15 0h2v1h-2zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM12 1h2v1h-2zM15 1h2v1h-2zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM9 2h1v1h-1zM11 2h2v1h-2zM14 2h3v1h-3zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM11 3h1v1h-1zM15 3h2v1h-2zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM11 4h2v1h-2zM15 4h1v1h-1zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h9v1h-9zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h7v1h-7zM9 7h1v1h-1zM15 7h1v1h-1zM0 8h1v1h-1zM3 8h1v1h-1zM5 8h2v1h-2zM8 8h4v1h-4zM13 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM12 9h3v1h-3zM18 9h2v1h-2zM21 9h1v1h-1zM23 9h2v1h-2zM1 10h3v1h-3zM5 10h2v1h-2zM9 10h2v1h-2zM16 10h6v1h-6zM23 10h2v1h-2zM0 11h3v1h-3zM4 11h1v1h-1zM8 11h1v1h-1zM11 11h4v1h-4zM16 11h1v1h-1zM18 11h2v1h-2zM23 11h1v1h-1zM0 12h2v1h-2zM4 12h3v1h-3zM9 12h2v1h-2zM13 12h2v1h-2zM18 12h2v1h-2zM1 13h1v1h-1zM4 13h1v1h-1zM7 13h3v1h-3zM11 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM23 13h2v1h-2zM0 14h1v1h-1zM3 14h2v1h-2zM6 14h1v1h-1zM8 14h4v1h-4zM14 14h1v1h-1zM16 14h1v1h-1zM18 14h1v1h-1zM20 14h1v1h-1zM24 14h1v1h-1zM1 15h1v1h-1zM4 15h1v1h-1zM8 15h4v1h-4zM13 15h1v1h-1zM15 15h1v1h-1zM17 15h1v1h-1zM19 15h1v1h-1zM23 15h2v1h-2zM0 16h2v1h-2zM3 16h1v1h-1zM6 16h1v1h-1zM9 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM16 16h6v1h-6zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h2v1h-2zM16 17h1v1h-1zM20 17h1v1h-1zM0 18h7v1h-7zM9 18h4v1h-4zM14 18h3v1h-3zM18 18h1v1h-1zM20 18h1v1h-1zM22 18h3v1h-3zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h3v1h-3zM12 19h1v1h-1zM14 19h3v1h-3zM20 19h1v1h-1zM22 19h1v1h-1zM24 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM10 20h1v1h-1zM12 20h2v1h-2zM16 20h5v1h-5zM24 20h1v1h-1zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM8 21h2v1h-2zM11 21h1v1h-1zM14 21h1v1h-1zM17 21h1v1h-1zM20 21h3v1h-3zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM10 22h1v1h-1zM12 22h3v1h-3zM16 22h2v1h-2zM19 22h3v1h-3zM24 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM13 23h1v1h-1zM16 23h1v1h-1zM20 23h2v1h-2zM0 24h7v1h-7zM8 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM14 24h1v1h-1zM16 24h4v1h-4zM23 24h2v1h-2z"/></svg></div>
           <button type="button" id="deviceQrClose">关闭</button>
         </div>
       </div>
@@ -12716,22 +12711,27 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   function handleSolveBlob(blob, key){
     if (!blob) { showCaptureFeedback('还没有照片，请先拍一张题目的照片。'); return; }
     if (blob.size > MAX_UPLOAD_BYTES) { rejectPhotoTooLarge(); return; }
+    /* v5.16/1137：切屏一帧落定——点对号后立即进第4屏处理页，不等 /solve 返回；
+       失败时回第3屏并在取景器给出可见错误，绝不停在处理页空转或卡在取景器无反馈。 */
+    goTo(3);
     api.solve(blob, normalizeTerminalId(deviceId), key).then(function(data){
-      tooLargeCount = 0;
       var jobId = data && (data.job_id || data.jobId);
-      if (!jobId) { showCaptureFeedback('判题服务暂时接不通'); return; }
+      if (!jobId) { toShooterFromSolve('判题服务暂时接不通'); return; }
+      tooLargeCount = 0;
       activeJob = { jobId:jobId, terminalId:normalizeTerminalId(deviceId), questions:[], key:currentQuestionKey };
       if (data.terminal_id || data.terminalId) activeJob.terminalId = normalizeTerminalId(data.terminal_id || data.terminalId);
-      goTo(3);
       startWaiting();
     }).catch(function(err){
-      if (err && (err.code === 41301 || err.status === 413 || err.httpStatus === 413)) { rejectPhotoTooLarge(); return; }
-      if (err && (err.code === 42901 || err.status === 429)) {
-        showCaptureFeedback('请求太频繁，请 ' + (err.retryAfter || 5) + ' 秒后再按快门重试。');
-        return;
-      }
-      showCaptureFeedback(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
+      if (err && (err.code === 41301 || err.status === 413 || err.httpStatus === 413)) { toShooterFromSolve(tooLargeCount >= 1 ? '照片太大，请靠近一点拍' : '照片超过 8MB，请重拍一张'); return; }
+      if (err && (err.code === 42901 || err.status === 429)) { toShooterFromSolve('请求太频繁，请 ' + (err.retryAfter || 5) + ' 秒后再按快门重试。'); return; }
+      toShooterFromSolve(err && err.message ? err.message : '服务暂时不可用，请稍后再试');
     });
+  }
+  function toShooterFromSolve(message){
+    activeJob = null;
+    clearWaiting();
+    goTo(2);
+    showCaptureFeedback(message);
   }
   /* 拿到 JPEG 字节后的共用链路：先查绑定码，没码再发网关解题。
      系统相机兜底（capture）和真相机抓帧（captureFromFinder）都走这里 */
@@ -12758,12 +12758,12 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
             settled = true; /* 已认出绑定码，这张照片按绑定处理，不再发解题 */
             /* 拍到的是本方绑定码：先绑终端，本次照片不解题 */
             var id = normalizeTerminalId(match[1]);
-            if (!/^[0-4]\d{15}$/.test(id)) { showCaptureFeedback('绑定码格式不对，请重拍'); return; }
+            if (!/^[0-4]\d{15}$/.test(id)) { toShooterFromSolve('绑定码格式不对，请重拍'); return; }
             api.bindScan({ qr_payload:codeText }).then(function(){
-              showCaptureFeedback('已绑定终端 ' + formatDeviceId(id));
+              toShooterFromSolve('已绑定终端 ' + formatDeviceId(id));
               loadTerminals();
             }).catch(function(err){
-              showCaptureFeedback(err && err.message ? err.message : '绑定失败，请稍后再试');
+              toShooterFromSolve(err && err.message ? err.message : '绑定失败，请稍后再试');
             });
             return;
           }
@@ -12826,6 +12826,9 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     }
     pendingCapture = null;      // 取出即清，防重复点发送同一张
     unfreezeFinderFrame();      /* 发送后回到实时取景，等下一张 */
+    /* v5.16/1137：切屏一帧落定——点对号当帧就进第4屏处理页，不等扫码检测与 /solve 返回。
+       失败由 handleSolveBlob/toShooterFromSolve 回第3屏并给出可见错误。 */
+    goTo(3);
     processJpegBytes(arr);
   }
   document.getElementById('shutterBtn').addEventListener('click', shutterTake);
@@ -13302,7 +13305,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     loadCardBalance(); loadApplications();
     if (fromGate && pendingSendAfterLogin) {
       var arr = pendingSendAfterLogin; pendingSendAfterLogin = null;
-      goTo(2);                  /* 回到拍题取景器，让 sent 反馈/跳屏落在正确屏 */
+      goTo(3);                  /* v5.16/1137：续发同样一帧落处理页，不等扫码/网络 */
       processJpegBytes(arr);    /* 登录后继续发送刚才那张题 */
     } else goTo(10);
   }
